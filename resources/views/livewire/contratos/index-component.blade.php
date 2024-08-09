@@ -56,9 +56,9 @@
                                     <tr>
                                         <td>{{ $contrato->id }}</td>
                                         <td>{{ $contrato->dia }}</td>
-                                        <td>{{ $this->nombreEvento($contrato->id_presupuesto) }}</td>
-                                        <td>{{ $this->nombreApellidoCliente($contrato->id_presupuesto) }}</td>
-                                        <td>{{ $this->nifCliente($contrato->id_presupuesto) }}</td>
+                                        <td>{{ $contrato->presupuesto ? ($contrato->presupuesto->evento ? $contrato->presupuesto->evento->tipoevento->nombre : 'Evento no encontrado' ) : 'Presupuesto no encontrado' }}</td>
+                                        <td>{{ $contrato->presupuesto ? ($contrato->presupuesto->cliente ? $contrato->presupuesto->cliente->nombre.' '.$contrato->presupuesto->cliente->apellido : 'Cliente no encontrado' ) : 'Presupuesto no encontrado' }}</td>
+                                        <td>{{ $contrato->presupuesto ? ($contrato->presupuesto->cliente ? $contrato->presupuesto->cliente->nif : 'Cliente no encontrado' ) : 'Presupuesto no encontrado' }}</td>
                                         <td>{{ $contrato->metodoPago }}</td>
                                         <td>{{ $this->getTotalDesc($contrato->id_presupuesto) }}%</td>
                                         <td>{{ number_format($this->getTotal($contrato->id_presupuesto), 2, ',', '.') }}€

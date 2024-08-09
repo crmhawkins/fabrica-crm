@@ -35,10 +35,11 @@ class IndexComponent extends Component
     }
 
     public function nombreEvento($id){
+
         $presupuesto = $this->presupuestos->find($id);
-       
 
         return $this->eventos->find($presupuesto->id_evento)->eventoNombre;
+
     }
 
     public function descargarPDF($ruta){
@@ -60,14 +61,14 @@ class IndexComponent extends Component
 
     public function getTotalDesc ($id){
         $descuento = $this->presupuestos->find($id)->descuento;
-     
+
         return $descuento;
     }
 
     public function getTotal ($id){
- 
+
         $descuento = $this->presupuestos->find($id)->precioFinal;
-     
+
         return $descuento;
     }
 
@@ -75,7 +76,7 @@ class IndexComponent extends Component
         return $this->metodosPago->find($id)->nombre;
     }
 
-    
+
 
     public function render()
     {

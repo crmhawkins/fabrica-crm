@@ -31,14 +31,14 @@ class Contrato extends Model
 
 
     public function presupuesto(): HasOne{
-        return $this->hasOne(Presupuesto::class, "id_presupuesto", "id");
+        return $this->hasOne(Presupuesto::class,'id', "id_presupuesto", );
     }
 
     // public function servicios()
     // {
     //     return $this->hasMany('app\Models\ServicioEvento');
     // }
-    
+
     // public function evento() : HasOne
     // {
     //     return $this->hasOne(Evento::class, "id_evento");
