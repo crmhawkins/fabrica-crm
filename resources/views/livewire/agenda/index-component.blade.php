@@ -32,7 +32,7 @@
                                         <ul>
                                             @foreach ($eventos->where('diaEvento', $fechas[$diaIndex]) as $evento)
                                             @php
-                                                $presupuesto = $evento->presupuesto ? $evento->presupuesto->id : null ;
+                                                $presupuesto = $evento->presupuesto ?? null ;
                                             @endphp
                                                 <li> @if($presupuesto)
                                                     <a href="{{ route('presupuestos.edit', $presupuesto->id) }}">
