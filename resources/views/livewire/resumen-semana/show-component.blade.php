@@ -115,7 +115,7 @@
                                             <th>Gasoil</th>
                                         </tr>
                                         @foreach ($evento->presupuesto->servicios()->get() as $servicio)
-                                        {{dd($servicio , $evento->presupuesto->servicios()->get())}}
+                                        {{dd($servicio->pivot->id_monitores)}}
                                             @foreach (json_decode($servicio->pivot->id_monitores, true) as $monitoresIndex => $monitores)
                                                 <tr>
                                                     @if ($monitoresIndex == 0)
