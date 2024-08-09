@@ -145,302 +145,300 @@
                     </div>
                     <div class="form-row">
                         @if ($id_cliente != 0 || $id_cliente != null)
-                        <div class="form-row">
-                                @if(!is_null($clienteSeleccionado))
+                            @if(!is_null($clienteSeleccionado))
+                                <div class="form-row">
                                     @if( $clienteSeleccionado->tipo_cliente != 1 )
-
                                         <div class="form-group col-md-6">
-                                        <label for="example-text-input" class="col-sm-12 col-form-label"
-                                            disabled>Nombre</label>
-                                        <div class="col-sm-10">
-                                            {{-- <input class="form-control" type="text" value="Artisanal kale" id="example-text-input"> --}}
-                                            <input type="text" value="{{ $clienteSeleccionado->nombre }}"
-                                                class="form-control" name="nombre" aria-label="Nombre"
-                                                placeholder="Nombre" disabled>
-                                            @error('nombre')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
+                                            <label for="example-text-input" class="col-sm-12 col-form-label"
+                                                disabled>Nombre</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" value="{{ $clienteSeleccionado->nombre }}"
+                                                    class="form-control" name="nombre" aria-label="Nombre"
+                                                    placeholder="Nombre" disabled>
+                                                @error('nombre')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
                                         </div>
-                                        </div>
-                                        <!-- Apellido -->
+                                            <!-- Apellido -->
                                         <div class="form-group col-md-6">
-                                        <label for="example-text-input" class="col-sm-12 col-form-label">Apellido</label>
-                                        <div class="col-sm-11">
-                                            <input type="text" value="{{ $clienteSeleccionado->apellido }}"
-                                                class="form-control" name="apellido" placeholder="Apellido" disabled>
-                                            @error('apellido')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
+                                            <label for="example-text-input" class="col-sm-12 col-form-label">Apellido</label>
+                                            <div class="col-sm-11">
+                                                <input type="text" value="{{ $clienteSeleccionado->apellido }}"
+                                                    class="form-control" name="apellido" placeholder="Apellido" disabled>
+                                                @error('apellido')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
                                         </div>
-                                        </div>
-                                        <!-- NIF/DNI -->
+                                            <!-- NIF/DNI -->
                                         <div class="form-group col-md-4">
-                                        <label for="example-text-input" class="col-sm-12 col-form-label"
-                                            disabled>NIF/DNI</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" value="{{ $clienteSeleccionado->nif }}"
-                                                class="form-control" name="nif" placeholder="Nif" disabled>
-                                            @error('nif')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
+                                            <label for="example-text-input" class="col-sm-12 col-form-label"
+                                                disabled>NIF/DNI</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" value="{{ $clienteSeleccionado->nif }}"
+                                                    class="form-control" name="nif" placeholder="Nif" disabled>
+                                                @error('nif')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
                                         </div>
                                     @else
-                                        <div class="form-group col-md-8">
-                                        <label for="example-text-input" class="col-sm-12 col-form-label"
-                                            disabled>Entidad</label>
-                                        <div class="col-sm-11">
-                                            {{-- <input class="form-control" type="text" value="Artisanal kale" id="example-text-input"> --}}
-                                            <input type="text" value="{{ $clienteSeleccionado->nombre }}"
-                                                class="form-control" name="nombre" aria-label="Nombre"
-                                                placeholder="Nombre" disabled>
-                                            @error('nombre')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                        <label for="example-text-input" class="col-sm-12 col-form-label"
-                                            disabled>CIF</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" value="{{ $clienteSeleccionado->nif }}"
-                                                class="form-control" name="nif" placeholder="CIF" disabled>
-                                            @error('nif')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                        <label for="example-text-input" class="col-sm-12 col-form-label">Código Órgano Gestor</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" value="{{ $clienteSeleccionado->codigo_organo_gestor }}"
-                                                class="form-control" name="codigo_organo_gestor" placeholder="Código Órgano Gestor" disabled>
-                                            @error('codigo_organo_gestor')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                        <label for="example-text-input" class="col-sm-12 col-form-label">Código Unidad Tramitadora</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" value="{{ $clienteSeleccionado->codigo_unidad_tramitadora }}"
-                                                class="form-control" name="codigo_unidad_tramitadora" placeholder="Código Unidad Tramitadora" disabled>
-                                            @error('codigo_unidad_tramitadora')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                        <label for="example-text-input" class="col-sm-12 col-form-label">Código Oficina Contable</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" value="{{ $clienteSeleccionado->codigo_oficina_contable }}"
-                                                class="form-control" name="codigo_oficina_contable" placeholder="Código Oficina Contable" disabled>
-                                            @error('codigo_oficina_contable')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                        </div>
+                                            <div class="form-group col-md-8">
+                                            <label for="example-text-input" class="col-sm-12 col-form-label"
+                                                disabled>Entidad</label>
+                                            <div class="col-sm-11">
+                                                {{-- <input class="form-control" type="text" value="Artisanal kale" id="example-text-input"> --}}
+                                                <input type="text" value="{{ $clienteSeleccionado->nombre }}"
+                                                    class="form-control" name="nombre" aria-label="Nombre"
+                                                    placeholder="Nombre" disabled>
+                                                @error('nombre')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                            <label for="example-text-input" class="col-sm-12 col-form-label"
+                                                disabled>CIF</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" value="{{ $clienteSeleccionado->nif }}"
+                                                    class="form-control" name="nif" placeholder="CIF" disabled>
+                                                @error('nif')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                            <label for="example-text-input" class="col-sm-12 col-form-label">Código Órgano Gestor</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" value="{{ $clienteSeleccionado->codigo_organo_gestor }}"
+                                                    class="form-control" name="codigo_organo_gestor" placeholder="Código Órgano Gestor" disabled>
+                                                @error('codigo_organo_gestor')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                            <label for="example-text-input" class="col-sm-12 col-form-label">Código Unidad Tramitadora</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" value="{{ $clienteSeleccionado->codigo_unidad_tramitadora }}"
+                                                    class="form-control" name="codigo_unidad_tramitadora" placeholder="Código Unidad Tramitadora" disabled>
+                                                @error('codigo_unidad_tramitadora')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                            <label for="example-text-input" class="col-sm-12 col-form-label">Código Oficina Contable</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" value="{{ $clienteSeleccionado->codigo_oficina_contable }}"
+                                                    class="form-control" name="codigo_oficina_contable" placeholder="Código Oficina Contable" disabled>
+                                                @error('codigo_oficina_contable')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                            </div>
                                     @endif
-                                @endif
-                                <!-- Tipo de Calle -->
-                                <div class="form-group col-md-4">
-                                    <label for="example-text-input" class="col-sm-12 col-form-label" disabled>Tipo de
-                                        Calle</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" value="{{ $clienteSeleccionado->tipoCalle }}"
-                                            class="form-control" name="tipoCalle"
-                                            placeholder="Avenida/Plaza/Calle..." disabled>
-                                        @error('tipoCalle')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
+                                    <!-- Tipo de Calle -->
+                                    <div class="form-group col-md-4">
+                                        <label for="example-text-input" class="col-sm-12 col-form-label" disabled>Tipo de
+                                            Calle</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" value="{{ $clienteSeleccionado->tipoCalle }}"
+                                                class="form-control" name="tipoCalle"
+                                                placeholder="Avenida/Plaza/Calle..." disabled>
+                                            @error('tipoCalle')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
                                     </div>
-                                </div>
-                                <!-- Via -->
-                                <div class="form-group col-md-4">
-                                    <label for="example-text-input" class="col-sm-12 col-form-label"
-                                        disabled>Via</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" value="{{ $clienteSeleccionado->calle }}"
-                                            class="form-control" name="calle" placeholder="Calle" disabled>
-                                        @error('calle')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
+                                    <!-- Via -->
+                                    <div class="form-group col-md-4">
+                                        <label for="example-text-input" class="col-sm-12 col-form-label"
+                                            disabled>Via</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" value="{{ $clienteSeleccionado->calle }}"
+                                                class="form-control" name="calle" placeholder="Calle" disabled>
+                                            @error('calle')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
                                     </div>
-                                </div>
-                                <!-- Nº -->
-                                <div class="form-group col-md-4">
-                                    <label for="example-text-input" class="col-sm-12 col-form-label"
-                                        disabled>Nº</label>
-                                    <div class="col-sm-10">
-                                        <input type="number" value="{{ $clienteSeleccionado->numero }}"
-                                            class="form-control" name="numero" placeholder="1" disabled>
-                                        @error('numero')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
+                                    <!-- Nº -->
+                                    <div class="form-group col-md-4">
+                                        <label for="example-text-input" class="col-sm-12 col-form-label"
+                                            disabled>Nº</label>
+                                        <div class="col-sm-10">
+                                            <input type="number" value="{{ $clienteSeleccionado->numero }}"
+                                                class="form-control" name="numero" placeholder="1" disabled>
+                                            @error('numero')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
                                     </div>
-                                </div>
 
-                                <!-- Dir Adi 1 -->
-                                <div class="form-group col-md-4">
-                                    <label for="example-text-input" class="col-sm-12 col-form-label" disabled>Dir Adi
-                                        1</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" value="{{ $clienteSeleccionado->direccionAdicional1 }}"
-                                            class="form-control" name="direccionAdicional1"
-                                            placeholder="Bloque/Letra..." disabled>
+                                    <!-- Dir Adi 1 -->
+                                    <div class="form-group col-md-4">
+                                        <label for="example-text-input" class="col-sm-12 col-form-label" disabled>Dir Adi
+                                            1</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" value="{{ $clienteSeleccionado->direccionAdicional1 }}"
+                                                class="form-control" name="direccionAdicional1"
+                                                placeholder="Bloque/Letra..." disabled>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <!-- Dir Adi 2 -->
-                                <div class="form-group col-md-4">
-                                    <label for="example-text-input" class="col-sm-12 col-form-label" disabled>Dir Adi
-                                        2</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" value="{{ $clienteSeleccionado->direccionAdicional2 }}"
-                                            class="form-control" name="direccionAdicional2"
-                                            placeholder="Bloque/Letra..." disabled>
+                                    <!-- Dir Adi 2 -->
+                                    <div class="form-group col-md-4">
+                                        <label for="example-text-input" class="col-sm-12 col-form-label" disabled>Dir Adi
+                                            2</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" value="{{ $clienteSeleccionado->direccionAdicional2 }}"
+                                                class="form-control" name="direccionAdicional2"
+                                                placeholder="Bloque/Letra..." disabled>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <!-- Dir Adi 3 -->
-                                <div class="form-group col-md-4">
-                                    <label for="example-text-input" class="col-sm-12 col-form-label" disabled>Dir Adi
-                                        3</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" value="{{ $clienteSeleccionado->direccionAdicional3 }}"
-                                            class="form-control" name="direccionAdicional3"
-                                            placeholder="Bloque/Letra..." disabled>
+                                    <!-- Dir Adi 3 -->
+                                    <div class="form-group col-md-4">
+                                        <label for="example-text-input" class="col-sm-12 col-form-label" disabled>Dir Adi
+                                            3</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" value="{{ $clienteSeleccionado->direccionAdicional3 }}"
+                                                class="form-control" name="direccionAdicional3"
+                                                placeholder="Bloque/Letra..." disabled>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <!-- CP -->
-                                <div class="form-group col-md-4">
-                                    <label for="example-text-input" class="col-sm-12 col-form-label"
-                                        disabled>CP</label>
-                                    <div class="col-sm-10">
-                                        <input type="number" value="{{ $clienteSeleccionado->codigoPostal }}"
-                                            class="form-control" name="codigoPostal" placeholder="XXXXX" disabled>
-                                        @error('codigoPostal')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
+                                    <!-- CP -->
+                                    <div class="form-group col-md-4">
+                                        <label for="example-text-input" class="col-sm-12 col-form-label"
+                                            disabled>CP</label>
+                                        <div class="col-sm-10">
+                                            <input type="number" value="{{ $clienteSeleccionado->codigoPostal }}"
+                                                class="form-control" name="codigoPostal" placeholder="XXXXX" disabled>
+                                            @error('codigoPostal')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
                                     </div>
-                                </div>
 
-                                <!-- Ciudad -->
-                                <div class="form-group col-md-4">
-                                    <label for="example-text-input" class="col-sm-12 col-form-label"
-                                        disabled>Ciudad</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" value="{{ $clienteSeleccionado->ciudad }}"
-                                            class="form-control" name="ciudad" placeholder="Ciudad" disabled>
-                                        @error('ciudad')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
+                                    <!-- Ciudad -->
+                                    <div class="form-group col-md-4">
+                                        <label for="example-text-input" class="col-sm-12 col-form-label"
+                                            disabled>Ciudad</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" value="{{ $clienteSeleccionado->ciudad }}"
+                                                class="form-control" name="ciudad" placeholder="Ciudad" disabled>
+                                            @error('ciudad')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
                                     </div>
-                                </div>
 
-                                <!-- Confirmacion Postal -->
-                                <div class="form-group col-md-4">
-                                    <label for="confPostal" class="col-sm-12 col-form-label" disabled>Confirmacion
-                                        Postal</label>
-                                    <div class="col-sm-10">
-                                        <input class="form-check-input mt-0"
-                                            @if ($clienteSeleccionado->confPostal == 1) checked @endif type="checkbox"
-                                            value="" name="confPostal"
-                                            aria-label="Checkbox for following text input" disabled>
-                                        {{-- <span class="input-group-text">Confirmacion Postal</span> --}}
+                                    <!-- Confirmacion Postal -->
+                                    <div class="form-group col-md-4">
+                                        <label for="confPostal" class="col-sm-12 col-form-label" disabled>Confirmacion
+                                            Postal</label>
+                                        <div class="col-sm-10">
+                                            <input class="form-check-input mt-0"
+                                                @if ($clienteSeleccionado->confPostal == 1) checked @endif type="checkbox"
+                                                value="" name="confPostal"
+                                                aria-label="Checkbox for following text input" disabled>
+                                            {{-- <span class="input-group-text">Confirmacion Postal</span> --}}
+                                        </div>
                                     </div>
-                                </div>
 
-                                <!-- Telefono -->
-                                <div class="form-group col-md-4">
-                                    <label for="tlf1" class="col-sm-12 col-form-label" disabled>Telefono</label>
-                                    <div class="col-sm-10">
-                                        <input type="number" value="{{ $clienteSeleccionado->tlf1 }}"
-                                            class="form-control" name="tlf1" placeholder="XXXXXXXXX" disabled>
-                                        @error('tlf1')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
+                                    <!-- Telefono -->
+                                    <div class="form-group col-md-4">
+                                        <label for="tlf1" class="col-sm-12 col-form-label" disabled>Telefono</label>
+                                        <div class="col-sm-10">
+                                            <input type="number" value="{{ $clienteSeleccionado->tlf1 }}"
+                                                class="form-control" name="tlf1" placeholder="XXXXXXXXX" disabled>
+                                            @error('tlf1')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
                                     </div>
-                                </div>
 
-                                <!-- Telefono Secundario -->
-                                <div class="form-group col-md-4">
-                                    <label for="tlf2" class="col-sm-12 col-form-label" disabled>Telefono
-                                        Secundario</label>
-                                    <div class="col-sm-10">
-                                        <input type="number" value="{{ $clienteSeleccionado->tlf2 }}"
-                                            class="form-control" name="tlf2" placeholder="Opcional" disabled>
+                                    <!-- Telefono Secundario -->
+                                    <div class="form-group col-md-4">
+                                        <label for="tlf2" class="col-sm-12 col-form-label" disabled>Telefono
+                                            Secundario</label>
+                                        <div class="col-sm-10">
+                                            <input type="number" value="{{ $clienteSeleccionado->tlf2 }}"
+                                                class="form-control" name="tlf2" placeholder="Opcional" disabled>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <!-- Telefono Adicional -->
-                                <div class="form-group col-md-4">
-                                    <label for="tlf3" class="col-sm-12 col-form-label" disabled>Telefono
-                                        Adicional</label>
-                                    <div class="col-sm-10">
-                                        <input type="number" value="{{ $clienteSeleccionado->tlf3 }}"
-                                            class="form-control" name="tlf3" placeholder="Opcional" disabled>
+                                    <!-- Telefono Adicional -->
+                                    <div class="form-group col-md-4">
+                                        <label for="tlf3" class="col-sm-12 col-form-label" disabled>Telefono
+                                            Adicional</label>
+                                        <div class="col-sm-10">
+                                            <input type="number" value="{{ $clienteSeleccionado->tlf3 }}"
+                                                class="form-control" name="tlf3" placeholder="Opcional" disabled>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <!-- Confirmacion SMS -->
-                                <div class="form-group col-md-4">
-                                    <label for="confSms" class="col-sm-12 col-form-label" disabled>Confirmacion
-                                        SMS</label>
-                                    <div class="col-sm-10">
-                                        <input class="form-check-input mt-0"
-                                            @if ($clienteSeleccionado->confSms == 1) checked @endif type="checkbox"
-                                            value="" aria-label="Checkbox for following text input" disabled>
+                                    <!-- Confirmacion SMS -->
+                                    <div class="form-group col-md-4">
+                                        <label for="confSms" class="col-sm-12 col-form-label" disabled>Confirmacion
+                                            SMS</label>
+                                        <div class="col-sm-10">
+                                            <input class="form-check-input mt-0"
+                                                @if ($clienteSeleccionado->confSms == 1) checked @endif type="checkbox"
+                                                value="" aria-label="Checkbox for following text input" disabled>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <!-- Email -->
-                                <div class="form-group col-md-4">
-                                    <label for="email1" class="col-sm-12 col-form-label" disabled>Email</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" value="{{ $clienteSeleccionado->email1 }}"
-                                            class="form-control" name="email1" placeholder="Email@email.com"
-                                            disabled>
-                                        @error('email1')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
+                                    <!-- Email -->
+                                    <div class="form-group col-md-4">
+                                        <label for="email1" class="col-sm-12 col-form-label" disabled>Email</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" value="{{ $clienteSeleccionado->email1 }}"
+                                                class="form-control" name="email1" placeholder="Email@email.com"
+                                                disabled>
+                                            @error('email1')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
                                     </div>
-                                </div>
 
-                                <!-- Email Secundario -->
-                                <div class="form-group col-md-4">
-                                    <label for="email1" class="col-sm-12 col-form-label" disabled>Email
-                                        Secundario</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" value="{{ $clienteSeleccionado->email2 }}"
-                                            class="form-control" name="email2" placeholder="email@email.com"
-                                            disabled>
+                                    <!-- Email Secundario -->
+                                    <div class="form-group col-md-4">
+                                        <label for="email1" class="col-sm-12 col-form-label" disabled>Email
+                                            Secundario</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" value="{{ $clienteSeleccionado->email2 }}"
+                                                class="form-control" name="email2" placeholder="email@email.com"
+                                                disabled>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <!-- Email Adicional -->
-                                <div class="form-group col-md-4">
-                                    <label for="email1" class="col-sm-12 col-form-label" disabled>Email
-                                        Adicional</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" value="{{ $clienteSeleccionado->email3 }}"
-                                            class="form-control" name="email3" placeholder="Email@email.com"
-                                            disabled>
+                                    <!-- Email Adicional -->
+                                    <div class="form-group col-md-4">
+                                        <label for="email1" class="col-sm-12 col-form-label" disabled>Email
+                                            Adicional</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" value="{{ $clienteSeleccionado->email3 }}"
+                                                class="form-control" name="email3" placeholder="Email@email.com"
+                                                disabled>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <!-- Confirmacion Email -->
-                                <div class="form-group col-md-4">
-                                    <label for="confEmail" class="col-sm-12 col-form-label" disabled>Confirmacion
-                                        Email</label>
-                                    <div class="col-sm-10">
-                                        <input class="form-check-input mt-0"
-                                            @if ($clienteSeleccionado->confEmail == 1) checked @endif type="checkbox"
-                                            value="" aria-label="Checkbox for following text input" disabled>
+                                    <!-- Confirmacion Email -->
+                                    <div class="form-group col-md-4">
+                                        <label for="confEmail" class="col-sm-12 col-form-label" disabled>Confirmacion
+                                            Email</label>
+                                        <div class="col-sm-10">
+                                            <input class="form-check-input mt-0"
+                                                @if ($clienteSeleccionado->confEmail == 1) checked @endif type="checkbox"
+                                                value="" aria-label="Checkbox for following text input" disabled>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            @endif
                         @endif
                     </div>
                 </div>
