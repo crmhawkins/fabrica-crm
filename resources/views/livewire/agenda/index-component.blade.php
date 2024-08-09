@@ -32,7 +32,7 @@
                                         <ul>
                                             @foreach ($eventos->where('diaEvento', $fechas[$diaIndex]) as $evento)
                                             @php
-                                                $presupuesto = $presupuestos->where("id_evento", $evento->id)->first();
+                                                $presupuesto = $evento->presupuesto ? $evento->presupuesto->id : null ;
                                             @endphp
                                                 <li> @if($presupuesto)
                                                     <a href="{{ route('presupuestos.edit', $presupuesto->id) }}">
@@ -41,8 +41,8 @@
                                                 @else
                                                     <span>No disponible</span>
                                                 @endif
-                                                    {{ $categorias->find($evento->eventoNombre)->nombre }} -
-                                                    {{ $this->getCliente($evento->id) }}</a></li>
+                                                    {{ $evento->tipoevento ? $evento->tipoevento->nombre : 'No se encuentra el evento' }} -
+                                                    {{ $evento->presupuesto ? ($evento->presupuesto->cliente ? $evento->presupuesto->cliente->nombre.' '.$evento->presupuesto->cliente->apellido : 'No se encuentra al cliente') : 'No se encuentra el presupuesto'}}</a></li>
                                             @endforeach
                                         </ul>
                                     @else

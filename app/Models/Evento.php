@@ -56,10 +56,10 @@ class Evento extends Model
         'created_at', 'updated_at', 'deleted_at',
     ];
 
-    public function presupuestos()
+    public function presupuesto()
     {
         // Asume que el modelo Presupuesto tiene una clave foránea 'id_evento' que apunta a 'id' en Evento
-        return $this->hasMany(Presupuesto::class, 'id_evento');
+        return $this->hasOne(Presupuesto::class, 'id_evento');
     }
     public function tipoevento() {
         return $this->belongsTo(TipoEvento::class,'eventoNombre');
