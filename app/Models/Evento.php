@@ -61,4 +61,7 @@ class Evento extends Model
         // Asume que el modelo Presupuesto tiene una clave foránea 'id_evento' que apunta a 'id' en Evento
         return $this->hasMany(Presupuesto::class, 'id_evento');
     }
+    public function tipoevento() {
+        return $this->belongsTo(TipoEvento::class,'eventoNombre');
+    }
 }

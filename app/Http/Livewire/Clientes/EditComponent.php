@@ -220,6 +220,21 @@ class EditComponent extends Component
     {
         $cliente = Cliente::find($this->identificador);
         event(new \App\Events\LogEvent(Auth::user(), 10, $cliente->id));
+
+        foreach ($cliente->presupuestos as $presupuesto) {
+            // Elimina el contrato asociado, si existe
+            optional($presupuesto->contrato)->delete();
+
+            // Elimina el evento asociado, si existe
+            optional($presupuesto->evento)->delete();
+
+            // Elimina todos los serviciosPresupuesto relacionados
+            foreach ($presupuesto->serviciosPresupuesto as $servicioPresupuesto) {
+                $servicioPresupuesto->delete();
+            }
+            // Finalmente, elimina el presupuesto
+            $presupuesto->delete();
+        }
         $cliente->delete();
         return redirect()->route('clientes.index');
 

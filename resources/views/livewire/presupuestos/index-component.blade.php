@@ -42,8 +42,8 @@
                             <tr>
                                 <td>{{ $presup->id }}</td>
                                 <td>{{ $presup->fechaEmision }}</td>
-                                <td>{{ $this->getClienteNombre($presup->id_cliente) }}</td>
-                                <td>{{ $this->getEventoNombre($eventos->find($presup->id_evento)->eventoNombre) }}</td>
+                                <td>{{ $presup->cliente ? $presup->cliente->nombre.' '.$presup->cliente->apellido : 'Presupuesto sin cliente' }}</td>
+                                <td>{{ $presup->evento ? $presup->evento->tipoevento->nombre : 'Presupuesto sin evento'}}</td>
                                 <td>{{ $presup->precioBase }} €</td>
                                 <td>{{ $presup->descuento }} €</td>
                                 <td>{{ $presup->precioFinal }} €</td>

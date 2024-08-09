@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Presupuesto;
 
 class Cliente extends Model
 {
@@ -47,8 +48,8 @@ class Cliente extends Model
         return $this->hasMany("app\Models\Evento");
     }
 
-    public function contratos(){
-        return $this->hasMany("app\Models\Contrato");
+    public function presupuestos(){
+        return $this->hasMany(Presupuesto::class,'id_cliente');
     }
 
 

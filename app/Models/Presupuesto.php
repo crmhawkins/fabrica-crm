@@ -45,7 +45,7 @@ class Presupuesto extends Model
 
     public function contrato(): HasOne
     {
-        return $this->hasOne(Contrato::class, "id", "id_presupuesto");
+        return $this->hasOne(Contrato::class, "id_presupuesto", "id");
     }
     /**
      * Mutaciones de fecha.
@@ -67,13 +67,17 @@ class Presupuesto extends Model
         return $this->belongsToMany(ServicioPack::class, 'pack_presupuesto', 'presupuesto_id', 'pack_id')
         ->withPivot('numero_monitores', 'precio_final', 'tiempos', 'tiempos_montaje', 'tiempos_desmontaje', 'horas_montaje','horas_inicio', 'horas_finalizacion', 'id_monitores', 'sueldos_monitores', 'gastos_gasoil', 'pagos_pendientes', 'articulos_seleccionados');
     }
-
-
-
     public function evento()
     {
         return $this->belongsTo(Evento::class, 'id_evento');
     }
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class, 'id_cliente');
+    }
+
+
+
 
     public function serviciosPresupuesto()
     {

@@ -32,7 +32,7 @@ class IndexComponent extends Component
         }
         $cliente = $this->clientes->find($id);
 
-        $nombre = $cliente->nombre;
+        $nombre = $cliente->nombre ;
         $apellido = $cliente->apellido;
 
         return "$nombre $apellido";
