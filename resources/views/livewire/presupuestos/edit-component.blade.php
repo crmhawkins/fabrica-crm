@@ -146,7 +146,7 @@
                     <div class="form-row">
                         @if ($id_cliente != 0 || $id_cliente != null)
                         <div class="form-row">
-                                @if(!isnull($clienteSeleccionado))
+                                @if(!is_null($clienteSeleccionado))
                                     @if( $clienteSeleccionado->tipo_cliente != 1 )
 
                                         <div class="form-group col-md-6">
