@@ -114,7 +114,8 @@
                                             <th>Sueldo</th>
                                             <th>Gasoil</th>
                                         </tr>
-                                        @foreach ($presupuestos->where('id_evento', $evento->id)->first()->servicios()->get() as $servicio)
+                                        @foreach ($evento->presupuesto->servicios()->get() as $servicio)
+                                        {{dd($servicio , $evento->presupuesto->servicios()->get())}}
                                             @foreach (json_decode($servicio->pivot->id_monitores, true) as $monitoresIndex => $monitores)
                                                 <tr>
                                                     @if ($monitoresIndex == 0)
@@ -306,7 +307,7 @@
                                                 </tr>
                                             @endforeach
                                         @endforeach
-                                        @foreach ($presupuestos->where('id_evento', $evento->id)->first()->packs()->get() as $packIndex => $pack)
+                                        @foreach ($evento->presupuesto->packs()->get() as $packIndex => $pack)
                                             <tr>
                                                 <th>
                                                     {{ $pack->nombre }}</td>
