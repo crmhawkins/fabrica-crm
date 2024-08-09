@@ -115,7 +115,7 @@
                                             <th>Gasoil</th>
                                         </tr>
                                         @foreach ($evento->presupuesto->servicios()->get() as $servicio)
-                                            @foreach (json_decode(($servicio->pivot->id_monitores ?? [] ), true) as $monitoresIndex => $monitores)
+                                            @foreach (json_decode(($servicio->pivot->id_monitores ?? '' ), true) as $monitoresIndex => $monitores)
                                                 <tr>
                                                     @if ($monitoresIndex == 0)
                                                         <td>
@@ -314,7 +314,7 @@
                                                     </td>
                                             </tr>
                                             @foreach ($pack->servicios() as $servicioIndex => $servicio)
-                                                @foreach (json_decode(($pack->pivot->id_monitores ?? []), true)[$servicioIndex] as $monitoresIndex => $monitores)
+                                                @foreach (json_decode(($pack->pivot->id_monitores ?? ''), true)[$servicioIndex] as $monitoresIndex => $monitores)
                                                     @if ($monitoresIndex == 0)
                                                         <tr>
                                                             <td>
