@@ -1992,6 +1992,7 @@ class EditComponent extends Component
                 }
             }
 
+
             if($stockSeSupera == true) {
                 $this->alert('error', 'Todo el stock de un artículo dado de este servicio está en uso en esta fecha.');
             } else {
