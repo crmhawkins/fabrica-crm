@@ -115,176 +115,188 @@
                                             <th>Gasoil</th>
                                         </tr>
                                         @foreach ($evento->presupuesto->servicios()->get() as $servicio)
-                                        {{dd($evento->presupuesto->servicios()->get())}}
-                                            @foreach (json_decode(($servicio->pivot->id_monitores  ), true) as $monitoresIndex => $monitores)
-                                                <tr>
-                                                    @if ($monitoresIndex == 0)
+                                            @php
+                                                $monitoresData = json_decode($servicio->pivot->id_monitores, true);
+                                            @endphp
+                                            @if (is_array($monitoresData))
+                                                @foreach ($monitoresData as $monitoresIndex => $monitores)
+                                                    <tr>
+                                                        @if ($monitoresIndex == 0)
+                                                            <td>
+                                                                @if ($datoEdicion['id'] != null)
+                                                                    @if ($datoEdicion['id']['presupuesto'] == $evento->id && $datoEdicion['column'] == 'servicioNombre')
+                                                                        <div class="col-md-8" x-data=""
+                                                                            x-init="$('#select2-servicio').select2();
+                                                                            $('#select2-servicio').on('change', function(e) {
+                                                                                var data = $('#select2-servicio').select2('val');
+                                                                                @this.set('datoEdicion['
+                                                                                    value ']', data);
+                                                                            });" wire:key='rand()'>
+                                                                            <select class="form-control"
+                                                                                name="servicioNombre" id="select2-servicio"
+                                                                                wire:model.lazy="datoEdicion.value"
+                                                                                wire:change.lazy='terminarEdicionServicio'>
+                                                                                <option value="0">-- ELIGE UN SERVICIO
+                                                                                    --
+                                                                                </option>
+                                                                                @foreach ($servicios as $servicio_select)
+                                                                                    <option
+                                                                                        value="{{ $servicio_select->id }}">
+                                                                                        {{ $servicio_select->nombre }}
+                                                                                    </option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                        </div>
+                                                                    @else
+                                                                        <span class="align-middle"
+                                                                            wire:click="detectarEdicionServicio('{{ $evento->id }}', '{{ $servicio->id }}', 'servicioNombre')">{{ $servicio->nombre }}</span>
+                                                                    @endif
+                                                                @else
+                                                                    <span class="align-middle"
+                                                                        wire:click="detectarEdicionServicio('{{ $evento->id }}', '{{ $servicio->id }}', 'servicioNombre')">{{ $servicio->nombre }}</span>
+                                                                @endif
+
+                                                            </td>
+                                                            <td>
+                                                                @if ($datoEdicion['id'] != null)
+                                                                    @if ($datoEdicion['id']['presupuesto'] == $evento->id && $datoEdicion['column'] == 'servicioHoraMontaje')
+                                                                        <input type="time"
+                                                                            wire:model.lazy="datoEdicion.value"
+                                                                            wire:change.lazy="terminarEdicionServicio">
+                                                                    @else
+                                                                        <span class="align-middle"
+                                                                            wire:click="detectarEdicionServicio('{{ $evento->id }}', '{{ $servicio->id }}', 'servicioHoraMontaje')">{{ $servicio->pivot->hora_montaje }}</span>
+                                                                    @endif
+                                                                @else
+                                                                    <span class="align-middle"
+                                                                        wire:click="detectarEdicionServicio('{{ $evento->id }}', '{{ $servicio->id }}', 'servicioHoraMontaje')">{{ $servicio->pivot->hora_montaje }}</span>
+                                                                @endif
+
+
+                                                            </td>
+                                                            <td>
+                                                                @if ($datoEdicion['id'] != null)
+                                                                    @if ($datoEdicion['id']['presupuesto'] == $evento->id && $datoEdicion['column'] == 'servicioHoraInicio')
+                                                                        <input type="time"
+                                                                            wire:model.lazy="datoEdicion.value"
+                                                                            wire:change.lazy="terminarEdicionServicio">
+                                                                    @else
+                                                                        <span class="align-middle"
+                                                                            wire:click="detectarEdicionServicio('{{ $evento->id }}', '{{ $servicio->id }}', 'servicioHoraInicio')">{{ $servicio->pivot->hora_inicio }}</span>
+                                                                    @endif
+                                                                @else
+                                                                    <span class="align-middle"
+                                                                        wire:click="detectarEdicionServicio('{{ $evento->id }}', '{{ $servicio->id }}', 'servicioHoraInicio')">{{ $servicio->pivot->hora_inicio }}</span>
+                                                                @endif
+                                                            </td>
+                                                            <td>
+                                                                @if ($datoEdicion['id'] != null)
+                                                                    @if ($datoEdicion['id']['presupuesto'] == $evento->id && $datoEdicion['column'] == 'servicioHoraTiempo')
+                                                                        <input type="time"
+                                                                            wire:model.lazy="datoEdicion.value"
+                                                                            wire:change.lazy="terminarEdicionServicio">
+                                                                    @else
+                                                                        <span class="align-middle"
+                                                                            wire:click="detectarEdicionServicio('{{ $evento->id }}', '{{ $servicio->id }}', 'servicioHoraTiempo')">{{ $servicio->pivot->tiempo }}</span>
+                                                                    @endif
+                                                                @else
+                                                                    <span class="align-middle"
+                                                                        wire:click="detectarEdicionServicio('{{ $evento->id }}', '{{ $servicio->id }}', 'servicioHoraTiempo')">{{ $servicio->pivot->tiempo }}</span>
+                                                                @endif
+                                                            </td>
+                                                            <td>
+                                                                @if ($datoEdicion['id'] != null)
+                                                                    @if ($datoEdicion['id']['presupuesto'] == $evento->id && $datoEdicion['column'] == 'servicioHoraTiempoMontaje')
+                                                                        <input type="time"
+                                                                            wire:model.lazy="datoEdicion.value"
+                                                                            wire:change.lazy="terminarEdicionServicio">
+                                                                    @else
+                                                                        <span class="align-middle"
+                                                                            wire:click="detectarEdicionServicio('{{ $evento->id }}', '{{ $servicio->id }}', 'servicioHoraTiempoMontaje')">{{ $servicio->pivot->tiempo_montaje }}</span>
+                                                                    @endif
+                                                                @else
+                                                                    <span class="align-middle"
+                                                                        wire:click="detectarEdicionServicio('{{ $evento->id }}', '{{ $servicio->id }}', 'servicioHoraTiempoMontaje')">{{ $servicio->pivot->tiempo_montaje }}</span>
+                                                                @endif
+                                                            </td>
+                                                        @else
+                                                            <td colspan="5">&nbsp;</td>
+                                                        @endif
                                                         <td>
-                                                            @if ($datoEdicion['id'] != null)
-                                                                @if ($datoEdicion['id']['presupuesto'] == $evento->id && $datoEdicion['column'] == 'servicioNombre')
+                                                            @if ($datoEdicion['id'] != null && isset($datoEdicion['monitor']))
+                                                                @if (
+                                                                    $datoEdicion['id']['presupuesto'] == $evento->id &&
+                                                                        $datoEdicion['id']['monitor'] == $monitoresIndex &&
+                                                                        $datoEdicion['column'] == 'monitorNombre')
                                                                     <div class="col-md-8" x-data=""
-                                                                        x-init="$('#select2-servicio').select2();
-                                                                        $('#select2-servicio').on('change', function(e) {
-                                                                            var data = $('#select2-servicio').select2('val');
+                                                                        x-init="$('#select2-monitor').select2();
+                                                                        $('#select2-monitor').on('change', function(e) {
+                                                                            var data = $('#select2-monitor').select2('val');
                                                                             @this.set('datoEdicion['
                                                                                 value ']', data);
                                                                         });" wire:key='rand()'>
-                                                                        <select class="form-control"
-                                                                            name="servicioNombre" id="select2-servicio"
+                                                                        <select class="form-control" name="servicioNombre"
+                                                                            id="select2-monitor"
                                                                             wire:model.lazy="datoEdicion.value"
-                                                                            wire:change.lazy='terminarEdicionServicio'>
+                                                                            wire:change.lazy='terminarEdicionMonitores'>
                                                                             <option value="0">-- ELIGE UN SERVICIO
                                                                                 --
                                                                             </option>
-                                                                            @foreach ($servicios as $servicio_select)
-                                                                                <option
-                                                                                    value="{{ $servicio_select->id }}">
-                                                                                    {{ $servicio_select->nombre }}
+                                                                            @foreach ($monitores_datos as $monitor_select)
+                                                                                <option value="{{ $monitor_select->id }}">
+                                                                                    {{ $monitor_select->alias }}
                                                                                 </option>
                                                                             @endforeach
                                                                         </select>
                                                                     </div>
                                                                 @else
                                                                     <span class="align-middle"
-                                                                        wire:click="detectarEdicionServicio('{{ $evento->id }}', '{{ $servicio->id }}', 'servicioNombre')">{{ $servicio->nombre }}</span>
+                                                                        wire:click="detectarEdicionMonitores('{{ $evento->id }}', '{{ $servicio->id }}', '{{ $monitoresIndex }}', 'monitorNombre')">{{ $this->getMonitor($monitores) }}"
+                                                                    </span>
                                                                 @endif
                                                             @else
                                                                 <span class="align-middle"
-                                                                    wire:click="detectarEdicionServicio('{{ $evento->id }}', '{{ $servicio->id }}', 'servicioNombre')">{{ $servicio->nombre }}</span>
-                                                            @endif
-
-                                                        </td>
-                                                        <td>
-                                                            @if ($datoEdicion['id'] != null)
-                                                                @if ($datoEdicion['id']['presupuesto'] == $evento->id && $datoEdicion['column'] == 'servicioHoraMontaje')
-                                                                    <input type="time"
-                                                                        wire:model.lazy="datoEdicion.value"
-                                                                        wire:change.lazy="terminarEdicionServicio">
-                                                                @else
-                                                                    <span class="align-middle"
-                                                                        wire:click="detectarEdicionServicio('{{ $evento->id }}', '{{ $servicio->id }}', 'servicioHoraMontaje')">{{ $servicio->pivot->hora_montaje }}</span>
-                                                                @endif
-                                                            @else
-                                                                <span class="align-middle"
-                                                                    wire:click="detectarEdicionServicio('{{ $evento->id }}', '{{ $servicio->id }}', 'servicioHoraMontaje')">{{ $servicio->pivot->hora_montaje }}</span>
-                                                            @endif
-
-
-                                                        </td>
-                                                        <td>
-                                                            @if ($datoEdicion['id'] != null)
-                                                                @if ($datoEdicion['id']['presupuesto'] == $evento->id && $datoEdicion['column'] == 'servicioHoraInicio')
-                                                                    <input type="time"
-                                                                        wire:model.lazy="datoEdicion.value"
-                                                                        wire:change.lazy="terminarEdicionServicio">
-                                                                @else
-                                                                    <span class="align-middle"
-                                                                        wire:click="detectarEdicionServicio('{{ $evento->id }}', '{{ $servicio->id }}', 'servicioHoraInicio')">{{ $servicio->pivot->hora_inicio }}</span>
-                                                                @endif
-                                                            @else
-                                                                <span class="align-middle"
-                                                                    wire:click="detectarEdicionServicio('{{ $evento->id }}', '{{ $servicio->id }}', 'servicioHoraInicio')">{{ $servicio->pivot->hora_inicio }}</span>
+                                                                    wire:click="detectarEdicionMonitores('{{ $evento->id }}', '{{ $servicio->id }}', '{{ $monitoresIndex }}', 'monitorNombre')">{{ $this->getMonitor($monitores) }}</span>
                                                             @endif
                                                         </td>
                                                         <td>
-                                                            @if ($datoEdicion['id'] != null)
-                                                                @if ($datoEdicion['id']['presupuesto'] == $evento->id && $datoEdicion['column'] == 'servicioHoraTiempo')
-                                                                    <input type="time"
+                                                            @if ($datoEdicion['id'] != null && isset($datoEdicion['monitor']))
+                                                                @if (
+                                                                    $datoEdicion['id']['presupuesto'] == $evento->id &&
+                                                                        $datoEdicion['id']['monitor'] == $monitoresIndex &&
+                                                                        $datoEdicion['column'] == 'sueldoMonitor')
+                                                                    <input type="number"
                                                                         wire:model.lazy="datoEdicion.value"
-                                                                        wire:change.lazy="terminarEdicionServicio">
+                                                                        wire:change.lazy="terminarEdicionMonitores">
                                                                 @else
                                                                     <span class="align-middle"
-                                                                        wire:click="detectarEdicionServicio('{{ $evento->id }}', '{{ $servicio->id }}', 'servicioHoraTiempo')">{{ $servicio->pivot->tiempo }}</span>
+                                                                        wire:click="detectarEdicionMonitores('{{ $evento->id }}', '{{ $servicio->id }}', '{{ $monitoresIndex }}', 'sueldoMonitor')">{{ json_decode($servicio->pivot->sueldo_monitores, true)[$monitoresIndex] }}
+                                                                        €</span>
                                                                 @endif
-                                                            @else
-                                                                <span class="align-middle"
-                                                                    wire:click="detectarEdicionServicio('{{ $evento->id }}', '{{ $servicio->id }}', 'servicioHoraTiempo')">{{ $servicio->pivot->tiempo }}</span>
-                                                            @endif
-                                                        </td>
-                                                        <td>
-                                                            @if ($datoEdicion['id'] != null)
-                                                                @if ($datoEdicion['id']['presupuesto'] == $evento->id && $datoEdicion['column'] == 'servicioHoraTiempoMontaje')
-                                                                    <input type="time"
-                                                                        wire:model.lazy="datoEdicion.value"
-                                                                        wire:change.lazy="terminarEdicionServicio">
-                                                                @else
-                                                                    <span class="align-middle"
-                                                                        wire:click="detectarEdicionServicio('{{ $evento->id }}', '{{ $servicio->id }}', 'servicioHoraTiempoMontaje')">{{ $servicio->pivot->tiempo_montaje }}</span>
-                                                                @endif
-                                                            @else
-                                                                <span class="align-middle"
-                                                                    wire:click="detectarEdicionServicio('{{ $evento->id }}', '{{ $servicio->id }}', 'servicioHoraTiempoMontaje')">{{ $servicio->pivot->tiempo_montaje }}</span>
-                                                            @endif
-                                                        </td>
-                                                    @else
-                                                        <td colspan="5">&nbsp;</td>
-                                                    @endif
-                                                    <td>
-                                                        @if ($datoEdicion['id'] != null && isset($datoEdicion['monitor']))
-                                                            @if (
-                                                                $datoEdicion['id']['presupuesto'] == $evento->id &&
-                                                                    $datoEdicion['id']['monitor'] == $monitoresIndex &&
-                                                                    $datoEdicion['column'] == 'monitorNombre')
-                                                                <div class="col-md-8" x-data=""
-                                                                    x-init="$('#select2-monitor').select2();
-                                                                    $('#select2-monitor').on('change', function(e) {
-                                                                        var data = $('#select2-monitor').select2('val');
-                                                                        @this.set('datoEdicion['
-                                                                            value ']', data);
-                                                                    });" wire:key='rand()'>
-                                                                    <select class="form-control" name="servicioNombre"
-                                                                        id="select2-monitor"
-                                                                        wire:model.lazy="datoEdicion.value"
-                                                                        wire:change.lazy='terminarEdicionMonitores'>
-                                                                        <option value="0">-- ELIGE UN SERVICIO
-                                                                            --
-                                                                        </option>
-                                                                        @foreach ($monitores_datos as $monitor_select)
-                                                                            <option value="{{ $monitor_select->id }}">
-                                                                                {{ $monitor_select->alias }}
-                                                                            </option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </div>
-                                                            @else
-                                                                <span class="align-middle"
-                                                                    wire:click="detectarEdicionMonitores('{{ $evento->id }}', '{{ $servicio->id }}', '{{ $monitoresIndex }}', 'monitorNombre')">{{ $this->getMonitor($monitores) }}"
-                                                                </span>
-                                                            @endif
-                                                        @else
-                                                            <span class="align-middle"
-                                                                wire:click="detectarEdicionMonitores('{{ $evento->id }}', '{{ $servicio->id }}', '{{ $monitoresIndex }}', 'monitorNombre')">{{ $this->getMonitor($monitores) }}</span>
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @if ($datoEdicion['id'] != null && isset($datoEdicion['monitor']))
-                                                            @if (
-                                                                $datoEdicion['id']['presupuesto'] == $evento->id &&
-                                                                    $datoEdicion['id']['monitor'] == $monitoresIndex &&
-                                                                    $datoEdicion['column'] == 'sueldoMonitor')
-                                                                <input type="number"
-                                                                    wire:model.lazy="datoEdicion.value"
-                                                                    wire:change.lazy="terminarEdicionMonitores">
                                                             @else
                                                                 <span class="align-middle"
                                                                     wire:click="detectarEdicionMonitores('{{ $evento->id }}', '{{ $servicio->id }}', '{{ $monitoresIndex }}', 'sueldoMonitor')">{{ json_decode($servicio->pivot->sueldo_monitores, true)[$monitoresIndex] }}
                                                                     €</span>
                                                             @endif
-                                                        @else
-                                                            <span class="align-middle"
-                                                                wire:click="detectarEdicionMonitores('{{ $evento->id }}', '{{ $servicio->id }}', '{{ $monitoresIndex }}', 'sueldoMonitor')">{{ json_decode($servicio->pivot->sueldo_monitores, true)[$monitoresIndex] }}
-                                                                €</span>
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @if ($datoEdicion['id'] != null && isset($datoEdicion['monitor']))
-                                                            @if (
-                                                                $datoEdicion['id']['presupuesto'] == $evento->id &&
-                                                                    $datoEdicion['id']['monitor'] == $monitoresIndex &&
-                                                                    $datoEdicion['column'] == 'gasto_gasoil')
-                                                                <input type="number"
-                                                                    wire:model.lazy="datoEdicion.value"
-                                                                    wire:change.lazy="terminarEdicionMonitores">
+                                                        </td>
+                                                        <td>
+                                                            @if ($datoEdicion['id'] != null && isset($datoEdicion['monitor']))
+                                                                @if (
+                                                                    $datoEdicion['id']['presupuesto'] == $evento->id &&
+                                                                        $datoEdicion['id']['monitor'] == $monitoresIndex &&
+                                                                        $datoEdicion['column'] == 'gasto_gasoil')
+                                                                    <input type="number"
+                                                                        wire:model.lazy="datoEdicion.value"
+                                                                        wire:change.lazy="terminarEdicionMonitores">
+                                                                @else
+                                                                    <span class="align-middle"
+                                                                        wire:click="detectarEdicionMonitores('{{ $evento->id }}', '{{ $servicio->id }}', '{{ $monitoresIndex }}', 'gasto_gasoil')">
+                                                                        @if (!empty(json_decode($servicio->pivot->gasto_gasoil, true)))
+                                                                            {{ json_decode($servicio->pivot->gasto_gasoil, true)[$monitoresIndex] }}
+                                                                            €
+                                                                        @endif
+                                                                    </span>
+                                                                @endif
                                                             @else
                                                                 <span class="align-middle"
                                                                     wire:click="detectarEdicionMonitores('{{ $evento->id }}', '{{ $servicio->id }}', '{{ $monitoresIndex }}', 'gasto_gasoil')">
@@ -294,18 +306,12 @@
                                                                     @endif
                                                                 </span>
                                                             @endif
-                                                        @else
-                                                            <span class="align-middle"
-                                                                wire:click="detectarEdicionMonitores('{{ $evento->id }}', '{{ $servicio->id }}', '{{ $monitoresIndex }}', 'gasto_gasoil')">
-                                                                @if (!empty(json_decode($servicio->pivot->gasto_gasoil, true)))
-                                                                    {{ json_decode($servicio->pivot->gasto_gasoil, true)[$monitoresIndex] }}
-                                                                    €
-                                                                @endif
-                                                            </span>
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                            @endforeach
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            @else
+                                            <tr><td colspan="5">No hay monitores asignados.</td></tr>
+                                            @endif
                                         @endforeach
                                         @foreach ($evento->presupuesto->packs()->get() as $packIndex => $pack)
                                             <tr>
@@ -315,51 +321,63 @@
                                                     </td>
                                             </tr>
                                             @foreach ($pack->servicios() as $servicioIndex => $servicio)
-                                                @foreach (json_decode(($pack->pivot->id_monitores ?? ''), true)[$servicioIndex] as $monitoresIndex => $monitores)
-                                                    @if ($monitoresIndex == 0)
-                                                        <tr>
-                                                            <td>
-                                                                @if ($monitoresIndex == 0)
-                                                                    {{ $servicio->nombre }}
-                                                                @endif
-                                                            </td>
-                                                            <td>
-                                                                @if ($datoEdicion['id'] != null)
-                                                                    @if (
-                                                                        $datoEdicion['id']['presupuesto'] == $evento->id &&
-                                                                            $datoEdicion['id']['pack'] == $pack->id &&
-                                                                            $datoEdicion['id']['servicio'] == $servicioIndex &&
-                                                                            $datoEdicion['column'] == 'packHoraMontaje')
-                                                                        <input type="number"
-                                                                            wire:model.lazy="datoEdicion.value"
-                                                                            wire:change.lazy="terminarEdicionPack">
+                                                @php
+                                                    $monitoresData2 = json_decode($pack->pivot->id_monitores, true);
+                                                @endphp
+                                                @if (is_array($monitoresData))
+                                                    @foreach ($monitoresData2[$servicioIndex] as $monitoresIndex => $monitores)
+                                                        @if ($monitoresIndex == 0)
+                                                            <tr>
+                                                                <td>
+                                                                    @if ($monitoresIndex == 0)
+                                                                        {{ $servicio->nombre }}
+                                                                    @endif
+                                                                </td>
+                                                                <td>
+                                                                    @if ($datoEdicion['id'] != null)
+                                                                        @if (
+                                                                            $datoEdicion['id']['presupuesto'] == $evento->id &&
+                                                                                $datoEdicion['id']['pack'] == $pack->id &&
+                                                                                $datoEdicion['id']['servicio'] == $servicioIndex &&
+                                                                                $datoEdicion['column'] == 'packHoraMontaje')
+                                                                            <input type="number"
+                                                                                wire:model.lazy="datoEdicion.value"
+                                                                                wire:change.lazy="terminarEdicionPack">
+                                                                        @else
+                                                                            <span class="align-middle"
+                                                                                wire:click="detectarEdicionPack('{{ $evento->id }}', '{{ $pack->id }}', '{{ $servicioIndex }}', '{{ $monitoresIndex }}', 'packHoraMontaje')">
+                                                                                @if (!empty(json_decode($pack->pivot->horas_montaje, true)))
+                                                                                    {{ json_decode($pack->pivot->horas_montaje, true)[$servicioIndex] }}
+                                                                                @endif
+                                                                            </span>
+                                                                        @endif
                                                                     @else
                                                                         <span class="align-middle"
-                                                                            wire:click="detectarEdicionPack('{{ $evento->id }}', '{{ $pack->id }}', '{{ $servicioIndex }}', '{{ $monitoresIndex }}', 'packHoraMontaje')">
+                                                                            wire:click="detectarEdicionPack('{{ $evento->id }}', '{{ $pack->id }}', '{{ $servicioIndex }}', 'packHoraMontaje')">
                                                                             @if (!empty(json_decode($pack->pivot->horas_montaje, true)))
                                                                                 {{ json_decode($pack->pivot->horas_montaje, true)[$servicioIndex] }}
                                                                             @endif
                                                                         </span>
                                                                     @endif
-                                                                @else
-                                                                    <span class="align-middle"
-                                                                        wire:click="detectarEdicionPack('{{ $evento->id }}', '{{ $pack->id }}', '{{ $servicioIndex }}', 'packHoraMontaje')">
-                                                                        @if (!empty(json_decode($pack->pivot->horas_montaje, true)))
-                                                                            {{ json_decode($pack->pivot->horas_montaje, true)[$servicioIndex] }}
+                                                                </td>
+                                                                <td>
+                                                                    @if ($datoEdicion['id'] != null)
+                                                                        @if (
+                                                                            $datoEdicion['id']['presupuesto'] == $evento->id &&
+                                                                                $datoEdicion['id']['pack'] == $pack->id &&
+                                                                                $datoEdicion['id']['servicio'] == $servicioIndex &&
+                                                                                $datoEdicion['column'] == 'packHoraInicio')
+                                                                            <input type="time"
+                                                                                wire:model.lazy="datoEdicion.value"
+                                                                                wire:change.lazy="terminarEdicionServicioPack">
+                                                                        @else
+                                                                            <span class="align-middle"
+                                                                                wire:click="detectarEdicionPack('{{ $evento->id }}', '{{ $pack->id }}', '{{ $servicioIndex }}', 'packHoraInicio')">
+                                                                                @if (!empty(json_decode($pack->pivot->horas_inicio, true)))
+                                                                                    {{ json_decode($pack->pivot->horas_inicio, true)[$servicioIndex] }}
+                                                                                @endif
+                                                                            </span>
                                                                         @endif
-                                                                    </span>
-                                                                @endif
-                                                            </td>
-                                                            <td>
-                                                                @if ($datoEdicion['id'] != null)
-                                                                    @if (
-                                                                        $datoEdicion['id']['presupuesto'] == $evento->id &&
-                                                                            $datoEdicion['id']['pack'] == $pack->id &&
-                                                                            $datoEdicion['id']['servicio'] == $servicioIndex &&
-                                                                            $datoEdicion['column'] == 'packHoraInicio')
-                                                                        <input type="time"
-                                                                            wire:model.lazy="datoEdicion.value"
-                                                                            wire:change.lazy="terminarEdicionServicioPack">
                                                                     @else
                                                                         <span class="align-middle"
                                                                             wire:click="detectarEdicionPack('{{ $evento->id }}', '{{ $pack->id }}', '{{ $servicioIndex }}', 'packHoraInicio')">
@@ -368,25 +386,25 @@
                                                                             @endif
                                                                         </span>
                                                                     @endif
-                                                                @else
-                                                                    <span class="align-middle"
-                                                                        wire:click="detectarEdicionPack('{{ $evento->id }}', '{{ $pack->id }}', '{{ $servicioIndex }}', 'packHoraInicio')">
-                                                                        @if (!empty(json_decode($pack->pivot->horas_inicio, true)))
-                                                                            {{ json_decode($pack->pivot->horas_inicio, true)[$servicioIndex] }}
+                                                                </td>
+                                                                <td>
+                                                                    @if ($datoEdicion['id'] != null)
+                                                                        @if (
+                                                                            $datoEdicion['id']['presupuesto'] == $evento->id &&
+                                                                                $datoEdicion['id']['pack'] == $pack->id &&
+                                                                                $datoEdicion['id']['servicio'] == $servicioIndex &&
+                                                                                $datoEdicion['column'] == 'packHoraTiempo')
+                                                                            <input type="time"
+                                                                                wire:model.lazy="datoEdicion.value"
+                                                                                wire:change.lazy="terminarEdicionServicioPack">
+                                                                        @else
+                                                                            <span class="align-middle"
+                                                                                wire:click="detectarEdicionPack('{{ $evento->id }}', '{{ $pack->id }}', '{{ $servicioIndex }}', 'packHoraTiempo')">
+                                                                                @if (!empty(json_decode($pack->pivot->tiempos, true)))
+                                                                                    {{ json_decode($pack->pivot->tiempos, true)[$servicioIndex] }}
+                                                                                @endif
+                                                                            </span>
                                                                         @endif
-                                                                    </span>
-                                                                @endif
-                                                            </td>
-                                                            <td>
-                                                                @if ($datoEdicion['id'] != null)
-                                                                    @if (
-                                                                        $datoEdicion['id']['presupuesto'] == $evento->id &&
-                                                                            $datoEdicion['id']['pack'] == $pack->id &&
-                                                                            $datoEdicion['id']['servicio'] == $servicioIndex &&
-                                                                            $datoEdicion['column'] == 'packHoraTiempo')
-                                                                        <input type="time"
-                                                                            wire:model.lazy="datoEdicion.value"
-                                                                            wire:change.lazy="terminarEdicionServicioPack">
                                                                     @else
                                                                         <span class="align-middle"
                                                                             wire:click="detectarEdicionPack('{{ $evento->id }}', '{{ $pack->id }}', '{{ $servicioIndex }}', 'packHoraTiempo')">
@@ -395,25 +413,25 @@
                                                                             @endif
                                                                         </span>
                                                                     @endif
-                                                                @else
-                                                                    <span class="align-middle"
-                                                                        wire:click="detectarEdicionPack('{{ $evento->id }}', '{{ $pack->id }}', '{{ $servicioIndex }}', 'packHoraTiempo')">
-                                                                        @if (!empty(json_decode($pack->pivot->tiempos, true)))
-                                                                            {{ json_decode($pack->pivot->tiempos, true)[$servicioIndex] }}
+                                                                </td>
+                                                                <td>
+                                                                    @if ($datoEdicion['id'] != null)
+                                                                        @if (
+                                                                            $datoEdicion['id']['presupuesto'] == $evento->id &&
+                                                                                $datoEdicion['id']['pack'] == $pack->id &&
+                                                                                $datoEdicion['id']['servicio'] == $servicioIndex &&
+                                                                                $datoEdicion['column'] == 'packHoraTiempoMontaje')
+                                                                            <input type="time"
+                                                                                wire:model.lazy="datoEdicion.value"
+                                                                                wire:change.lazy="terminarEdicionServicioPack">
+                                                                        @else
+                                                                            <span class="align-middle"
+                                                                                wire:click="detectarEdicionPack('{{ $evento->id }}', '{{ $pack->id }}', '{{ $servicioIndex }}', 'packHoraTiempoMontaje')">
+                                                                                @if (!empty(json_decode($pack->pivot->tiempos_montaje, true)))
+                                                                                    {{ json_decode($pack->pivot->tiempos_montaje, true)[$servicioIndex] }}
+                                                                                @endif
+                                                                            </span>
                                                                         @endif
-                                                                    </span>
-                                                                @endif
-                                                            </td>
-                                                            <td>
-                                                                @if ($datoEdicion['id'] != null)
-                                                                    @if (
-                                                                        $datoEdicion['id']['presupuesto'] == $evento->id &&
-                                                                            $datoEdicion['id']['pack'] == $pack->id &&
-                                                                            $datoEdicion['id']['servicio'] == $servicioIndex &&
-                                                                            $datoEdicion['column'] == 'packHoraTiempoMontaje')
-                                                                        <input type="time"
-                                                                            wire:model.lazy="datoEdicion.value"
-                                                                            wire:change.lazy="terminarEdicionServicioPack">
                                                                     @else
                                                                         <span class="align-middle"
                                                                             wire:click="detectarEdicionPack('{{ $evento->id }}', '{{ $pack->id }}', '{{ $servicioIndex }}', 'packHoraTiempoMontaje')">
@@ -422,83 +440,78 @@
                                                                             @endif
                                                                         </span>
                                                                     @endif
+                                                                </td>
+                                                            @else
+                                                                <td colspan="5">&nbsp;</td>
+                                                        @endif
+                                                        <td>
+                                                            @if ($datoEdicion['id'] != null && isset($datoEdicion['monitor']))
+                                                                @if (
+                                                                    $datoEdicion['id']['presupuesto'] == $evento->id &&
+                                                                        $datoEdicion['id']['servicio'] == $servicioIndex &&
+                                                                        $datoEdicion['id']['monitor'] == $monitoresIndex &&
+                                                                        $datoEdicion['column'] == 'monitorNombrePack')
+                                                                    <div class="col-md-8" x-data=""
+                                                                        x-init="$('#select2-monitorPack').select2();
+                                                                        $('#select2-monitorPack').on('change', function(e) {
+                                                                            var data = $('#select2-monitorPack').select2('val');
+                                                                            @this.set('datoEdicion['
+                                                                                value ']', data);
+                                                                        });" wire:key='rand()'>
+                                                                        <select class="form-control" name="servicioNombre"
+                                                                            id="select2-monitorPack"
+                                                                            wire:model.lazy="datoEdicion.value"
+                                                                            wire:change.lazy='terminarEdicionMonitoresPack'>
+                                                                            <option value="0">-- ELIGE UN SERVICIO
+                                                                                --
+                                                                            </option>
+                                                                            @foreach ($monitores_datos as $monitor_select)
+                                                                                <option
+                                                                                    value="{{ $monitor_select->id }}">
+                                                                                    {{ $monitor_select->alias }}
+                                                                                </option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
                                                                 @else
                                                                     <span class="align-middle"
-                                                                        wire:click="detectarEdicionPack('{{ $evento->id }}', '{{ $pack->id }}', '{{ $servicioIndex }}', 'packHoraTiempoMontaje')">
-                                                                        @if (!empty(json_decode($pack->pivot->tiempos_montaje, true)))
-                                                                            {{ json_decode($pack->pivot->tiempos_montaje, true)[$servicioIndex] }}
-                                                                        @endif
+                                                                        wire:click="detectarEdicionMonitoresPack('{{ $evento->id }}', '{{ $pack->id }}', '{{ $servicioIndex }}', '{{ $monitoresIndex }}', 'monitorNombrePack')">{{ $this->getMonitor($monitores) }}"
                                                                     </span>
                                                                 @endif
-                                                            </td>
-                                                        @else
-                                                            <td colspan="5">&nbsp;</td>
-                                                    @endif
-                                                    <td>
-                                                        @if ($datoEdicion['id'] != null && isset($datoEdicion['monitor']))
-                                                            @if (
-                                                                $datoEdicion['id']['presupuesto'] == $evento->id &&
-                                                                    $datoEdicion['id']['servicio'] == $servicioIndex &&
-                                                                    $datoEdicion['id']['monitor'] == $monitoresIndex &&
-                                                                    $datoEdicion['column'] == 'monitorNombrePack')
-                                                                <div class="col-md-8" x-data=""
-                                                                    x-init="$('#select2-monitorPack').select2();
-                                                                    $('#select2-monitorPack').on('change', function(e) {
-                                                                        var data = $('#select2-monitorPack').select2('val');
-                                                                        @this.set('datoEdicion['
-                                                                            value ']', data);
-                                                                    });" wire:key='rand()'>
-                                                                    <select class="form-control" name="servicioNombre"
-                                                                        id="select2-monitorPack"
-                                                                        wire:model.lazy="datoEdicion.value"
-                                                                        wire:change.lazy='terminarEdicionMonitoresPack'>
-                                                                        <option value="0">-- ELIGE UN SERVICIO
-                                                                            --
-                                                                        </option>
-                                                                        @foreach ($monitores_datos as $monitor_select)
-                                                                            <option
-                                                                                value="{{ $monitor_select->id }}">
-                                                                                {{ $monitor_select->alias }}
-                                                                            </option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </div>
                                                             @else
                                                                 <span class="align-middle"
-                                                                    wire:click="detectarEdicionMonitoresPack('{{ $evento->id }}', '{{ $pack->id }}', '{{ $servicioIndex }}', '{{ $monitoresIndex }}', 'monitorNombrePack')">{{ $this->getMonitor($monitores) }}"
-                                                                </span>
+                                                                    wire:click="detectarEdicionMonitoresPack('{{ $evento->id }}', '{{ $pack->id }}', '{{ $servicioIndex }}', '{{ $monitoresIndex }}', 'monitorNombrePack')">{{ $this->getMonitor($monitores) }}</span>
                                                             @endif
-                                                        @else
-                                                            <span class="align-middle"
-                                                                wire:click="detectarEdicionMonitoresPack('{{ $evento->id }}', '{{ $pack->id }}', '{{ $servicioIndex }}', '{{ $monitoresIndex }}', 'monitorNombrePack')">{{ $this->getMonitor($monitores) }}</span>
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @if ($datoEdicion['id'] != null && isset($datoEdicion['monitor']))
-                                                            @if (
-                                                                $datoEdicion['id']['presupuesto'] == $evento->id &&
-                                                                    $datoEdicion['id']['servicio'] == $servicioIndex &&
-                                                                    $datoEdicion['id']['monitor'] == $monitoresIndex &&
-                                                                    $datoEdicion['column'] == 'sueldoMonitorPack')
-                                                                <input type="number"
-                                                                    wire:model.lazy="datoEdicion.value"
-                                                                    wire:change.lazy="terminarEdicionMonitoresPack">
+                                                        </td>
+                                                        <td>
+                                                            @if ($datoEdicion['id'] != null && isset($datoEdicion['monitor']))
+                                                                @if (
+                                                                    $datoEdicion['id']['presupuesto'] == $evento->id &&
+                                                                        $datoEdicion['id']['servicio'] == $servicioIndex &&
+                                                                        $datoEdicion['id']['monitor'] == $monitoresIndex &&
+                                                                        $datoEdicion['column'] == 'sueldoMonitorPack')
+                                                                    <input type="number"
+                                                                        wire:model.lazy="datoEdicion.value"
+                                                                        wire:change.lazy="terminarEdicionMonitoresPack">
+                                                                @else
+                                                                    <span class="align-middle"
+                                                                        wire:click="detectarEdicionMonitoresPack('{{ $evento->id }}', '{{ $pack->id }}', '{{ $servicioIndex }}', '{{ $monitoresIndex }}', 'sueldoMonitorPack')">{{ json_decode($pack->pivot->sueldos_monitores, true)[$servicioIndex][$monitoresIndex] }}
+                                                                        €
+                                                                    </span>
+                                                                @endif
                                                             @else
                                                                 <span class="align-middle"
                                                                     wire:click="detectarEdicionMonitoresPack('{{ $evento->id }}', '{{ $pack->id }}', '{{ $servicioIndex }}', '{{ $monitoresIndex }}', 'sueldoMonitorPack')">{{ json_decode($pack->pivot->sueldos_monitores, true)[$servicioIndex][$monitoresIndex] }}
-                                                                    €
-                                                                </span>
+                                                                    €</span>
                                                             @endif
-                                                        @else
-                                                            <span class="align-middle"
-                                                                wire:click="detectarEdicionMonitoresPack('{{ $evento->id }}', '{{ $pack->id }}', '{{ $servicioIndex }}', '{{ $monitoresIndex }}', 'sueldoMonitorPack')">{{ json_decode($pack->pivot->sueldos_monitores, true)[$servicioIndex][$monitoresIndex] }}
-                                                                €</span>
-                                                        @endif
 
-                                                    </td>
-                                                    <td>0 €</td>
-                                                    </tr>
-                                                @endforeach
+                                                        </td>
+                                                        <td>0 €</td>
+                                                        </tr>
+                                                    @endforeach
+                                                @else
+                                                <tr><td colspan="5">No hay monitores asignados.</td></tr>
+                                                @endif
                                             @endforeach
                                         @endforeach
                                         <tr>
