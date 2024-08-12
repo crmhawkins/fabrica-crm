@@ -76,7 +76,7 @@
         });
     });
 </script>
-<script>
+{{-- <script>
     document.addEventListener('livewire:load', function () {
         window.livewire.hook('message.processed', function () {
             if ($.fn.DataTable.isDataTable('#datatable-buttons')) {
@@ -105,7 +105,7 @@
                 });
         });
     });
-</script>
+</script> --}}
 <!-- Required datatable js -->
 <script src="../assets/js/jquery.slimscroll.js"></script>
 
@@ -123,7 +123,7 @@
 <!-- Responsive examples -->
 <script src="../plugins/datatables/dataTables.responsive.min.js"></script>
 <script src="../plugins/datatables/responsive.bootstrap4.min.js"></script>
-<script src="../assets/pages/datatables.init.js"></script>
+{{-- <script src="../assets/pages/datatables.init.js"></script> --}}
 
 
 
