@@ -19,7 +19,7 @@
                 <div class="card-body">
                     <h4 class="mt-0 header-title">Listado de todos los servicios</h4>
                     <p class="sub-title">Listado completo de todos nuestros eventos</p>
-                    <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                    <table wire:key="{{ rand() }}" id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
                                 <th scope="col">Servicio</th>
@@ -76,25 +76,36 @@
         });
     });
 </script>
-{{-- <script>
+<script>
     document.addEventListener('livewire:load', function () {
-        window.livewire.hook('message.processed', function (message, component) {
-            setTimeout(function () {
-                if ($.fn.DataTable.isDataTable('#datatable-buttons')) {
+        window.livewire.hook('message.processed', function () {
+            if ($.fn.DataTable.isDataTable('#datatable-buttons')) {
                     $('#datatable-buttons').DataTable().destroy();
                 }
                 $('#datatable-buttons').DataTable({
-                    paging: false,
-                        searching: true,
-                        ordering: true,
-                        dom: 'Bfrtip',
-                        buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
-                        responsive: true,
+                    lengthChange: false,
+                    dom: 'Bfrtip',
+                    buttons: ['copy', 'excel', 'pdf', 'colvis'],
+                    language: {
+                        lengthMenu: "Mostrando _MENU_ registros por página",
+                        zeroRecords: "Nothing found - sorry",
+                        info: "Mostrando página _PAGE_ of _PAGES_",
+                        infoEmpty: "No hay registros disponibles",
+                        infoFiltered: "(filtrado de _MAX_ total registros)",
+                        search: "Buscar:",
+                        paginate: {
+                            first: "Primero",
+                            last: "Ultimo",
+                            next: "Siguiente",
+                            previous: "Anterior"
+                        },
+                        zeroRecords: "No se encontraron registros coincidentes",
+                    },
+                    order: [[0, 'asc']],
                 });
-            }, 100); // Retraso de 100 milisegundos
         });
     });
-    </script> --}}
+</script>
 <!-- Required datatable js -->
 <script src="../assets/js/jquery.slimscroll.js"></script>
 
@@ -112,6 +123,7 @@
 <!-- Responsive examples -->
 <script src="../plugins/datatables/dataTables.responsive.min.js"></script>
 <script src="../plugins/datatables/responsive.bootstrap4.min.js"></script>
+<script src="../assets/pages/datatables.init.js"></script>
 
 
 

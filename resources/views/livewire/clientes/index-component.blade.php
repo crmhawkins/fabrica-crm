@@ -21,7 +21,7 @@
                 <div class="card-body">
 
                     <h4 class="mt-0 header-title">Listado de todos los clientes</h4>
-                    <p class="sub-title../plugins">Listado completo de todos nuestros clientes, para editar o ver la informacion completa pulse el boton de Editar en la columna acciones.
+                    <p class="sub-title">Listado completo de todos nuestros clientes, para editar o ver la informacion completa pulse el boton de Editar en la columna acciones.
                     </p>
 
                     @if (count($clientes) > 0)
