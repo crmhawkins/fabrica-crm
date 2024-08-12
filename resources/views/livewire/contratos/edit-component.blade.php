@@ -373,7 +373,7 @@
                             <div class="col-sm-7">
                                 <label for="nContrato" class="col-sm-12 col-form-label">Servicio contratado</label>
                                 <div class="col-md-12">
-                                    <input type="text" class="form-control" value="{{$servicio->nombre}}" disabled>
+                                    <input type="text" class="form-control" value="{{$servicio->pivot->concepto}}" disabled>
                                     @error('nContrato')
                                     <div class="text-danger">{{ $message }}</div>
                                     @enderror

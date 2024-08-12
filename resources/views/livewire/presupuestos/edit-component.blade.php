@@ -492,6 +492,9 @@
                                 <div class="col-sm-10">
                                     <input type="date" wire:model.lazy="diaEvento" class="form-control"
                                         name="diaEvento" id="diaEvento" placeholder="X">
+                                    @error('diaEvento')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="form-group col-md-4">
@@ -500,6 +503,9 @@
                                 <div class="col-sm-10">
                                     <input type="date" wire:model.lazy="diaFinal" class="form-control"
                                         name="diaFinal" id="diaFinal" placeholder="X">
+                                    @error('diaFinal')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="form-group col-md-4">
@@ -609,7 +615,7 @@
                         @if ($tipo_seleccionado == 'articulo')
 
                             <div class="form-group col-md-4">
-                                <label for="diaEvento" class="col-sm-12 col-form-label">Servicios</label>
+                                <label for="servicio_seleccionado" class="col-sm-12 col-form-label">Servicios</label>
                                 <div class="col-md-12">
                                     <Select wire:model="servicio_seleccionado" class="form-control"
                                         wire:change='cambioPrecioServicio()' name="servicio_seleccionado"
@@ -719,7 +725,7 @@
                             </div>
                         @elseif($tipo_seleccionado == 'individual')
                             <div class="form-group col-md-4">
-                                <label for="diaEvento" class="col-sm-12 col-form-label">Servicios</label>
+                                <label for="servicio_seleccionado" class="col-sm-12 col-form-label">Servicios</label>
                                 <div class="col-md-12">
                                     <Select wire:model="servicio_seleccionado" class="form-control"
                                         wire:change='cambioPrecioServicio()' name="servicio_seleccionado"
@@ -767,7 +773,6 @@
                                         <Select wire:model="articulo_seleccionado" class="form-control"
                                             name="articulo_seleccionado" id="articulo_seleccionado">
                                             <option value="{{null}}">Selecciona un artículo.</option>
-                                            <option value="{{0}}">Sin definir</option>
                                             @foreach ($articulos->where('id_categoria', $servicio_seleccionado) as $keys => $articulo)
                                                 <option class="dropdown-item" value="{{ $articulo->id }}">
                                                     {{ $articulo->name }}
@@ -783,6 +788,11 @@
                                             name="concepto" id="concepto" placeholder="Concepto">
                                     </div>
                                 </div>
+                             @elseif($servicio_seleccionado > 0)
+                                <div class="form-group col-md-12">
+                                    <label for="precioFinalServicio" class="col-sm-12 col-form-label">Sin Articulos de este servicios para esta fecha</label>
+                                </div>
+
                             @endif
                                 <div class="form-group col-md-2">
                                     <label for="precioServicio" class="col-sm-12 col-form-label">Tiempo</label>
@@ -839,7 +849,7 @@
                                 </div>
                         @elseif($tipo_seleccionado == 'pack')
                             <div class="form-group col-md-10">
-                                <label for="diaEvento" class="col-sm-12 col-form-label">Packs de
+                                <label for="pack_seleccionado" class="col-sm-12 col-form-label">Packs de
                                     servicios</label>
                                 <div class="col-md-12">
                                     <Select wire:model="pack_seleccionado" class="form-control"
@@ -924,7 +934,7 @@
                                                 <Select wire:model="articulos_seleccionados.{{ $keyPack }}"
                                                     class="form-control" name="articulo_seleccionado"
                                                     id="articulo_seleccionado">
-                                                    <option value="0">Selecciona un artículo.</option>
+                                                    <option value="0">Selecciona un artículo</option>
                                                     @foreach ($servicio->articulos()->get() as $keys => $articulo)
                                                         <option class="dropdown-item" value="{{ $articulo->id }}">
                                                             {{ $articulo->name }}
@@ -1714,44 +1724,17 @@
             }
         }
 
-        //observer para aplicar el datepicker de evento
-        // const observer = new MutationObserver((mutations, observer) => {
-        //     console.log(mutations, observer);
-        // });
-        // observer.observe(document, {
-        //     subtree: true,
-        //     attributes: true
-        // });
+
 
 
 
         document.addEventListener('DOMSubtreeModified', (e) => {
             $("#diaEvento").datepicker();
 
-            // $("#diaEvento").on('focus', function(e) {
-            //     document.getElementById("guardar-evento").style.visibility = "hidden";
-            // })
-            // $("#diaEvento").on('focusout', function(e) {
-            //     if ($('#diaEvento').val() != "") {
-            //         document.getElementById("guardar-evento").style.visibility = "visible";
-            //     }
-
-            // })
-            // $("#diaFinal").on('focus', function(e) {
-            //     document.getElementById("guardar-evento").style.visibility = "hidden";
-            // })
-            // $("#diaFinal").on('focusout', function(e) {
-            //     if ($('#diaFinal').val() != "") {
-            //         document.getElementById("guardar-evento").style.visibility = "visible";
-            //     }
-
-            // })
-
             $("#diaFinal").datepicker();
 
             $("#diaFinal").on('change', function(e) {
                 @this.set('diaFinal', $('#diaFinal').val());
-
             });
 
             $("#diaEvento").on('change', function(e) {

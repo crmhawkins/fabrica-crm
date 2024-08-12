@@ -869,7 +869,6 @@
                                         <Select wire:model="articulo_seleccionado" class="form-control"
                                             name="articulo_seleccionado" id="articulo_seleccionado">
                                             <option value="{{null}}">Selecciona un artículo.</option>
-                                            <option value="{{0}}">Sin definir</option>
                                             @foreach ($articulos->where('id_categoria', $servicio_seleccionado) as $keys => $articulo)
                                                 <option class="dropdown-item" value="{{ $articulo->id }}">
                                                     {{ $articulo->name }}
@@ -884,6 +883,10 @@
                                         <input type="text" wire:model.lazy="concepto" class="form-control"
                                             name="concepto" id="concepto" placeholder="Concepto">
                                     </div>
+                                </div>
+                            @elseif($servicio_seleccionado > 0)
+                                <div class="form-group col-md-12">
+                                    <label for="precioFinalServicio" class="col-sm-12 col-form-label">Sin Articulos de este servicios para esta fecha</label>
                                 </div>
                             @endif
                             <div class="form-group col-md-2">

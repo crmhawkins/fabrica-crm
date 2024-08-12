@@ -69,60 +69,52 @@
 </div>
 @section('scripts')
 <script>
-    document.querySelectorAll('.details-control').forEach(function(element) {
-        element.addEventListener('click', function() {
-            var articulos = this.querySelector('.articulos');
-            articulos.style.display = articulos.style.display === 'none' ? 'block' : 'none';
+    $(document).ready(function() {
+        initDataTable(); // Llama a la función de inicialización al principio
+
+        // Event delegation para manejar clics en elementos que pueden ser reinicializados
+        $('#datatable-buttons tbody').on('click', 'td.details-control', function() {
+            var articulos = $(this).find('.articulos');
+            articulos.toggle(); // Alternar la visibilidad de los artículos
         });
     });
-</script>
-<script>
-    $(document).ready(function() {
-    $('#datatable').DataTable();
 
-    //Buttons examples
-    var table = $('#datatable-buttons').DataTable({
-        lengthChange: false,
-        buttons: ['copy', 'excel', 'pdf', 'colvis'],
-        paging: false,
-        language: {
-            lengthMenu: "Mostrando _MENU_ registros por página",
-            zeroRecords: "Nothing found - sorry",
-            info: "Mostrando página _PAGE_ of _PAGES_",
-            infoEmpty: "No hay registros disponibles",
-            infoFiltered: "(filtrado de _MAX_ total registros)",
-            search: "Buscar:",
-            zeroRecords: "No se encontraron registros coincidentes",
-        }
-    });
-
-} );
-</script>
-<script>
     document.addEventListener('livewire:load', function () {
         window.livewire.hook('message.processed', function () {
-            if ($.fn.DataTable.isDataTable('#datatable-buttons')) {
-                    $('#datatable-buttons').DataTable().destroy();
-                }
-                $('#datatable-buttons').DataTable({
-                    lengthChange: false,
-                    dom: 'Bfrtip',
-                    buttons: ['copy', 'excel', 'pdf', 'colvis'],
-                    paging: false,
-                    language: {
-                        lengthMenu: "Mostrando _MENU_ registros por página",
-                        zeroRecords: "Nothing found - sorry",
-                        info: "Mostrando página _PAGE_ of _PAGES_",
-                        infoEmpty: "No hay registros disponibles",
-                        infoFiltered: "(filtrado de _MAX_ total registros)",
-                        search: "Buscar:",
-                        zeroRecords: "No se encontraron registros coincidentes",
-                    },
-                    order: [[0, 'asc']],
-                });
+            initDataTable();
+
+            $('#datatable-buttons tbody').on('click', 'td.details-control', function() {
+                var articulos = $(this).find('.articulos');
+                articulos.toggle(); // Alternar la visibilidad de los artículos
+            });
         });
     });
+
+    function initDataTable() {
+        if ($.fn.DataTable.isDataTable('#datatable-buttons')) {
+            $('#datatable-buttons').DataTable().destroy();
+        }
+
+        $('#datatable-buttons').DataTable({
+            lengthChange: false,
+            dom: 'Bfrtip',
+            info: false,
+            buttons: ['copy', 'excel', 'pdf', 'colvis'],
+            paging: false,
+            language: {
+                lengthMenu: "Mostrando _MENU_ registros por página",
+                zeroRecords: "Nothing found - sorry",
+                info: "Mostrando página _PAGE_ of _PAGES_",
+                infoEmpty: "No hay registros disponibles",
+                infoFiltered: "(filtrado de _MAX_ total registros)",
+                search: "Buscar:",
+                zeroRecords: "No se encontraron registros coincidentes",
+            },
+            order: [[0, 'asc']],
+        });
+    }
 </script>
+
 <!-- Required datatable js -->
 <script src="../assets/js/jquery.slimscroll.js"></script>
 

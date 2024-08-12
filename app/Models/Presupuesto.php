@@ -24,6 +24,7 @@ class Presupuesto extends Model
         'fechaVencimiento',
         "nPresupuesto",
         'seguros_sociales',
+        'observaciones',
         'pago_pendiente',
         'materiales',
         "estado",

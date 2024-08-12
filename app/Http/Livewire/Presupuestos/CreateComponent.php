@@ -238,6 +238,41 @@ class CreateComponent extends Component
     public $contadorServicios;
     protected $listeners = ['rerender' => '$refresh'];
 
+
+    public function updatedDiaEvento($value)
+    {
+        if (!isset($this->diaFinal)) {
+               $this->diaFinal = $this->diaEvento;
+            }
+        if (!is_null($value) && !is_null($this->diaFinal)) {
+            $this->realizarAccion();
+        }
+    }
+
+    public function updatedDiaFinal($value)
+    {
+        if (!is_null($value) && !is_null($this->diaEvento)) {
+            $this->realizarAccion();
+        }
+    }
+
+    public function realizarAccion()
+    {
+        $this->validate([
+            'diaEvento' => 'required|date',
+            'diaFinal' => 'required|date|after_or_equal:diaEvento'
+        ]);
+
+        $articulosEnUso = DB::table('presupuestos')
+        ->join('servicio_presupuesto', 'presupuestos.id', '=', 'servicio_presupuesto.presupuesto_id')
+        ->where(function($query) {
+            $query->where('presupuestos.diaEvento', '<=', $this->diaFinal)
+                  ->where('presupuestos.diaFinal', '>=', $this->diaEvento);
+        })
+        ->pluck('servicio_presupuesto.articulo_seleccionado');
+
+        $this->articulos = Articulos::whereNotIn('id', $articulosEnUso)->get();
+    }
     public function mount()
     {
         $this->num_arti = 0;
@@ -311,29 +346,29 @@ class CreateComponent extends Component
         return view('livewire.presupuestos.create-component');
     }
 
-    public function cargarServicios()
-    {
-        // Obtener todos los servicios
-        $servicios = Servicio::all();
+    // public function cargarServicios()
+    // {
+    //     // Obtener todos los servicios
+    //     $servicios = Servicio::all();
 
-        // Recorrer cada servicio y añadir la propiedad count
-        $servicios->each(function ($servicio) {
-            // Usar Carbon para manejar fechas más fácilmente
-            $fecha = Carbon::createFromFormat('Y-m-d', $this->diaEvento);
-            $cuenta = ServicioPresupuesto::where('servicio_id', $servicio->id)
-            ->whereDate('created_at', $fecha)
-            ->count();
-            $serviciosTotales = Articulos::where('id_categoria', $servicio->id)->get();
-            // dd($serviciosTotales);
+    //     // Recorrer cada servicio y añadir la propiedad count
+    //     $servicios->each(function ($servicio) {
+    //         // Usar Carbon para manejar fechas más fácilmente
+    //         $fecha = Carbon::createFromFormat('Y-m-d', $this->diaEvento);
+    //         $cuenta = ServicioPresupuesto::where('servicio_id', $servicio->id)
+    //         ->whereDate('created_at', $fecha)
+    //         ->count();
+    //         $serviciosTotales = Articulos::where('id_categoria', $servicio->id)->get();
+    //         // dd($serviciosTotales);
 
-            $servicio->count =  $serviciosTotales->count() - $cuenta;
-            // Asumiendo que 'cantidad' es la columna que quieres sumar
-        });
+    //         $servicio->count =  $serviciosTotales->count() - $cuenta;
+    //         // Asumiendo que 'cantidad' es la columna que quieres sumar
+    //     });
 
-        // dd($servicios);
+    //     // dd($servicios);
 
-        $this->servicios = $servicios;
-    }
+    //     $this->servicios = $servicios;
+    // }
 
 
 
@@ -1812,6 +1847,8 @@ class CreateComponent extends Component
                             if ($stockTotal > $nuevaCantidadTotalgeneral) {
                                 $stockSeSupera = true;
                             }
+                        }else{
+                            $stockSeSupera = true;
                         }
                     }
                 }
@@ -1876,100 +1913,112 @@ class CreateComponent extends Component
     {
         if ($this->servicio_seleccionado != 0) {
             $servicioId = $this->servicio_seleccionado;
-            $articuloId = $this->articulo_seleccionado;
+            if ($this->articulo_seleccionado != 0) {
+                $articuloId = $this->articulo_seleccionado;
 
-            $fechaEvento = $this->diaEvento; // Fecha en la que deseas verificar el stock
-            // Obtener los artículos relacionados con el servicio
+                $fechaEvento = $this->diaEvento; // Fecha en la que deseas verificar el stock
+                // Obtener los artículos relacionados con el servicio
 
-            // Variable para rastrear si el stock se supera
-            $stockSeSupera = false;
-            // Iterar a través de los artículos del servicio y verificar el stock para cada uno
-            $articulo = DB::table('articulos')->where('id', $articuloId)->first();
-            // Obtener la cantidad total utilizada de este artículo en la fecha indicada
-            if($articulo->stock == 0){
-                $sumaStockUsado = DB::table('presupuestos')
-                ->join('servicio_presupuesto', 'presupuestos.id', '=', 'servicio_presupuesto.presupuesto_id')
-                ->whereRaw('? BETWEEN presupuestos.diaEvento AND presupuestos.diaFinal', [$fechaEvento])
-                    ->where('servicio_presupuesto.articulo_seleccionado', $articulo->id)
-                    ->count();
-
-                $sumadepacksusados = DB::table('presupuestos')
-                    ->join('pack_presupuesto', 'presupuestos.id', '=', 'pack_presupuesto.presupuesto_id')
-                    ->whereRaw('? BETWEEN presupuestos.diaEvento AND presupuestos.diaFinal', [$fechaEvento])
-                    ->whereRaw('JSON_CONTAINS(pack_presupuesto.articulos_seleccionados, \'["' . $articuloId . '"]\')')
-                    ->count();
-
-                $sumaTotalStockUsado = $sumadepacksusados + $sumaStockUsado;
-
-                if ($sumaTotalStockUsado < 1){
-                    $sumaTotalStockUsadoGeneral = DB::table('presupuestos')
+                // Variable para rastrear si el stock se supera
+                $stockSeSupera = false;
+                // Iterar a través de los artículos del servicio y verificar el stock para cada uno
+                $articulo = DB::table('articulos')->where('id', $articuloId)->first();
+                // Obtener la cantidad total utilizada de este artículo en la fecha indicada
+                if($articulo->stock != 0){
+                    $sumaStockUsado = DB::table('presupuestos')
                     ->join('servicio_presupuesto', 'presupuestos.id', '=', 'servicio_presupuesto.presupuesto_id')
                     ->whereRaw('? BETWEEN presupuestos.diaEvento AND presupuestos.diaFinal', [$fechaEvento])
-                    ->where('servicio_presupuesto.servicio_id', $servicioId)
-                    ->selectRaw('SUM(CASE
-                        WHEN servicio_presupuesto.articulo_seleccionado != 0 THEN 1
-                        ELSE servicio_presupuesto.num_art_indef
-                        END) AS total_stock_usado')
-                    ->value('total_stock_usado');
+                        ->where('servicio_presupuesto.articulo_seleccionado', $articulo->id)
+                        ->count();
 
-                 $sumadepacks = DB::table('presupuestos')
-                    ->join('pack_presupuesto', 'presupuestos.id', '=', 'pack_presupuesto.presupuesto_id')
-                    ->join('servicios', 'pack_presupuesto.pack_id', '=', 'servicios.id_pack')
-                    ->whereRaw('? BETWEEN presupuestos.diaEvento AND presupuestos.diaFinal', [$fechaEvento])
-                    ->where('servicios.id', $servicioId)
-                    ->count();
+                    $sumadepacksusados = DB::table('presupuestos')
+                        ->join('pack_presupuesto', 'presupuestos.id', '=', 'pack_presupuesto.presupuesto_id')
+                        ->whereRaw('? BETWEEN presupuestos.diaEvento AND presupuestos.diaFinal', [$fechaEvento])
+                        ->whereRaw('JSON_CONTAINS(pack_presupuesto.articulos_seleccionados, \'["' . $articuloId . '"]\')')
+                        ->count();
+
+                    $sumaTotalStockUsado = $sumadepacksusados + $sumaStockUsado;
+
+                    if ($sumaTotalStockUsado < 1){
+                        $sumaTotalStockUsadoGeneral = DB::table('presupuestos')
+                        ->join('servicio_presupuesto', 'presupuestos.id', '=', 'servicio_presupuesto.presupuesto_id')
+                        ->whereRaw('? BETWEEN presupuestos.diaEvento AND presupuestos.diaFinal', [$fechaEvento])
+                        ->where('servicio_presupuesto.servicio_id', $servicioId)
+                        ->selectRaw('SUM(CASE
+                            WHEN servicio_presupuesto.articulo_seleccionado != 0 THEN 1
+                            ELSE servicio_presupuesto.num_art_indef
+                            END) AS total_stock_usado')
+                        ->value('total_stock_usado');
+
+                    $sumadepacks = DB::table('presupuestos')
+                        ->join('pack_presupuesto', 'presupuestos.id', '=', 'pack_presupuesto.presupuesto_id')
+                        ->join('servicios', 'pack_presupuesto.pack_id', '=', 'servicios.id_pack')
+                        ->whereRaw('? BETWEEN presupuestos.diaEvento AND presupuestos.diaFinal', [$fechaEvento])
+                        ->where('servicios.id', $servicioId)
+                        ->count();
 
 
-                // Obtener el stock total fijo del servicio
-                    $stockTotal = Articulos::where('id_categoria', $servicioId)->count();
+                    // Obtener el stock total fijo del servicio
+                        $stockTotal = Articulos::where('id_categoria', $servicioId)->count();
 
-                    // Obtener la cantidad de stock usado por el servicio que deseas agregar
+                        // Obtener la cantidad de stock usado por el servicio que deseas agregar
 
 
-                    $nuevaCantidadTotalgeneral = $sumaTotalStockUsadoGeneral + 1 + $sumadepacks;
-                    if ($stockTotal > $nuevaCantidadTotalgeneral) {
+                        $nuevaCantidadTotalgeneral = $sumaTotalStockUsadoGeneral + 1 + $sumadepacks;
+                        if ($stockTotal > $nuevaCantidadTotalgeneral) {
+                            $stockSeSupera = true;
+                        }
+                    }else{
                         $stockSeSupera = true;
                     }
                 }
-            }
 
-            if($stockSeSupera == true) {
-                $this->alert('error', 'Todo el stock de un artículo dado de este servicio está en uso en esta fecha.');
-            } else {
-                for ($i = 0; $i > $this->numero_monitores; $i++) {
-                    $this->sueldoMonitores[] = $this->servicios->firstWhere('id', $this->servicio_seleccionado)->get('precioMonitor');
+                if($stockSeSupera == true) {
+                    $this->alert('error', 'Todo el stock de un artículo dado de este servicio está en uso en esta fecha.');
+                } else {
+                    for ($i = 0; $i > $this->numero_monitores; $i++) {
+                        $this->sueldoMonitores[] = $this->servicios->firstWhere('id', $this->servicio_seleccionado)->get('precioMonitor');
+                    }
+                    $defaultArray = array_fill(0, $this->numero_monitores, '0');
+
+                    $this->listaServicios[] = [
+                        'id' => $this->servicio_seleccionado,
+                        'numero_monitores' => $this->numero_monitores,
+                        'precioFinal' => $this->precioFinalServicio ?? '0',
+                        'tiempo' => $this->tiempo ?? '00:00',
+                        'hora_inicio' => $this->hora_inicio ?? '00:00',
+                        'hora_finalizacion' => $this->hora_finalizacion ?? '00:00',
+                        'hora_montaje' => $this->horaMontaje ?? '00:00',
+                        'tiempo_montaje' => $this->tiempoMontaje ?? '00:00',
+                        'tiempo_desmontaje' => $this->tiempoDesmontaje ?? '00:00',
+                        'articulo_seleccionado' => $this->articulo_seleccionado ?? '0',
+                        'concepto'=> $this->concepto,
+                        'visible'=> $this->visible,
+                        'num_art_indef' => $this->num_arti
+                    ];
+                    $this->servicio_seleccionado = 0;
+                    $this->numero_monitores = 0;
+                    $this->tiempo = 0;
+                    $this->tiempoMontaje = 0;
+                    $this->tiempoDesmontaje = 0;
+                    $this->hora_inicio = 0;
+                    $this->hora_finalizacion = 0;
+                    $this->horaMontaje = 0;
+                    $this->precioFinal += $this->precioFinalServicio;
+                    $this->precioFinalServicio = 0;
+                    $this->articulo_seleccionado = 0;
+                    $this->concepto;
+                    $this->visible = 1;
+                    $this->num_arti = 0;
                 }
-                $defaultArray = array_fill(0, $this->numero_monitores, '0');
-
-                $this->listaServicios[] = [
-                    'id' => $this->servicio_seleccionado,
-                    'numero_monitores' => $this->numero_monitores,
-                    'precioFinal' => $this->precioFinalServicio ?? '0',
-                    'tiempo' => $this->tiempo ?? '00:00',
-                    'hora_inicio' => $this->hora_inicio ?? '00:00',
-                    'hora_finalizacion' => $this->hora_finalizacion ?? '00:00',
-                    'hora_montaje' => $this->horaMontaje ?? '00:00',
-                    'tiempo_montaje' => $this->tiempoMontaje ?? '00:00',
-                    'tiempo_desmontaje' => $this->tiempoDesmontaje ?? '00:00',
-                    'articulo_seleccionado' => $this->articulo_seleccionado ?? '0',
-                    'concepto'=> $this->concepto,
-                    'visible'=> $this->visible,
-                    'num_art_indef' => $this->num_arti
-                ];
-                $this->servicio_seleccionado = 0;
-                $this->numero_monitores = 0;
-                $this->tiempo = 0;
-                $this->tiempoMontaje = 0;
-                $this->tiempoDesmontaje = 0;
-                $this->hora_inicio = 0;
-                $this->hora_finalizacion = 0;
-                $this->horaMontaje = 0;
-                $this->precioFinal += $this->precioFinalServicio;
-                $this->precioFinalServicio = 0;
-                $this->articulo_seleccionado = 0;
-                $this->concepto;
-                $this->visible = 1;
-                $this->num_arti = 0;
+            }else{
+                $this->alert('error', '¡Selecciona un articulo!', [
+                    'position' => 'center',
+                    'toast' => false,
+                    'showConfirmButton' => true,
+                    'confirmButtonText' => 'ok',
+                    'timerProgressBar' => true,
+                ]);
             }
         } else {
             $this->alert('error', '¡Selecciona un servicio!', [
@@ -2107,15 +2156,15 @@ class CreateComponent extends Component
         $this->listaServicios = array_values($this->listaServicios);
     }
 
-    public function updatedDiaEvento()
-    {
-        if (!isset($this->diaFinal)) {
-            $this->diaFinal = $this->diaEvento;
-        }
-        $this->diaEvento  === null ? '' : $this->cargarServicios();
-        // dd($this->servicios);
-        // $this->cargarServicios();
-    }
+    // public function updatedDiaEvento()
+    // {
+    //     if (!isset($this->diaFinal)) {
+    //         $this->diaFinal = $this->diaEvento;
+    //     }
+    //     $this->diaEvento  === null ? '' : $this->cargarServicios();
+    //     // dd($this->servicios);
+    //     // $this->cargarServicios();
+    // }
 
 
     // Función para cuando se llama a la alerta

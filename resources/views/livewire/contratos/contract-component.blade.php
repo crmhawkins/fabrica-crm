@@ -129,7 +129,11 @@
                 <tr width="100%">
                     <td width="70%" style="border-right-color: #fff !important;"><b>Nombre:</b>
                         {{ $cliente->nombre }} {{ $cliente->apellido }}</td>
-                    <td width="30%"><b>DNI:</b> {{ $cliente->nif }}</td>
+                    @if($cliente->tipo_cliente)
+                        <td width="30%"><b>CIF:</b> {{ $cliente->nif }}</td>
+                    @else
+                        <td width="30%"><b>DNI:</b> {{ $cliente->nif }}</td>
+                    @endif
                 </tr>
                 <tr width="100%">
                     <td width="80%" style="border-right-color: #fff !important;"><b>Domicilio:</b>
@@ -236,7 +240,7 @@
                                 @if (!isset($pack['numero_monitores'][$servicioIndex]))
                                     <td>Monitores: 0</td>
                                 @else
-                                    <td>Monitores:
+                                    <td >Monitores:
                                         {{ $pack['numero_monitores'][$servicioIndex] }}</td>
                                 @endif
                             </tr>
@@ -267,7 +271,7 @@
                                     {{ $servicio['hora_inicio'] }}</td>
                                 <td style="border-right-color: #fff !important;"><b>Hora de finalización:</b>
                                     {{ $servicio['hora_finalizacion'] }}</td>
-                                <td style="border-right-color: #fff !important;"><b>Número de monitores:</b>
+                                <td><b>Número de monitores:</b>
                                     {{ $servicio['numero_monitores'] }}</td>
                             </tr>
                         @endif
