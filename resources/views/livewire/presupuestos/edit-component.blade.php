@@ -97,12 +97,12 @@
                                 $('#select2-cliente').on('change', function(e) {
                                     var data = $('#select2-cliente').select2('val');
                                     @this.set('id_cliente', data);
-                                });">
+                                });" wire:key='{{rand()}}'>
                                     <select class="form-control" name="id_cliente" id="select2-cliente" wire:model="id_cliente">
                                         <option value="0">-- ELIGE UN CLIENTE --</option>
                                         @foreach ($clientes as $cliente)
                                             <option value="{{ $cliente->id }}">
-                                                {{ $cliente->nombre }} {{ $cliente->apellido }}
+                                                {{$cliente->tipo_cliente ? 'Empresa: '.$cliente->nombre.' '.$cliente->apellido : 'Particular: '.$cliente->nombre.' '.$cliente->apellido }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -459,7 +459,7 @@
                                 $('#select2-evento').on('change', function(e) {
                                     var data = $('#select2-evento').select2('val');
                                     @this.set('eventoNombre', data);
-                                });" wire:ignore>
+                                });" wire:key='{{rand()}}'>
                                     <select class="form-control" name="eventoNombre" id="select2-evento"
                                         wire:model="eventoNombre">
                                         <option value="0">-- ELIGE UN TIPO DE EVENTO --</option>
@@ -1173,7 +1173,7 @@
                                                     class="form-control" name="articulo_seleccionado"
                                                     id="articulo_seleccionado">
                                                     <option value="0">Selecciona un artículo.</option>
-                                                    @foreach ($articulos->where('id_categoria', $itemServicio['id']) as $keys => $articulo)
+                                                    @foreach ($articulos1->where('id_categoria', $itemServicio['id']) as $keys => $articulo)
                                                     <option class="dropdown-item" value="{{ $articulo->id }}">
                                                             {{ $articulo->name }}
                                                         </option>
@@ -1214,7 +1214,7 @@
                                                     class="form-control" name="articulo_seleccionado"
                                                     id="articulo_seleccionado">
                                                     <option value="0">Selecciona un artículo.</option>
-                                                    @foreach ($articulos->where('id_categoria', $itemServicio['id']) as $keys => $articulo)
+                                                    @foreach ($articulos1->where('id_categoria', $itemServicio['id']) as $keys => $articulo)
                                                         <option class="dropdown-item" value="{{ $articulo->id }}">
                                                             {{ $articulo->name }}
                                                         </option>

@@ -117,13 +117,13 @@
                                 $('#select2-cliente').on('change', function(e) {
                                     var data = $('#select2-cliente').select2('val');
                                     @this.set('id_cliente', data);
-                                });" wire:key='rand()'>
+                                });" wire:key='{{rand()}}'>
                                     <select class="form-control" name="id_cliente" id="select2-cliente"
                                         wire:model="id_cliente">
                                         <option value="0">-- ELIGE UN CLIENTE --</option>
                                         @foreach ($clientes as $cliente)
                                             <option value="{{ $cliente->id }}">
-                                                {{ $cliente->nombre }} {{ $cliente->apellido }}
+                                                {{$cliente->tipo_cliente ? 'Empresa: '.$cliente->nombre.' '.$cliente->apellido : 'Particular: '.$cliente->nombre.' '.$cliente->apellido }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -484,7 +484,7 @@
                                     var data = $('#select2-evento').select2('val');
                                     @this.set('eventoNombre', data);
                                 });"
-                                    wire:key='rand()'>
+                                    wire:key='{{rand()}}'>
                                     <select class="form-control" name="eventoNombre" id="select2-evento"
                                         wire:model="eventoNombre">
                                         <option value="0">-- ELIGE UN TIPO DE EVENTO --</option>

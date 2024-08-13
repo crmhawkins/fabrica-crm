@@ -227,6 +227,7 @@ class EditComponent extends Component
     public $pagosPendientes = [];
     public $nombreGestor;
     public $articulos;
+    public $articulos1;
     public $articulo_seleccionado;
     public $articulos_seleccionados = [];
     public $concepto;
@@ -251,6 +252,7 @@ class EditComponent extends Component
         $gestor = User::firstWhere('id', $this->gestor_id);
         $this->nombreGestor = $gestor->name . " " . $gestor->surname;
         $this->articulos = Articulos::all();
+        $this->articulos1 = Articulos::all();
         //Cliente
         $this->id_cliente = $this->presupuesto->id_cliente;
         $this->clientes = Cliente::all(); // datos que se envian al select2
@@ -1484,8 +1486,7 @@ class EditComponent extends Component
         event(new \App\Events\LogEvent(Auth::user(), 7, $this->presupuesto->id));
         event(new \App\Events\LogEvent(Auth::user(), 13, $this->evento->id));
         if (isset($contrato)){event(new \App\Events\LogEvent(Auth::user(), 16, $contrato->id));}
-
-        $this->evento->delete();
+        $this->presupuesto->evento->delete();
         if (isset($contrato)){ $contrato->delete();}
 
 
