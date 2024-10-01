@@ -17,10 +17,11 @@ class IsGestion
 
     public function handle($request, Closure $next)
     {
-        if (Auth::user() && (Auth::user()->role == 'gestion' || Auth::user()->role == 'contable' ||Auth::user()->role == 'admin' )) {
-            return $next($request);
+        if (Auth::user()){
+            if(Auth::user()->role == 'gestion' || Auth::user()->role == 'contable' ||Auth::user()->role == 'admin') {
+                return $next($request);
+            }
         }
-
         return redirect()->route('inicio'); // If user is not an admin.
     }
 }

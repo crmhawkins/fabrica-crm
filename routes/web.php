@@ -72,8 +72,8 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 //Route::get('/clients', [App\Http\Controllers\ClientController::class, 'index'])->name('clients.index');
 
 
-Route::group(['middleware' => 'is.admin', 'prefix' => 'admin'], function () {
-//Route::group(['middleware' => 'is.gestor', 'prefix' => 'admin'], function () {
+//Route::group(['middleware' => 'is.admin', 'prefix' => 'admin'], function () {
+Route::group(['middleware' => 'is.gestor', 'prefix' => 'admin'], function () {
     Route::get('agenda', [AgendaController::class, 'index'])->name('agenda.index');
 
     // Eventos
@@ -127,14 +127,14 @@ Route::group(['middleware' => 'is.admin', 'prefix' => 'admin'], function () {
     Route::get('calendario-create', [CalendarioController::class, 'create'])->name('calendario.create');
     Route::get('calendario-edit/{id}', [CalendarioController::class, 'edit'])->name('calendario.edit');
 
-//});
+});
 
 
 
 
 
 
-//Route::group(['middleware' => 'is.contable', 'prefix' => 'admin'], function () {
+Route::group(['middleware' => 'is.contable', 'prefix' => 'admin'], function () {
     //Gastos
     Route::get('gastos', [GastoController::class, 'index'])->name('gastos.index');
     Route::get('gastos-create', [GastoController::class, 'create'])->name('gastos.create');
@@ -149,13 +149,13 @@ Route::group(['middleware' => 'is.admin', 'prefix' => 'admin'], function () {
     Route::get('caja-create-ingreso', [CajaController::class, 'createIngreso'])->name('caja.create-ingreso');
     Route::get('caja-create-gasto', [CajaController::class, 'createGasto'])->name('caja.create-gasto');
     Route::get('caja-edit/{id}', [CajaController::class, 'edit'])->name('caja.edit');
-//});
+});
 
 
 
 
 
-//Route::group(['middleware' => 'is.admin', 'prefix' => 'admin'], function () {
+Route::group(['middleware' => 'is.admin', 'prefix' => 'admin'], function () {
 
     /* --------------------------------------- */
     // Budgets
