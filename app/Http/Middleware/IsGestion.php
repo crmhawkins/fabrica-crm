@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Closure;
 
-class IsAdmin
+class IsGestion
 {
     /**
      * Get the path the user should be redirected to when they are not authenticated.
@@ -17,7 +17,7 @@ class IsAdmin
 
     public function handle($request, Closure $next)
     {
-        if (Auth::user() && Auth::user()->role == 'admin') {
+        if (Auth::user() && (Auth::user()->role == 'gestion' || Auth::user()->role == 'contable' ||Auth::user()->role == 'admin' )) {
             return $next($request);
         }
 

@@ -64,6 +64,11 @@
                                             </span>
                                         @enderror
                                     </div>
+                                    <div class="col-sm-2">
+                                        <button type="button" class="me-auto btn btn-primary" onclick="togglePasswordVisibility()">
+                                            <i class="fas fa-eye" id="eye-icon"></i>
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div class="row mb-3 justify-content-center">
@@ -101,7 +106,17 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js"
             integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk" crossorigin="anonymous">
         </script>
-
+        <script>  function togglePasswordVisibility() {
+            var passwordInput = document.getElementById("password");
+            var eyeIcon = document.getElementById("eye-icon");
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                eyeIcon.className = "fas fa-eye-slash";
+            } else {
+                passwordInput.type = "password";
+                eyeIcon.className = "fas fa-eye";
+            }
+        }</script>
 </body>
 
 </html>

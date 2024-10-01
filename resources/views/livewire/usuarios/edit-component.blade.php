@@ -90,6 +90,8 @@
                                         <option value="alumno">Empleado</option>
                                         @if (Auth::user()->role == 'admin')
                                         <option value="admin">Admin</option>
+                                        <option value="gestion">Gestion</option>
+                                        <option value="contable">Contable</option>
                                         @endif
                                     </select>
                                     @error('role')

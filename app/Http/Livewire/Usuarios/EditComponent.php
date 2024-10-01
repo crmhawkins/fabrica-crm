@@ -7,6 +7,8 @@ use App\Models\DepartamentosUser;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+
 
 class EditComponent extends Component
 {
@@ -51,7 +53,7 @@ class EditComponent extends Component
             'surname' => 'required',
             'role' => 'required',
             'username' => 'required',
-            'password' => 'required',
+            'password' => 'nullable',
             'email' => ['required', 'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/'],
         ],
             // Mensajes de error
@@ -68,6 +70,12 @@ class EditComponent extends Component
 
         // Encuentra el identificador
         $usuarios = User::find($this->identificador);
+        if (isset($this->password) && $this->password !=  $usuarios->password) {
+        	$hashedPassword = Hash::make($this->password);
+		} else {
+			// Mantener la contraseña actual si no se proporciona una nueva
+			$hashedPassword = $usuarios->password;
+		}
 
         // Guardar datos validados
         $usuariosSave = $usuarios->update([
@@ -75,7 +83,7 @@ class EditComponent extends Component
             'surname' => $this->surname,
             'role' => $this->role,
             'username' => $this->username,
-            'password' => $this->password,
+            'password' => $hashedPassword,
             'email' => $this->email,
             'incative'=>$this->inactive,
         ]);
