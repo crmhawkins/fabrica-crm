@@ -38,12 +38,12 @@
 
                                 <div class="row mb-3 justify-content-center">
                                     <div class="col-md-10">
-                                        <input id="email" type="email"
-                                            class="form-control @error('email') is-invalid @enderror" name="email"
-                                            value="{{ old('email') }}" required autocomplete="email"
+                                        <input id="username" type="text"
+                                            class="form-control @error('username') is-invalid @enderror" name="username"
+                                            value="{{ old('username') }}" required autocomplete="username"
                                             placeholder="Correo electrónico" autofocus>
 
-                                        @error('email')
+                                        @error('username')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
@@ -52,7 +52,7 @@
                                 </div>
 
                                 <div class="row mb-3 justify-content-center">
-                                    <div class="col-md-10">
+                                    <div class="col-md-8">
                                         <input id="password" type="password"
                                             class="form-control @error('password') is-invalid @enderror"
                                             placeholder="Contraseña" name="password" required
