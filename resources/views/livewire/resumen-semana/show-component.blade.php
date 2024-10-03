@@ -29,11 +29,12 @@
                         <div class="form-group col-md-12">
                             @if ($eventos->where('diaEvento', $fechas[$diaIndex])->count() > 0)
                                 @foreach ($eventos->where('diaEvento', $fechas[$diaIndex]) as $evento)
+                                @php
+                                    $presupuesto = $presupuestos->where('id_evento', $evento->id)->first();
+                                @endphp
+                                @if($presupuesto)
                                     <table class="table table-striped table-bordered nowrap">
                                         <tr>
-                                            @php
-                                                $presupuesto = $presupuestos->where('id_evento', $evento->id)->first();
-                                            @endphp
 
                                             <th colspan="1">
                                                 #{{ $presupuesto->nPresupuesto ?? 'Presupuesto Borrado' }}
@@ -539,6 +540,7 @@
                                             @endif
                                         </tr>
                                     </table>
+                                @endif
                                 @endforeach
                             @else
                                 <h6 class="text-center">No hay eventos para este día.</h6>
