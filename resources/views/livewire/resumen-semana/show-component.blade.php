@@ -30,7 +30,7 @@
                                     <table class="table table-striped table-bordered nowrap">
                                         <tr>
                                             <th colspan="1">
-                                                #{{ $presupuestos->where('id_evento', $evento->id)->first()->nPresupuesto }}
+                                                #{{ $presupuestos->where('id_evento', $evento->id)->first()->nPresupuesto ?? 'Presupuesto Borrado' }}
                                             </th>
                                             <th colspan="5">
                                                 @if ($datoEdicion['id'] == $evento->id && $datoEdicion['column'] == 'eventoNombre')
