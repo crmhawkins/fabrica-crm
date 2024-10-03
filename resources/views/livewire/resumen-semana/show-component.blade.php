@@ -3,7 +3,7 @@
     <div class="page-title-box">
         <div class="row align-items-center">
             <div class="col-sm-6">
-                <h4 class="page-title">CUADRANTE SEMANAL</span></h4>
+                <h4 class="page-title">CUADRANTE SEMANAL</h4>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-right">
@@ -12,8 +12,9 @@
                     <li class="breadcrumb-item active">Cuadrante semanal</li>
                 </ol>
             </div>
-        </div> <!-- end row -->
+        </div>
     </div>
+
     <div class="row">
         <div class="col-md-9">
             <div class="card m-b-30">
@@ -22,30 +23,34 @@
                         <div class="form-group col-md-12">
                             <h5 class="ms-3"
                                 style="border-bottom: 1px gray solid !important; padding-bottom: 10px !important;">
-                                {{ $dia }}</h5>
+                                {{ $dia }}
+                            </h5>
                         </div>
                         <div class="form-group col-md-12">
                             @if ($eventos->where('diaEvento', $fechas[$diaIndex])->count() > 0)
                                 @foreach ($eventos->where('diaEvento', $fechas[$diaIndex]) as $evento)
                                     <table class="table table-striped table-bordered nowrap">
                                         <tr>
+                                            @php
+                                                $presupuesto = $presupuestos->where('id_evento', $evento->id)->first();
+                                            @endphp
+
                                             <th colspan="1">
-                                                #{{ $presupuestos->where('id_evento', $evento->id)->first()->nPresupuesto ?? 'Presupuesto Borrado' }}
+                                                #{{ $presupuesto->nPresupuesto ?? 'Presupuesto Borrado' }}
                                             </th>
                                             <th colspan="5">
                                                 @if ($datoEdicion['id'] == $evento->id && $datoEdicion['column'] == 'eventoNombre')
                                                     <div class="col-md-8" x-data=""
                                                         x-init="$('#select2-evento').select2();
-                                                        $('#select2-evento').on('change', function(e) {
-                                                            var data = $('#select2-evento').select2('val');
-                                                            @this.set('datoEdicion['
-                                                                column ']', data);
-                                                        });" wire:key='rand()'>
+                                                            $('#select2-evento').on('change', function(e) {
+                                                                var data = $('#select2-evento').select2('val');
+                                                                @this.set('datoEdicion[column]', data);
+                                                            });"
+                                                        wire:key='rand()'>
                                                         <select class="form-control" name="eventoNombre"
                                                             id="select2-evento" wire:model.lazy="datoEdicion.value"
                                                             wire:change.lazy='terminarEdicion'>
-                                                            <option value="0">-- ELIGE UN TIPO DE EVENTO --
-                                                            </option>
+                                                            <option value="0">-- ELIGE UN TIPO DE EVENTO --</option>
                                                             @foreach ($categorias as $tipo)
                                                                 <option value="{{ $tipo->id }}">
                                                                     {{ $tipo->nombre }}
@@ -56,14 +61,21 @@
                                                 @else
                                                     <span class="align-middle"
                                                         wire:click="detectarEdicion('{{ $evento->id }}', 'eventoNombre')">
-
                                                         {{ $this->categorias->where('id', $evento->eventoNombre)->first()->nombre }}
                                                     </span>
                                                 @endif
+                                            </th>
+
                                             <th>
-                                            <th><a class="btn btn-sm btn-primary w-100"
-                                                    href="{{ route('presupuestos.edit', $presupuestos->where('id_evento', $evento->id)->first()->id) }}"><i
-                                                        class="fa fa-eye"></i></a> </th>
+                                                @if ($presupuesto)
+                                                    <a class="btn btn-sm btn-primary w-100"
+                                                       href="{{ route('presupuestos.edit', $presupuesto->id) }}">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
+                                                @else
+                                                    <span class="btn btn-sm btn-secondary w-100" disabled>No hay presupuesto</span>
+                                                @endif
+                                            </th>
                                         </tr>
                                         <tr>
                                             <td>
@@ -72,8 +84,9 @@
                                                         wire:change.lazy="terminarEdicion">
                                                 @else
                                                     <span class="align-middle"
-                                                        wire:click="detectarEdicion('{{ $evento->id }}', 'precioFinal')">{{ $presupuestos->where('id_evento', $evento->id)->first()->precioFinal }}
-                                                        €</span>
+                                                        wire:click="detectarEdicion('{{ $evento->id }}', 'precioFinal')">
+                                                        {{ $presupuesto->precioFinal ?? 'Sin precio' }} €
+                                                    </span>
                                                 @endif
                                             </td>
                                             <td>
@@ -83,8 +96,9 @@
                                                         id="eventoNiños"> niños
                                                 @else
                                                     <span class="align-middle"
-                                                        wire:click="detectarEdicion('{{ $evento->id }}', 'eventoNiños')">{{ $evento->eventoNiños }}
-                                                        niños</span>
+                                                        wire:click="detectarEdicion('{{ $evento->id }}', 'eventoNiños')">
+                                                        {{ $evento->eventoNiños }} niños
+                                                    </span>
                                                 @endif
                                             </td>
                                             <td>
@@ -93,8 +107,9 @@
                                                         wire:change.lazy="terminarEdicion"> adultos
                                                 @else
                                                     <span class="align-middle"
-                                                        wire:click="detectarEdicion('{{ $evento->id }}', 'eventoAdulto')">{{ $evento->eventoAdulto ? $evento->eventoAdulto : 0 }}
-                                                        adultos</span>
+                                                        wire:click="detectarEdicion('{{ $evento->id }}', 'eventoAdulto')">
+                                                        {{ $evento->eventoAdulto ?? 0 }} adultos
+                                                    </span>
                                                 @endif
                                             </td>
                                             <td>{{ $this->checkAuthContrato($evento->id) }}</td>
@@ -102,7 +117,6 @@
                                             <th>{{ $evento->eventoLugar }}</th>
                                             <th></th>
                                             <th>{{ $evento->eventoLocalidad }}</th>
-
                                         </tr>
                                         <tr>
                                             <th>Servicio</th>
@@ -518,9 +532,11 @@
                                             <th colspan="8">Observaciones</th>
                                         </tr>
                                         <tr>
+                                            @if ($presupuesto)
                                             <th colspan="8">
-                                                {{ $presupuestos->where('id_evento', $evento->id)->first()->observaciones }}
+                                                {{ $presupuesto->observaciones }}
                                             </th>
+                                            @endif
                                         </tr>
                                     </table>
                                 @endforeach
