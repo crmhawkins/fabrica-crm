@@ -266,7 +266,7 @@ class EditComponent extends Component
         $this->fechaVencimiento = $this->presupuesto->fechaVencimiento;
         $this->gestor_id = $this->presupuesto->gestor_id ? $this->presupuesto->gestor_id : Auth::id();
         $gestor = User::firstWhere('id', $this->gestor_id);
-        $this->nombreGestor = $gestor->name . " " . $gestor->surname;
+        $this->nombreGestor = optional($gestor)->name . " " . optional($gestor)->surname;
         $this->articulos = Articulos::all();
         $this->articulos1 = Articulos::all();
         //Cliente
