@@ -276,7 +276,6 @@ class CreateComponent extends Component
             $query->where('presupuestos.diaEvento', '<=', $this->diaFinal)
                   ->where('presupuestos.diaFinal', '>=', $this->diaEvento);
         })
-        ->where('')
         ->pluck('servicio_presupuesto.articulo_seleccionado');
 
         $this->articulos = Articulos::whereNotIn('id', $articulosEnUso)->orWhere('stock',1)->get();
