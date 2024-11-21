@@ -51,12 +51,12 @@
                         </div>
                         <div class="form-group col-md-3">
                             <label for="fechaEmision">Fecha de emisión</label>
-                            <input type="date" wire:model.defer="fechaEmision" class="form-control"
+                            <input type="date" wire:model.lazy="fechaEmision" class="form-control"
                                 name="fechaEmision" id="fechaEmision" placeholder="X">
                         </div>
                         <div class="form-group col-md-3">
                             <label for="fechaVencimiento">Fecha de vencimiento</label>
-                            <input type="date" wire:model.defer="fechaVencimiento" class="form-control"
+                            <input type="date" wire:model.lazy="fechaVencimiento" class="form-control"
                                 min="{{ $fechaEmision }}" name="fechaVencimiento" id="fechaVencimiento" placeholder="X">
                         </div>
                     </div>
@@ -1360,10 +1360,21 @@
                                 placeholder="Precio final">
                         </div>
                     </div>
+                    @if(isset($clienteSeleccionado) &&$clienteSeleccionado->tipo_cliente == 1)
+                    <div class="form-group col-md-3">
+                        <label for="iva" class="col-sm-12 col-form-label">IVA</label>
+                        <select name="iva" id="iva" class="form-control" wire:model="ivaSeleccionado">
+                            <option value="">Elige una IVA</option>
+                            @foreach($ivaLista as $i)
+                            <option value="{{ $i->id }}">{{ $i->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @endif
                 </div>
                 <div class="form-group col-md-12">
                     <label for="precioServicio" class="col-sm-12 col-form-label">&nbsp;</label>
-                    <h4>Total: {{ $this->precioFinal - $this->descuento }} € @if ($adelanto > 0 || $adelanto != null)
+                    <h4>Total: {{isset($iva_valor) ? ($this->precioFinal - $this->descuento) * (1 + $iva_valor / 100) : $this->precioFinal - $this->descuento }} € @if ($adelanto > 0 || $adelanto != null)
                             ( {{ $this->adelanto }} € pagado por adelantado. )
                         @endif
                     </h4>
@@ -1474,33 +1485,14 @@
 
         td.suelo {}
     </style>
-    <script>
-        window.addEventListener('initializeMapKit', () => {
-            fetch('/admin/service/jwt')
-                .then(response => response.json())
-                .then(data => {
-                    mapkit.init({
-                        authorizationCallback: function(done) {
-                            done(data.token);
-                        }
-                    });
-                    // Aquí puedes inicializar tu mapa u otras funcionalidades relacionadas
-                });
-        });
-    </script>
 </div>
 </div>
 @section('scripts')
-    {{-- <script src="https://cdn.datatables.net/responsive/2.4.0/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.3.4/js/dataTables.buttons.min.js"></script> --}}
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-    {{-- <script src="https://cdn.datatables.net/buttons/2.3.4/js/buttons.html5.min.js"></script> --}}
-    {{-- <script src="https://cdn.datatables.net/buttons/2.3.4/js/buttons.print.min.js"></script> --}}
     <script>
-        // In your Javascript (external .js resource or <script> tag)
 
         $("#alertaGuardar").on("click", () => {
             Swal.fire({
@@ -1515,102 +1507,18 @@
             });
         });
 
-        $.datepicker.regional['es'] = {
-            closeText: 'Cerrar',
-            prevText: '< Ant',
-            nextText: 'Sig >',
-            currentText: 'Hoy',
-            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre',
-                'Octubre', 'Noviembre', 'Diciembre'
-            ],
-            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
-            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
-            weekHeader: 'Sm',
-            dateFormat: 'yy-mm-dd',
-            firstDay: 1,
-            isRTL: false,
-            showMonthAfterYear: false,
-            yearSuffix: ''
-        };
-        $.datepicker.setDefaults($.datepicker.regional['es']);
-        // document.addEventListener('livewire:load', function() {
-
-
-        // })
         document.addEventListener("livewire:load", () => {
             Livewire.hook('message.processed', (message, component) => {
                 $('.js-example-basic-single').select2();
             });
-
-            // $('#id_cliente').on('change', function (e) {
-            // console.log('change')
-            // console.log( e.target.value)
-            // // var data = $('.js-example-basic-single').select2("val");
-            // })
         });
 
 
 
         $(document).ready(function() {
             $('.js-example-basic-single').select2();
-            // $('.js-example-basic-single').on('change', function (e) {
-            // console.log('change')
-            // console.log( e.target.value)
-            // var data = $('.js-example-basic-single').select2("val");
-
-            // @this.set('foo', data);
-            //     livewire.emit('selectedCompanyItem', e.target.value)
-            // });
-            // $('#tableServicios').DataTable({
-            //     responsive: true,
-            //     dom: 'Bfrtip',
-            //     buttons: [
-            //         'copy', 'csv', 'excel', 'pdf', 'print'
-            //     ],
-            //     buttons: [{
-            //         extend: 'collection',
-            //         text: 'Export',
-            //         buttons: [{
-            //                 extend: 'pdf',
-            //                 className: 'btn-export'
-            //             },
-            //             {
-            //                 extend: 'excel',
-            //                 className: 'btn-export'
-            //             }
-            //         ],
-            //         className: 'btn btn-info text-white'
-            //     }],
-            //     "language": {
-            //         "lengthMenu": "Mostrando _MENU_ registros por página",
-            //         "zeroRecords": "Nothing found - sorry",
-            //         "info": "Mostrando página _PAGE_ of _PAGES_",
-            //         "infoEmpty": "No hay registros disponibles",
-            //         "infoFiltered": "(filtrado de _MAX_ total registros)",
-            //         "search": "Buscar:",
-            //         "paginate": {
-            //             "first": "Primero",
-            //             "last": "Ultimo",
-            //             "next": "Siguiente",
-            //             "previous": "Anterior"
-            //         },
-            //         "zeroRecords": "No se encontraron registros coincidentes",
-            //     }
 
         });
-
-
-
-        // $("#fechaEmision").datepicker();
-
-
-        // $("#fechaEmision").on('change', function(e) {
-        //     @this.set('fechaEmision', $('#fechaEmision').val());
-        // });
-
-
 
         function togglePasswordVisibility() {
             var passwordInput = document.getElementById("password");
@@ -1623,51 +1531,9 @@
                 eyeIcon.className = "fas fa-eye";
             }
         }
-        //observer para aplicar el datepicker de evento
-        // const observer = new MutationObserver((mutations, observer) => {
-        //     console.log(mutations, observer);
-        // });
-        // observer.observe(document, {
-        //     subtree: true,
-        //     attributes: true
-        // });
-
-
 
         document.addEventListener('DOMSubtreeModified', (e) => {
-            $("#diaEvento").datepicker();
 
-            // $("#diaEvento").on('focus', function(e) {
-            //     document.getElementById("guardar-evento").style.visibility = "hidden";
-            // })
-            // $("#diaEvento").on('focusout', function(e) {
-            //     if ($('#diaEvento').val() != "") {
-            //         document.getElementById("guardar-evento").style.visibility = "visible";
-            //     }
-
-            // })
-            // $("#diaFinal").on('focus', function(e) {
-            //     document.getElementById("guardar-evento").style.visibility = "hidden";
-            // })
-            // $("#diaFinal").on('focusout', function(e) {
-            //     if ($('#diaFinal').val() != "") {
-            //         document.getElementById("guardar-evento").style.visibility = "visible";
-            //     }
-
-            // })
-
-            $("#diaFinal").datepicker();
-
-            $("#diaFinal").on('change', function(e) {
-                @this.set('diaFinal', $('#diaFinal').val());
-
-            });
-
-            $("#diaEvento").on('change', function(e) {
-                @this.set('diaEvento', $('#diaEvento').val());
-                @this.set('diaFinal', $('#diaEvento').val());
-
-            });
 
             $('#id_cliente').on('change', function(e) {
                 console.log('change')

@@ -46,7 +46,7 @@
                                 <td>{{ $presup->evento ? $presup->evento->tipoevento->nombre : 'Presupuesto sin evento'}}</td>
                                 <td>{{ $presup->precioBase }} €</td>
                                 <td>{{ $presup->descuento }} €</td>
-                                <td>{{ $presup->precioFinal }} €</td>
+                                <td>{{ isset($presup->iva_valor) ? $presup->precioFinal * (1+($presup->iva_valor/100)) : $presup->precioFinal}} €</td>
                                 <td>@if($presup->estado == "Aceptado")
                                     <span class="badge badge-success">Aceptado</span>
                                     @elseif($presup->estado == "Pendiente")

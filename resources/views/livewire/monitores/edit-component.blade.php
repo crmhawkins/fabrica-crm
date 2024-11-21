@@ -264,7 +264,7 @@
                                 Monitor</button>
                         </div>
                         <div class="col-12">
-                            <button class="w-100 btn btn-danger mb-2" id="alertaEliminar">Eliminar
+                            <button class="w-100 btn btn-danger mb-2" wire:click.prevent="destroy">Eliminar
                                 Monitor</button>
                         </div>
                     </div>

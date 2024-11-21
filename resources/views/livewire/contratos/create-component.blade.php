@@ -166,6 +166,35 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            <div class="col-sm-4">
+                                <label for="dir1" class="col-sm-12 col-form-label">Dir 1 :</label>
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control" value="{{$cliente->direccionAdicional1}}" disabled>
+                                    @error('nContrato')
+                                    <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="diaEvento" class="col-sm-12 col-form-label">Dir 2 :</label>
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control" value="{{$cliente->direccionAdicional2}}" disabled>
+                                    @error('diaEvento')
+                                    <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="diaEvento" class="col-sm-12 col-form-label">Dir 3 :</label>
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control" value="{{$cliente->direccionAdicional3}}" disabled>
+                                    @error('diaEvento')
+                                    <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <div class="col-sm-9">
                                 <label for="nContrato" class="col-sm-12 col-form-label">Localidad</label>
                                 <div class="col-md-12">

@@ -13,6 +13,7 @@ use App\Models\PackPresupuesto;
 use App\Models\Monitor;
 use App\Models\Presupuesto;
 use App\Models\Contrato;
+use App\Models\Iva;
 use App\Models\Programa;
 use App\Models\Servicio;
 use App\Models\ServicioPack;
@@ -232,6 +233,17 @@ class EditComponent extends Component
     public $articulos_seleccionados = [];
     public $concepto;
     public $visible = 1;
+    public $ivaLista;
+    public $ivaSeleccionado;
+    public $iva_id;
+    public $iva_valor;
+
+    public function updatedIvaSeleccionado($value)
+    {
+        $iva = Iva::find($value);
+       $this->iva_id = $value ?? null;
+       $this->iva_valor = $iva->iva ?? null;
+    }
 
     public function mount()
     {
@@ -242,6 +254,10 @@ class EditComponent extends Component
         $this->observaciones = $this->presupuesto->observaciones;
         $this->addObservaciones = $this->observaciones > " ";
         $this->precioBase = $this->presupuesto->precioBase;
+        $this->iva_id = $this->presupuesto->iva_id;
+        $this->ivaSeleccionado = $this->presupuesto->iva_id;
+        $this->iva_valor = $this->presupuesto->iva_valor;
+        $this->ivaLista = Iva::all();
         $this->precioFinal = $this->presupuesto->precioBase;
         $this->descuento = $this->presupuesto->descuento;
         $this->addDiscount = $this->descuento > 0;
@@ -1361,7 +1377,10 @@ class EditComponent extends Component
                 'observaciones' => 'nullable',
                 'categoria_evento_id' => 'nullable',
                 'diaEvento' => 'required',
-                'diaFinal' => "required"
+                'diaFinal' => "required",
+                'iva_id' => 'nullable',
+                'iva_valor' => 'nullable'
+
 
             ],
             // Mensajes de error
@@ -1452,6 +1471,7 @@ class EditComponent extends Component
         }
 
         // Alertas de guardado exitoso
+        //continuar aqui
         if ($presupuesosSave) {
             $this->alert('success', '¡Presupuesto actualizado correctamente!', [
                 'position' => 'center',
@@ -1723,7 +1743,7 @@ class EditComponent extends Component
         })
         ->pluck('servicio_presupuesto.articulo_seleccionado');
 
-        $this->articulos = Articulos::whereNotIn('id', $articulosEnUso)->get();
+        $this->articulos = Articulos::whereNotIn('id', $articulosEnUso)->orWhere('stock',1)->get();
     }
 
     public function cambioPrecioServicio()
@@ -1895,7 +1915,7 @@ class EditComponent extends Component
 
 
                             $nuevaCantidadTotalgeneral = $sumaTotalStockUsadoGeneral + 1 + $sumadepacks;
-                            if ($stockTotal > $nuevaCantidadTotalgeneral) {
+                            if ($stockTotal < $nuevaCantidadTotalgeneral) {
                                 $stockSeSupera = true;
                             }
                         }else{
@@ -1997,6 +2017,7 @@ class EditComponent extends Component
                     $sumaTotalStockUsado = $sumadepacksusados + $sumaStockUsado;
 
                     if ($sumaTotalStockUsado < 1){
+
                         $sumaTotalStockUsadoGeneral = DB::table('presupuestos')
                         ->join('servicio_presupuesto', 'presupuestos.id', '=', 'servicio_presupuesto.presupuesto_id')
                         ->where(function($query) {
@@ -2009,7 +2030,6 @@ class EditComponent extends Component
                             ELSE servicio_presupuesto.num_art_indef
                             END) AS total_stock_usado')
                         ->value('total_stock_usado');
-
                         $sumadepacks = DB::table('presupuestos')
                             ->join('pack_presupuesto', 'presupuestos.id', '=', 'pack_presupuesto.presupuesto_id')
                             ->join('servicios', 'pack_presupuesto.pack_id', '=', 'servicios.id_pack')
@@ -2027,7 +2047,8 @@ class EditComponent extends Component
                         // Obtener la cantidad de stock usado por el servicio que deseas agregar
 
                         $nuevaCantidadTotalgeneral = $sumaTotalStockUsadoGeneral + 1 + $sumadepacks;
-                        if ($stockTotal > $nuevaCantidadTotalgeneral) {
+
+                        if ($stockTotal < $nuevaCantidadTotalgeneral) {
                             $stockSeSupera = true;
                         }
                     }else{
@@ -2446,6 +2467,7 @@ class EditComponent extends Component
             ]);
         }
     }
+
     public function confirmedImprimir()
     {
         $this->diaMostrar = Carbon::now()->locale('es_ES')->isoFormat('D [de] MMMM [de] Y');
@@ -2522,6 +2544,16 @@ class EditComponent extends Component
             event(new \App\Events\LogEvent(Auth::user(), 14, $contratoSave->id));
             $this->confirmed2();
         } else {
+            $contrato = Contrato::find($this->contrato_id);
+            $contrato->update([
+                "id_presupuesto" => $this->identificador,
+                'metodoPago' => $this->metodoPago,
+                'cuentaTransferencia' => $this->cuentaTransferencia,
+                'observaciones' => $this->observaciones,
+                'authImagen' => $this->authImagen,
+                'authMenores' => $this->authMenores,
+                'dia' => $this->diaEvento,
+            ]);
             $this->confirmed2();
         }
 

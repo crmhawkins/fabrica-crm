@@ -490,7 +490,7 @@
                             <div class="form-group col-md-4">
                                 <label for="diaEvento" class="col-sm-12 col-form-label">Dia del evento</label>
                                 <div class="col-sm-10">
-                                    <input type="date" wire:model.lazy="diaEvento" class="form-control"
+                                    <input type="date" wire:model.defer="diaEvento" class="form-control"
                                         name="diaEvento" id="diaEvento" placeholder="X">
                                     @error('diaEvento')
                                         <span class="text-danger">{{ $message }}</span>
@@ -501,7 +501,7 @@
                                 <label for="diaFinal" class="col-sm-12 col-form-label">Dia final del
                                     evento</label>
                                 <div class="col-sm-10">
-                                    <input type="date" wire:model.lazy="diaFinal" class="form-control"
+                                    <input type="date" wire:model.defer="diaFinal" class="form-control"
                                         name="diaFinal" id="diaFinal" placeholder="X">
                                     @error('diaFinal')
                                         <span class="text-danger">{{ $message }}</span>
@@ -1274,10 +1274,21 @@
                                 placeholder="Precio final">
                         </div>
                     </div>
+                    @if(isset($clienteSeleccionado) &&$clienteSeleccionado->tipo_cliente == 1)
+                    <div class="form-group col-md-3">
+                        <label for="iva" class="col-sm-12 col-form-label">IVA</label>
+                        <select name="iva" id="iva" class="form-control" wire:model="ivaSeleccionado">
+                            <option value="">Elige una IVA</option>
+                            @foreach($ivaLista as $i)
+                            <option {{ $iva_id == $i->id ? 'selected' : ''}} value="{{ $i->id }}">{{ $i->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @endif
                 </div>
                 <div class="form-group col-md-12">
                     <label for="precioServicio" class="col-sm-12 col-form-label">&nbsp;</label>
-                    <h4>Total: {{ $this->precioFinal - $this->descuento }} € @if ($adelanto > 0 || $adelanto != null)
+                    <h4>Total: {{isset($iva_valor) ? ($this->precioFinal - $this->descuento) * (1 + $iva_valor / 100) : $this->precioFinal - $this->descuento }} € @if ($adelanto > 0 || $adelanto != null)
                             ( {{ $this->adelanto }} € pagado por adelantado. )
                         @endif
                     </h4>
@@ -1634,20 +1645,13 @@
             yearSuffix: ''
         };
         $.datepicker.setDefaults($.datepicker.regional['es']);
-        // document.addEventListener('livewire:load', function() {
 
-
-        // })
         document.addEventListener("livewire:load", () => {
             Livewire.hook('message.processed', (message, component) => {
                 $('.js-example-basic-single').select2();
             });
 
-            // $('#id_cliente').on('change', function (e) {
-            // console.log('change')
-            // console.log( e.target.value)
-            // // var data = $('.js-example-basic-single').select2("val");
-            // })
+
         });
 
 
@@ -1655,61 +1659,6 @@
         $(document).ready(function() {
 
             $('.js-example-basic-single').select2();
-            // $('.js-example-basic-single').on('change', function (e) {
-            // console.log('change')
-            // console.log( e.target.value)
-            // var data = $('.js-example-basic-single').select2("val");
-
-            // @this.set('foo', data);
-            //     livewire.emit('selectedCompanyItem', e.target.value)
-            // });
-            // $('#tableServicios').DataTable({
-            //     responsive: true,
-            //     dom: 'Bfrtip',
-            //     buttons: [
-            //         'copy', 'csv', 'excel', 'pdf', 'print'
-            //     ],
-            //     buttons: [{
-            //         extend: 'collection',
-            //         text: 'Export',
-            //         buttons: [{
-            //                 extend: 'pdf',
-            //                 className: 'btn-export'
-            //             },
-            //             {
-            //                 extend: 'excel',
-            //                 className: 'btn-export'
-            //             }
-            //         ],
-            //         className: 'btn btn-info text-white'
-            //     }],
-            //     "language": {
-            //         "lengthMenu": "Mostrando _MENU_ registros por página",
-            //         "zeroRecords": "Nothing found - sorry",
-            //         "info": "Mostrando página _PAGE_ of _PAGES_",
-            //         "infoEmpty": "No hay registros disponibles",
-            //         "infoFiltered": "(filtrado de _MAX_ total registros)",
-            //         "search": "Buscar:",
-            //         "paginate": {
-            //             "first": "Primero",
-            //             "last": "Ultimo",
-            //             "next": "Siguiente",
-            //             "previous": "Anterior"
-            //         },
-            //         "zeroRecords": "No se encontraron registros coincidentes",
-            //     }
-
-        });
-
-
-
-        // $("#fechaEmision").datepicker();
-
-
-        // $("#fechaEmision").on('change', function(e) {
-        //     @this.set('fechaEmision', $('#fechaEmision').val());
-        // });
-
 
 
         function togglePasswordVisibility() {

@@ -103,6 +103,9 @@
                     </ul>
                 </li> --}}
                 <li>
+                    <a href="/admin/iva" class="waves-effect"><i class="ti-agenda"></i><span> Tipos de iva </span></a>
+                </li>
+                <li>
                     <a href="javascript:void(0);" class="waves-effect"><i class="ti-settings"></i><span> Servicios <span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span> </span></a>
                     <ul class="submenu">
                         <li><a href="/admin/servicios">Ver Todos</a></li>
@@ -136,8 +139,7 @@
                 </li>
 
                 <li class="menu-title">Departamentos</li>
-
-<li>
+                <li>
                     <a href="javascript:void(0);" class="waves-effect"><i class="icon-case-2"></i><span> Departamentos <span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span> </span></a>
                     <ul class="submenu">
                         <li><a href="/admin/departamentos">Ver Todos</a></li>

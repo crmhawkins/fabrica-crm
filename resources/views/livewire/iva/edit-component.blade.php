@@ -1,7 +1,4 @@
-@section('head')
-    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css">
-    @vite(['resources/sass/productos.scss'])
-@endsection
+
 <div class="container mx-auto">
     <h1>IVA</h1>
     <h2>Editar tipo de IVA</h2>

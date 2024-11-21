@@ -167,6 +167,35 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            <div class="col-sm-4">
+                                <label for="dir1" class="col-sm-12 col-form-label">Dir 1 :</label>
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control" value="{{$cliente->direccionAdicional1}}" disabled>
+                                    @error('nContrato')
+                                    <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="diaEvento" class="col-sm-12 col-form-label">Dir 2 :</label>
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control" value="{{$cliente->direccionAdicional2}}" disabled>
+                                    @error('diaEvento')
+                                    <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="diaEvento" class="col-sm-12 col-form-label">Dir 3 :</label>
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control" value="{{$cliente->direccionAdicional3}}" disabled>
+                                    @error('diaEvento')
+                                    <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <div class="col-sm-9">
                                 <label for="nContrato" class="col-sm-12 col-form-label">Localidad</label>
                                 <div class="col-md-12">
@@ -370,7 +399,7 @@
                         <div class="form-group row">
                             <h6 class="card-header mb-2"> Servicios contratados </h6>
                             @foreach($servicios as $servicio)
-                            <div class="col-sm-7">
+                            <div class="col-sm-5">
                                 <label for="nContrato" class="col-sm-12 col-form-label">Servicio contratado</label>
                                 <div class="col-md-12">
                                     <input type="text" class="form-control" value="{{$servicio->pivot->concepto}}" disabled>
@@ -394,6 +423,33 @@
                                     <input type="text" class="form-control" value="{{$servicio->pivot->precio_final}} €" disabled>
                                     @error('diaEvento')
                                     <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="nContrato" class="col-sm-12 col-form-label">Servicio Tiempo</label>
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control" value="{{$servicio->pivot->tiempo}}" disabled>
+                                    @error('nContrato')
+                                    <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="nContrato" class="col-sm-12 col-form-label">Servicio Hora de inicio</label>
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control" value="{{$servicio->pivot->hora_inicio}}" disabled>
+                                    @error('nContrato')
+                                    <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="nContrato" class="col-sm-12 col-form-label">Servicio Hora de Finalización</label>
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control" value="{{$servicio->pivot->hora_finalizacion}}" disabled>
+                                    @error('nContrato')
+                                    <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
@@ -436,7 +492,7 @@
                             </div>
                             @if ($cliente->tipo_cliente == 1)
                             <div class="col-sm-12 mt-3">
-                                <h5>Total del evento: &nbsp; {{($presupuesto->precioFinal)*1.21}} €  (IVA Incluido)</h5>
+                                <h5>Total del evento: &nbsp; {{($presupuesto->precioFinal)*(1 + ($presupuesto->iva_valor/100))}} €  (IVA Incluido)</h5>
                             </div>
                             @endif
                         </div>

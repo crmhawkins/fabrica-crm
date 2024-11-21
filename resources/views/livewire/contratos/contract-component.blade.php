@@ -136,27 +136,34 @@
                     @endif
                 </tr>
                 <tr width="100%">
-                    <td width="80%" style="border-right-color: #fff !important;"><b>Domicilio:</b>
+                    <td colspan="2" width="80%" style="border-right-color: #fff !important;"><b>Domicilio:</b>
                         {{ $cliente->tipoCalle }} {{ $cliente->calle }} , {{ $cliente->numero }}</td>
                     <td width="20%"><b>CP:</b> {{ $cliente->codigoPostal }}</td>
                 </tr>
                 <tr width="100%">
-                    <td width="60%" style="border-right-color: #fff !important;"><b>Localidad:</b>
+                    <td width="33%" style="border-right-color: #fff !important;"><b>Dir 1:</b>
+                        {{ $cliente->direccionAdicional1 }} </td>
+                    <td width="33%" style="border-right-color: #fff !important;"><b>Dir 2:</b>
+                        {{ $cliente->direccionAdicional2 }} </td>
+                    <td width="33%"><b>Dir 3: {{ $cliente->direccionAdicional3 }}</td>
+                </tr>
+                <tr width="100%">
+                    <td colspan="2" width="60%" style="border-right-color: #fff !important;"><b>Localidad:</b>
                         {{ $cliente->ciudad }}</td>
                     <td width="40%"><b>Provincia:</b> {{ $cliente->provincia }}</td>
                 </tr>
                 <tr width="100%">
-                    <td width="50%" style="border-right-color: #fff !important;"><b>Teléfono:</b>
+                    <td colspan="2" width="50%" style="border-right-color: #fff !important;"><b>Teléfono:</b>
                         {{ $cliente->tlf1 }}</td>
                     <td width="50%"><b>Email: </b>{{ $cliente->email1 }}</td>
                 </tr>
                 @if($cliente->tipo_cliente)
                 <tr width="100%">
-                    <td width="50%" style="border-right-color: #fff !important;"><b>Codigo Organo Gestor:</b> {{ $cliente->codigo_organo_gestor  }}</td>
+                    <td colspan="2" width="50%" style="border-right-color: #fff !important;"><b>Codigo Organo Gestor:</b> {{ $cliente->codigo_organo_gestor  }}</td>
                     <td width="50%"><b>Codigo Oficina Contable: </b>{{ $cliente->codigo_oficina_contable }}</td>
                 </tr>
                 <tr width="100%">
-                    <td width="50%" style="border-right-color: #fff !important;"><b>Codigo Unidad Tramitadora: </b>{{ $cliente->codigo_unidad_tramitadora }}</td>
+                    <td colspan="2" width="50%" style="border-right-color: #fff !important;"><b>Codigo Unidad Tramitadora: </b>{{ $cliente->codigo_unidad_tramitadora }}</td>
                     <td width="50%"></td>
                 </tr>
                 @endif
@@ -315,7 +322,7 @@
                 @if ($cliente->tipo_cliente == 1)
                 <tr width="100%">
                     <td colspan="3" style="border-top-color: #fff !important;"><b>Total
-                        servicios contratados :</b> {{ $presupuesto->precioFinal * 1.21 }} € (IVA incluido)</td>
+                        servicios contratados :</b> {{ $presupuesto->precioFinal * (1 + ($presupuesto->iva_valor/100)) }} € (IVA incluido)</td>
                 </tr>
                 @endif
                 <tr width="100%">

@@ -13,23 +13,18 @@ use App\Models\Presupuesto;
 use App\Models\Programa;
 use App\Models\Servicio;
 use App\Models\Articulos;
+use App\Models\Iva;
 use App\Models\ServicioPack;
-use App\Models\ServicioPresupuesto;
 use App\Models\Settings;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Arr;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
-use Illuminate\Support\Facades\Input;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-
-
-use function PHPUnit\Framework\isEmpty;
 
 class CreateComponent extends Component
 {
@@ -236,6 +231,10 @@ class CreateComponent extends Component
     public $nombreGestor;
     public $year;
     public $contadorServicios;
+    public $ivaLista;
+    public $ivaSeleccionado;
+    public $iva_id;
+    public $iva_valor;
     protected $listeners = ['rerender' => '$refresh'];
 
 
@@ -248,6 +247,14 @@ class CreateComponent extends Component
             $this->realizarAccion();
         }
     }
+
+    public function updatedIvaSeleccionado($value)
+    {
+        $iva = Iva::find($value);
+       $this->iva_id = $value ?? null;
+       $this->iva_valor = $iva->iva ?? null;
+    }
+
 
     public function updatedDiaFinal($value)
     {
@@ -269,10 +276,12 @@ class CreateComponent extends Component
             $query->where('presupuestos.diaEvento', '<=', $this->diaFinal)
                   ->where('presupuestos.diaFinal', '>=', $this->diaEvento);
         })
+        ->where('')
         ->pluck('servicio_presupuesto.articulo_seleccionado');
 
-        $this->articulos = Articulos::whereNotIn('id', $articulosEnUso)->get();
+        $this->articulos = Articulos::whereNotIn('id', $articulosEnUso)->orWhere('stock',1)->get();
     }
+
     public function mount()
     {
         $this->num_arti = 0;
@@ -294,6 +303,7 @@ class CreateComponent extends Component
         $this->gasoilPrecio = Settings::where('id', 1)->first()->precio_gasoil_km;
         $this->fechaEmision = date("Y-m-d", time());
         $this->nombreGestor = Auth::user()->name . " " . Auth::user()->surname;
+        $this->ivaLista = Iva::all();
         $this->servicioEventoList = array();
         if (session('datos2')) {
             $this->nPresupuesto = session('datos')['nPresupuesto'];
@@ -338,6 +348,7 @@ class CreateComponent extends Component
     {
         return Carbon::now()->addYears($suma)->format('Y');
     }
+
     public function render()
     {
 
@@ -345,32 +356,6 @@ class CreateComponent extends Component
         $this->clienteSeleccionado = Cliente::find($this->id_cliente);
         return view('livewire.presupuestos.create-component');
     }
-
-    // public function cargarServicios()
-    // {
-    //     // Obtener todos los servicios
-    //     $servicios = Servicio::all();
-
-    //     // Recorrer cada servicio y añadir la propiedad count
-    //     $servicios->each(function ($servicio) {
-    //         // Usar Carbon para manejar fechas más fácilmente
-    //         $fecha = Carbon::createFromFormat('Y-m-d', $this->diaEvento);
-    //         $cuenta = ServicioPresupuesto::where('servicio_id', $servicio->id)
-    //         ->whereDate('created_at', $fecha)
-    //         ->count();
-    //         $serviciosTotales = Articulos::where('id_categoria', $servicio->id)->get();
-    //         // dd($serviciosTotales);
-
-    //         $servicio->count =  $serviciosTotales->count() - $cuenta;
-    //         // Asumiendo que 'cantidad' es la columna que quieres sumar
-    //     });
-
-    //     // dd($servicios);
-
-    //     $this->servicios = $servicios;
-    // }
-
-
 
     public function setupEvento($id)
     {
@@ -396,12 +381,14 @@ class CreateComponent extends Component
         $this->clienteExistente = false;
         $this->mensajeCliente = true;
     }
+
     public function clienteExisteFunction()
     {
         $this->clienteNuevo = false;
         $this->clienteExistente = true;
         $this->mensajeCliente = true;
     }
+
     public function setupCliente($id)
     {
 
@@ -636,6 +623,7 @@ class CreateComponent extends Component
 
         $this->currentStep = 3;
     }
+
     public function tercerPaso()
     {
         $this->currentStep = 4;
@@ -838,12 +826,8 @@ class CreateComponent extends Component
             $this->addProgramServiceField($servicio["numMonitores"], $index);
         }
 
-
-
-
-
-        // $this->programas[count($this->servicioEventoList)] = [];
     }
+
     public function getImporteBaseServ($servicio)
     {
         $minMonitores = $servicio->minMonitor;
@@ -915,18 +899,18 @@ class CreateComponent extends Component
         return $nombreCompleto;
     }
 
-    public function checkTime($key, $i)
-    {
-        $servicioEvento = $this->servicioEventoList[$key];
-        $programa = $servicioEvento["programas"][$i];
-        $hora = $programa["horas"];
+    // public function checkTime($key, $i)
+    // {
+    //     $servicioEvento = $this->servicioEventoList[$key];
+    //     $programa = $servicioEvento["programas"][$i];
+    //     $hora = $programa["horas"];
 
-        if (!is_numeric($hora) || $hora <= 0) {
-            $hora = 1;
-        }
-        $servicioEvento["programas"][$i]["horas"] = $hora;
-        $this->servicioEventoList[$key] = $servicioEvento;
-    }
+    //     if (!is_numeric($hora) || $hora <= 0) {
+    //         $hora = 1;
+    //     }
+    //     $servicioEvento["programas"][$i]["horas"] = $hora;
+    //     $this->servicioEventoList[$key] = $servicioEvento;
+    // }
 
     //Calcula y aplica el descuento de un servicio
     public function applyServiceDiscount($key)
@@ -1026,7 +1010,6 @@ class CreateComponent extends Component
         $this->servicioEventoList[$keyServicio] = $servicioEvento;
     }
 
-
     public function refreshMountTime($key)
     {
         $serviciosDia = $this->serviciosListDia[$this->dia];
@@ -1045,13 +1028,11 @@ class CreateComponent extends Component
         }
     }
 
-
     public function selectorCliente()
     {
         $this->clienteExistente = true;
         $this->emit('clienteExistenteEmit');
     }
-
 
     //Saca el nombre de un servicio
     public function servicioNombre($id)
@@ -1091,7 +1072,6 @@ class CreateComponent extends Component
         }
     }
 
-
     //Calcula la hora final del servicio a partir de su hora de inicio y su duracion
     public function horaFinalizacion($servicioEvento)
     {
@@ -1101,7 +1081,6 @@ class CreateComponent extends Component
         // $hora = $servicioEvento->horaInicio->modify("+$servicioEvento->tiempo hours");
         return $hora;
     }
-
 
     public function addServiceField()
     {
@@ -1128,8 +1107,6 @@ class CreateComponent extends Component
 
         // $this->programas[count($this->servicioEventoList)] = [];
     }
-
-
 
     public function addProgramServiceField($numMonitores, $index)
     {
@@ -1240,7 +1217,6 @@ class CreateComponent extends Component
         $this->applyServiceDiscount($key);
     }
 
-
     public function removeServicio($key)
     {
 
@@ -1271,6 +1247,7 @@ class CreateComponent extends Component
         ]);
         return Redirect::to(route("clientes.create-from-budget"));
     }
+
     public function crearTipoEvento()
     {
         session([
@@ -1421,13 +1398,13 @@ class CreateComponent extends Component
         }
         return $programasConf;
     }
-    public function updatedArticuloSeleccionado($value){
-        $articulo=Articulos::find($value);
-        if(isset( $articulo->name)){
-        $this->concepto = $articulo->name;
-    }
-    }
 
+    public function updatedArticuloSeleccionado($value){
+         $articulo=Articulos::find($value);
+        if(isset( $articulo->name)){
+            $this->concepto = $articulo->name;
+        }
+    }
 
     // Al hacer submit en el formulario
     public function submit()
@@ -1487,7 +1464,9 @@ class CreateComponent extends Component
                 'gasoilDistancia' => 'nullable',
                 'gestor_id' => 'nullable',
                 'diaEvento' => 'required',
-                'diaFinal' => "required"
+                'diaFinal' => "required",
+                'iva_id' => 'nullable',
+                'iva_valor' => 'nullable',
 
             ],
             // Mensajes de error
@@ -1576,6 +1555,7 @@ class CreateComponent extends Component
             ]);
         }
     }
+
     public function cambioPrecioPack()
     {
         $pack = $this->packs->where('id', $this->pack_seleccionado)->first()->servicios();
@@ -1729,7 +1709,7 @@ class CreateComponent extends Component
             $this->precioFinalServicio = 0;
         }
 
-     }
+    }
 
     public function asignarValorInicial($keyPack, $value)
     {
@@ -1844,7 +1824,7 @@ class CreateComponent extends Component
 
 
                             $nuevaCantidadTotalgeneral = $sumaTotalStockUsadoGeneral + 1 + $sumadepacks;
-                            if ($stockTotal > $nuevaCantidadTotalgeneral) {
+                            if ($stockTotal < $nuevaCantidadTotalgeneral) {
                                 $stockSeSupera = true;
                             }
                         }else{
@@ -1965,7 +1945,7 @@ class CreateComponent extends Component
 
 
                         $nuevaCantidadTotalgeneral = $sumaTotalStockUsadoGeneral + 1 + $sumadepacks;
-                        if ($stockTotal > $nuevaCantidadTotalgeneral) {
+                        if ($stockTotal < $nuevaCantidadTotalgeneral) {
                             $stockSeSupera = true;
                         }
                     }else{
@@ -2089,11 +2069,6 @@ class CreateComponent extends Component
                     'hora_montaje' => $this->horaMontaje ?? '00:00',
                     'tiempo_montaje' => $this->tiempoMontaje ?? '00:00',
                     'tiempo_desmontaje' => $this->tiempoDesmontaje ?? '00:00',
-                    // 'sueldo_monitores' => $this->sueldoMonitores ?? $defaultArray,
-                    // 'id_monitores' => $this->idMonitores ?? $defaultArray,
-                    // 'gasto_gasoil' => $this->gastosGasoil ?? $defaultArray,
-                    // 'check_gasoil' => $this->gastosGasoil ?? $defaultArray,
-                    // 'pago_pendiente' => $this->sueldoMonitores ?? $defaultArray,
                     'concepto'=> $this->concepto,
                     'visible'=> $this->visible,
                     'articulo_seleccionado' => $this->articulo_seleccionado ?? '0',
@@ -2155,17 +2130,6 @@ class CreateComponent extends Component
         unset($this->listaServicios[$indice]);
         $this->listaServicios = array_values($this->listaServicios);
     }
-
-    // public function updatedDiaEvento()
-    // {
-    //     if (!isset($this->diaFinal)) {
-    //         $this->diaFinal = $this->diaEvento;
-    //     }
-    //     $this->diaEvento  === null ? '' : $this->cargarServicios();
-    //     // dd($this->servicios);
-    //     // $this->cargarServicios();
-    // }
-
 
     // Función para cuando se llama a la alerta
     public function getListeners()

@@ -11,6 +11,7 @@ $(document).ready(function() {
     //Buttons examples
     var table = $('#datatable-buttons').DataTable({
         lengthChange: false,
+        stateSave: true,
         buttons: ['copy', 'excel', 'pdf', 'colvis'],
         "language": {
             "lengthMenu": "Mostrando _MENU_ registros por página",

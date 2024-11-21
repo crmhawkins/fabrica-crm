@@ -144,7 +144,20 @@
                     <td>
                         {{ $cliente->tipoCalle }} {{ $cliente->calle }} , {{ $cliente->numero }}
                     </td>
-                    <td>{{ $cliente->nif }}</td>
+                    <td  colspan="2">{{ $cliente->nif }}</td>
+                </tr>
+
+                <tr width="100%">
+                    <th>Dir 1</th>
+                    <th>Dir 2</th>
+                    <th colspan="2">Dir 3</th>
+                </tr>
+                <tr width="100%">
+                    <td> {{ $cliente->direccionAdicional1 }}</td>
+                    <td>
+                        {{ $cliente->direccionAdicional2 }}
+                    </td>
+                    <td colspan="2" >{{ $cliente->direccionAdicional3 }}</td>
                 </tr>
                 <tr width="100%">
                     <th>Codigo Organo Gestor</th>
@@ -156,7 +169,7 @@
                     <td>
                         {{ $cliente->codigo_unidad_tramitadora }}
                     </td>
-                    <td>{{ $cliente->codigo_oficina_contable }}</td>
+                    <td colspan="2" >{{ $cliente->codigo_oficina_contable }}</td>
                 </tr>
             @else
             <thead>
@@ -174,6 +187,18 @@
                         {{ $cliente->tipoCalle }} {{ $cliente->calle }} , {{ $cliente->numero }}
                     </td>
                     <td>{{ $cliente->nif }}</td>
+                </tr>
+                <tr width="100%">
+                    <th>Dir 1</th>
+                    <th>Dir 2</th>
+                    <th colspan="2">Dir 3</th>
+                </tr>
+                <tr width="100%">
+                    <td> {{ $cliente->direccionAdicional1 }}</td>
+                    <td>
+                        {{ $cliente->direccionAdicional2 }}
+                    </td>
+                    <td colspan="2" >{{ $cliente->direccionAdicional3 }}</td>
                 </tr>
             @endif
                 <tr width="100%">
@@ -315,10 +340,21 @@
                         <td colspan="3">BASE IMPONIBLE</th>
                         <td colspan="1">{{$presupuesto->precioFinal}} €</th>
                     </tr>
+                    @if($cliente->tipo_cliente && isset($presupuesto->iva_valor))
+                    <tr width="100%">
+                        <td colspan="3">IVA</th>
+                        <td colspan="1"> {{$presupuesto->precioFinal * ($presupuesto->iva_valor/100) }} €</th>
+                    </tr>
+                    <tr width="100%">
+                        <th colspan="3">TOTAL</th>
+                        <th colspan="1">{{$presupuesto->precioFinal * (1 + ( $presupuesto->iva_valor/100 )) }} €</th>
+                    </tr>
+                    @else
                     <tr width="100%">
                         <th colspan="3">TOTAL</th>
                         <th colspan="1">{{$presupuesto->precioFinal}} €</th>
                     </tr>
+                    @endif
                 </table>
                 <br>
                 <br>

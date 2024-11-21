@@ -26,12 +26,10 @@ class CreateComponent extends Component
         $validatedData = $this->validate([
             'name' => 'required',
             'iva' => 'required',
-        ],
-            // Mensajes de error
-            [
-                'name.required' => 'El nombre es obligatorio.',
-                'iva.required' => 'El iva es obligatorio.',
-            ]);
+        ],[
+            'name.required' => 'El nombre es obligatorio.',
+            'iva.required' => 'El iva es obligatorio.',
+        ]);
 
         // Guardar datos validados
         $productosSave = Iva::create($validatedData);
@@ -61,7 +59,22 @@ class CreateComponent extends Component
     {
         return [
             'confirmed',
+            'submit'
         ];
+    }
+
+    public function alertaGuardar()
+    {
+        $this->alert('warning', 'Asegúrese de que todos los datos son correctos antes de guardar.', [
+            'position' => 'center',
+            'toast' => false,
+            'showConfirmButton' => true,
+            'onConfirmed' => 'submit',
+            'confirmButtonText' => 'Sí',
+            'showDenyButton' => true,
+            'denyButtonText' => 'No',
+            'timerProgressBar' => true,
+        ]);
     }
 
     // Función para cuando se llama a la alerta
