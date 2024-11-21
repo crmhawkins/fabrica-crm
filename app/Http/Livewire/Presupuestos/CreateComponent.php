@@ -1782,7 +1782,7 @@ class CreateComponent extends Component
                     // Iterar a través de los artículos del servicio y verificar el stock para cada uno
 
                     // Obtener la cantidad total utilizada de este artículo en la fecha indicada
-                    if($articulo->stock = 0){
+                    if($articulo->stock == 0){
                         $sumaStockUsado = DB::table('presupuestos')
                         ->join('servicio_presupuesto', 'presupuestos.id', '=', 'servicio_presupuesto.presupuesto_id')
                         ->whereRaw('? BETWEEN presupuestos.diaEvento AND presupuestos.diaFinal', [$fechaEvento])
@@ -1903,7 +1903,7 @@ class CreateComponent extends Component
                 // Iterar a través de los artículos del servicio y verificar el stock para cada uno
                 $articulo = DB::table('articulos')->where('id', $articuloId)->first();
                 // Obtener la cantidad total utilizada de este artículo en la fecha indicada
-                if($articulo->stock = 0){
+                if($articulo->stock == 0){
                     $sumaStockUsado = DB::table('presupuestos')
                     ->join('servicio_presupuesto', 'presupuestos.id', '=', 'servicio_presupuesto.presupuesto_id')
                     ->whereRaw('? BETWEEN presupuestos.diaEvento AND presupuestos.diaFinal', [$fechaEvento])

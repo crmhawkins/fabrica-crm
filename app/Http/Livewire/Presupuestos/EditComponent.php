@@ -1864,7 +1864,7 @@ class EditComponent extends Component
                     // Iterar a través de los artículos del servicio y verificar el stock para cada uno
 
                     // Obtener la cantidad total utilizada de este artículo en la fecha indicada
-                    if($articulo->stock = 0){
+                    if($articulo->stock == 0){
                         $sumaStockUsado = DB::table('presupuestos')
                         ->join('servicio_presupuesto', 'presupuestos.id', '=', 'servicio_presupuesto.presupuesto_id')
                         ->where(function($query) {
