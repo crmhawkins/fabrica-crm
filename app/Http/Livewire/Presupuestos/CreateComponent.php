@@ -238,12 +238,12 @@ class CreateComponent extends Component
     protected $listeners = ['rerender' => '$refresh'];
 
 
-    public function updatedDiaEvento($value)
+    public function cambiarDiaEvento()
     {
         if (!isset($this->diaFinal)) {
                $this->diaFinal = $this->diaEvento;
             }
-        if (!is_null($value) && !is_null($this->diaFinal)) {
+        if (!is_null($this->diaEvento) && !is_null($this->diaFinal)) {
             $this->realizarAccion();
         }
     }
@@ -268,7 +268,9 @@ class CreateComponent extends Component
         $this->validate([
             'diaEvento' => 'required|date',
             'diaFinal' => 'required|date|after_or_equal:diaEvento'
-        ]);
+        ],[
+            'diaFinal.after' => 'El dia final del evento no puede se anterio al inicio'
+        ]);;
 
         $articulosEnUso = DB::table('presupuestos')
         ->join('servicio_presupuesto', 'presupuestos.id', '=', 'servicio_presupuesto.presupuesto_id')

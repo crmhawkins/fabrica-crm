@@ -519,7 +519,7 @@
                                 <label for="diaEvento" class="col-sm-12 col-form-label">Dia del evento</label>
                                 <div class="col-sm-10">
                                     <input type="date" wire:model.lazy="diaEvento" class="form-control"
-                                        name="diaEvento" id="diaEvento" placeholder="X">
+                                        name="diaEvento" id="diaEvento" placeholder="X" wire:blur="cambiarDiaEvento()"/>
                                     @error('diaEvento')
                                     <span class="text-danger">{{ $message }}</span>
                                     @enderror
