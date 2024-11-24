@@ -58,7 +58,7 @@
                                     @endif
                                 </td>
 
-                                <td> <a href="presupuestos-edit/{{ $presup->id }}" class="btn btn-primary">Ver/Editar</a> </td>
+                                <td> <a href="presupuestos-edit/{{ $presup->id }}" class="btn btn-primary" target="blank">Editar</a></td>
                             </tr>
                             @endforeach
                         </tbody>

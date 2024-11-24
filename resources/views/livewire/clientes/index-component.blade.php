@@ -49,7 +49,7 @@
                                         <td>{{ $cliente->nif }}</td>
                                         <td>{{ $cliente->tlf1 }}</td>
                                         <td>{{ $cliente->email1 }}</td>
-                                        <td> <a href="clientes-edit/{{ $cliente->id }}" class="btn btn-primary">Ver/Editar</a> </td>
+                                        <td> <a href="clientes-edit/{{ $cliente->id }}" class="btn btn-primary" target="_blank">Editar</a></td>
                                     </tr>
                                 @endforeach
                             </tbody>

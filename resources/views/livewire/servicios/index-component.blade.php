@@ -56,7 +56,7 @@
                                 <td>{{ $this->precioTotal($servicio->id) }} €</td>
 
 
-                                <td> <a href="servicios-edit/{{ $servicio->id }}" class="btn btn-primary">Ver/Editar</a> </td>
+                                <td> <a href="servicios-edit/{{ $servicio->id }}" class="btn btn-primary" target="blank">Editar</a></td>
                             </tr>
                             @endforeach
                         </tbody>
