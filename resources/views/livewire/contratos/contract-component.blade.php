@@ -314,7 +314,7 @@
                 </tr>
                 <tr width="100%">
                     <td style="border-right-color: #fff !important; border-top-color: #fff !important; border-bottom-color: #fff !important;"><b>Total
-                            servicios contratados :</b> {{ $presupuesto->precioFinal }} € (sin IVA)</td>
+                            servicios contratados :</b> {{ $presupuesto->precioFinal }} € </td>
                     <td style="border-right-color: #fff !important; border-top-color: #fff !important; border-bottom-color: #fff !important;"><b>Entrega:</b>
                         {{ $presupuesto->adelanto}} € ({{round(($presupuesto->adelanto / $presupuesto->precioFinal) * 100, 2)}}%)</td>
                     <td style="border-top-color: #fff !important; border-bottom-color: #fff !important;"><b>Método de pago:</b> {{ $metodoPago }}</td>
