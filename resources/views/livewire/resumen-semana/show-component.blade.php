@@ -37,7 +37,7 @@
                                         <tr>
 
                                             <th colspan="1">
-                                                #{{ $presupuesto->nPresupuesto ?? 'Presupuesto Borrado' }}
+                                                #{{ $presupuesto->id ?? 'Presupuesto Borrado' }}
                                             </th>
                                             <th colspan="5">
                                                 @if ($datoEdicion['id'] == $evento->id && $datoEdicion['column'] == 'eventoNombre')
