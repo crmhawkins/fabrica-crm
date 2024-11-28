@@ -122,7 +122,7 @@
                     <th>Valido hasta</th>
                 </tr>
                 <tr width="100%">
-                    <td width="50%"> <b>{{ optional($presupuesto->gestor)->name }}</b></td>
+                    <td width="50%"> <b>{{ optional($presupuesto->gestor)->name . ' ' . optional($presupuesto->gestor)->surname }}</b></td>
                     <td width="50%">{{ $fechaVencimiento }} </td>
                 </tr>
             </tbody>
