@@ -122,7 +122,7 @@
                     <th>Valido hasta</th>
                 </tr>
                 <tr width="100%">
-                    <td width="50%"> <b>{{ $id_presupuesto }}</b></td>
+                    <td width="50%"> <b>{{ optional($presupuesto->gestor)->name }}</b></td>
                     <td width="50%">{{ $fechaVencimiento }} </td>
                 </tr>
             </tbody>
@@ -209,7 +209,7 @@
                 <tr width="100%">
                     <td>{{ $evento->eventoContacto }}
                     </td>
-                    <td>{{ $evento->eventoEmail }}</td>
+                    <td>{{ $cliente->email1 }}</td>
                     <td>{{ $evento->eventoTelefono }}</td>
                 </tr>
                 <tr width="100%">

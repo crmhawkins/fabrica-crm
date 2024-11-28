@@ -78,6 +78,10 @@ class Presupuesto extends Model
     {
         return $this->belongsTo(Cliente::class, 'id_cliente');
     }
+    public function gestor()
+    {
+        return $this->belongsTo(User::class, 'gestor_id');
+    }
 
 
 
