@@ -24,6 +24,6 @@ class IsContable
             }
         }
 
-        return redirect()->route('inicio'); // If user is not an admin.
+        return redirect()->route('home'); // If user is not an admin.
     }
 }
