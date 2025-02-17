@@ -144,7 +144,6 @@
                                 @enderror
                             </div>
                         </div>
-                        </div>
                         @endif
                         <div class="form-group row">
                             <div class="col-sm-9">
@@ -571,7 +570,6 @@
                             </div>
                             <div class="col-sm-1 mt-2">&nbsp;</div>
                         </div>
-
                     </form>
                 </div>
             </div>
@@ -584,11 +582,13 @@
                         <div class="col-12">
                             <button class="w-100 btn btn-success mb-2" id="alertaGuardar">Editar contrato</button>
                             <button class="w-100 btn btn-info mb-2" id="alertaGuardar2">Descargar documento</button>
+                            <button class="w-100 btn btn-danger mb-2" id="alertaEliminar">Eliminar contrato</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
         @section('scripts')
         <script>
             $("#alertaGuardar").on("click", () => {
@@ -644,42 +644,42 @@
             })
 
             $(document).ready(function() {
-                $('#tableServicios').DataTable({
-                    responsive: true,
-                    dom: 'Bfrtip',
-                    buttons: [
-                        'copy', 'csv', 'excel', 'pdf', 'print'
-                    ],
-                    buttons: [{
-                        extend: 'collection',
-                        text: 'Export',
-                        buttons: [{
-                                extend: 'pdf',
-                                className: 'btn-export'
-                            },
-                            {
-                                extend: 'excel',
-                                className: 'btn-export'
-                            }
-                        ],
-                        className: 'btn btn-info text-white'
-                    }],
-                    "language": {
-                        "lengthMenu": "Mostrando _MENU_ registros por página",
-                        "zeroRecords": "Nothing found - sorry",
-                        "info": "Mostrando página _PAGE_ of _PAGES_",
-                        "infoEmpty": "No hay registros disponibles",
-                        "infoFiltered": "(filtrado de _MAX_ total registros)",
-                        "search": "Buscar:",
-                        "paginate": {
-                            "first": "Primero",
-                            "last": "Ultimo",
-                            "next": "Siguiente",
-                            "previous": "Anterior"
-                        },
-                        "zeroRecords": "No se encontraron registros coincidentes",
-                    }
-                });
+                // $('#tableServicios').DataTable({
+                //     responsive: true,
+                //     dom: 'Bfrtip',
+                //     buttons: [
+                //         'copy', 'csv', 'excel', 'pdf', 'print'
+                //     ],
+                //     buttons: [{
+                //         extend: 'collection',
+                //         text: 'Export',
+                //         buttons: [{
+                //                 extend: 'pdf',
+                //                 className: 'btn-export'
+                //             },
+                //             {
+                //                 extend: 'excel',
+                //                 className: 'btn-export'
+                //             }
+                //         ],
+                //         className: 'btn btn-info text-white'
+                //     }],
+                //     "language": {
+                //         "lengthMenu": "Mostrando _MENU_ registros por página",
+                //         "zeroRecords": "Nothing found - sorry",
+                //         "info": "Mostrando página _PAGE_ of _PAGES_",
+                //         "infoEmpty": "No hay registros disponibles",
+                //         "infoFiltered": "(filtrado de _MAX_ total registros)",
+                //         "search": "Buscar:",
+                //         "paginate": {
+                //             "first": "Primero",
+                //             "last": "Ultimo",
+                //             "next": "Siguiente",
+                //             "previous": "Anterior"
+                //         },
+                //         "zeroRecords": "No se encontraron registros coincidentes",
+                //     }
+                // });
                 console.log('select2')
                 $('.form-control select').select2();
                 $("#diaEvento").datepicker();
@@ -702,5 +702,20 @@
                     eyeIcon.className = "fas fa-eye";
                 }
             }
+
+
+            $("#alertaEliminar").on("click", () => {
+            Swal.fire({
+                title: '¿Estás seguro? No se podrá revertir la acción.',
+                icon: 'error',
+                text: 'Si estás seguro, pulsa el botón de "Confirmar" para eliminar el contrato.',
+                showConfirmButton: true,
+                showCancelButton: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.livewire.emit('destroy');
+                }
+            });
+        });
         </script>
         @endsection

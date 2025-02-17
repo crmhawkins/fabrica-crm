@@ -49,9 +49,9 @@ class IndexComponent extends Component
 
     public function cambioSemana()
     {
-        $fecha = Carbon::now()->setISODate($this->semana, 1, 1);
-        $fechaInicio = $fecha->startOfYear()->format('Y-m-d'); // El 1 al final establece el día de inicio de la semana a lunes
-        $fechaFin = $fecha->endOfYear()->format('Y-m-d');
+        $fecha = Carbon::create($this->semana, 1, 1);
+        $fechaInicio = $fecha->copy()->startOfYear()->format('Y-m-d'); // El 1 al final establece el día de inicio de la semana a lunes
+        $fechaFin = $fecha->copy()->endOfYear()->format('Y-m-d');
         $this->caja = Caja::whereBetween('fecha', [$fechaInicio, $fechaFin])->get();
 
     }

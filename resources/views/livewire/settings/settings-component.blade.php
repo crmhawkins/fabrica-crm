@@ -17,18 +17,17 @@
             <div class="card m-b-30">
                 <div class="card-body">
                     <div class="form-group col-md-4">
-                        <label for="eventoNiños" class="col-sm-12 col-form-label">Precio del gasoil por
-                            kilómetro</label>
+                        <label for="eventoNiños" class="col-sm-12 col-form-label">Precio por Hora de monitores</label>
                         <div class="col-sm-10">
                             <input type="number" wire:model="precio_gasoil_km" class="form-control"
                                 name="precio_gasoil_km" placeholder="0" step="0.01">
                         </div>
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="eventoNiños" class="col-sm-12 col-form-label">Saldo inicial</label>
+                        <label for="saldo_inicial" class="col-sm-12 col-form-label">Saldo inicial</label>
                         <div class="col-sm-10">
-                            <input type="number" wire:model="precio_gasoil_km" class="form-control"
-                                name="precio_gasoil_km" placeholder="0" step="0.01">
+                            <input type="number" wire:model="saldo_inicial" class="form-control"
+                                name="saldo_inicial" placeholder="0" step="0.01">
                         </div>
                     </div>
                 </div>

@@ -144,13 +144,13 @@
                     <td>
                         {{ $cliente->tipoCalle }} {{ $cliente->calle }} , {{ $cliente->numero }}
                     </td>
-                    <td  colspan="2">{{ $cliente->nif }}</td>
+                    <td colspan="2" >{{ $cliente->nif }}</td>
                 </tr>
 
                 <tr width="100%">
                     <th>Dir 1</th>
                     <th>Dir 2</th>
-                    <th colspan="2">Dir 3</th>
+                    <th colspan="2" >Dir 3</th>
                 </tr>
                 <tr width="100%">
                     <td> {{ $cliente->direccionAdicional1 }}</td>
@@ -162,7 +162,7 @@
                 <tr width="100%">
                     <th>Codigo Organo Gestor</th>
                     <th>Codigo Unidad Tramitadora</th>
-                    <th colspan="2">Codigo Oficina Contable</th>
+                    <th colspan="2" >Codigo Oficina Contable</th>
                 </tr>
                 <tr width="100%">
                     <td> {{ $cliente->codigo_organo_gestor }}</td>
@@ -186,7 +186,7 @@
                     <td>
                         {{ $cliente->tipoCalle }} {{ $cliente->calle }} , {{ $cliente->numero }}
                     </td>
-                    <td>{{ $cliente->nif }}</td>
+                    <td colspan="2" >{{ $cliente->nif }}</td>
                 </tr>
                 <tr width="100%">
                     <th>Dir 1</th>
@@ -210,7 +210,7 @@
                     <td>{{ $evento->eventoContacto }}
                     </td>
                     <td>{{ $cliente->email1 }}</td>
-                    <td>{{ $evento->eventoTelefono }}</td>
+                    <td colspan="2" >{{ $evento->eventoTelefono }}</td>
                 </tr>
                 <tr width="100%">
                     <th>DATOS DEL EVENTO</th>

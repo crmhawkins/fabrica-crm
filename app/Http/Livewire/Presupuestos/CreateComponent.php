@@ -235,7 +235,13 @@ class CreateComponent extends Component
     public $ivaSeleccionado;
     public $iva_id;
     public $iva_valor;
+
+    public $factura_propia;
+    public $cliente_vip;
+
     protected $listeners = ['rerender' => '$refresh'];
+
+
 
 
     public function cambiarDiaEvento()
@@ -1468,7 +1474,8 @@ class CreateComponent extends Component
                 'diaFinal' => "required",
                 'iva_id' => 'nullable',
                 'iva_valor' => 'nullable',
-
+                'factura_propia' => 'nullable',
+                'cliente_vip' => 'nullable',
             ],
             // Mensajes de error
             [
@@ -1501,10 +1508,10 @@ class CreateComponent extends Component
                     'hora_inicio' => $servicio['hora_inicio'],
                     'hora_finalizacion' => $servicio['hora_finalizacion'],
                     'hora_montaje' => $servicio['hora_montaje'],
-                    // 'sueldo_monitores' => json_encode($servicio['sueldo_monitores']),
-                    // 'id_monitores' => json_encode($servicio['id_monitores']),
-                    // 'gasto_gasoil' => json_encode($servicio['gasto_gasoil']),
-                    // 'pago_pendiente' => json_encode($servicio['sueldo_monitores']),
+                    'sueldo_monitores' => json_encode($servicio['sueldo_monitores']),
+                    'id_monitores' => json_encode($servicio['id_monitores']),
+                    'gasto_gasoil' => json_encode($servicio['gasto_gasoil']),
+                    'pago_pendiente' => json_encode($servicio['sueldo_monitores']),
                     'articulo_seleccionado' => $servicio['articulo_seleccionado'],
                     'num_art_indef' => $servicio['num_art_indef'],
                     'concepto'=> $servicio['concepto'],
@@ -1515,6 +1522,7 @@ class CreateComponent extends Component
         }
 
         foreach ($this->listaPacks as $pack) {
+            // Preparar un array basado en numero_monitores
             $presupuesosSave->packs()->attach($pack['id'], [
                 'numero_monitores' => json_encode($pack['numero_monitores']),
                 'precio_final' => $pack['precioFinal'],
@@ -1524,15 +1532,13 @@ class CreateComponent extends Component
                 'tiempos_montaje' => json_encode($pack['tiempos_montaje']),
                 'tiempos_desmontaje' => json_encode($pack['tiempos_desmontaje']),
                 'horas_montaje' => json_encode($pack['horas_montaje']),
-                // 'sueldos_monitores' => json_encode($pack['sueldos_monitores']),
-                // 'id_monitores' => json_encode($pack['id_monitores']),
-                // 'gastos_gasoil' => json_encode($pack['gastos_gasoil']),
-                // 'pagos_pendientes' => json_encode($pack['sueldos_monitores']),
+                'sueldos_monitores' => json_encode($pack['sueldos_monitores']) ,
+                'id_monitores' => json_encode($pack['id_monitores']),
+                'gastos_gasoil' => json_encode($pack['gastos_gasoil']) ,
+                'pagos_pendientes' => json_encode($pack['sueldos_monitores']),
                 'articulos_seleccionados' => json_encode($pack['articulos_seleccionados']),
             ]);
         }
-
-
 
 
 
@@ -1842,10 +1848,17 @@ class CreateComponent extends Component
                 $numMonitores = $this->preciosMonitores;
 
                 // Preparar arrays basados en numero_monitores
-                $defaultArray = array_fill(0, count($numMonitores), '0');
-                $defaultTimeArray = array_fill(0, count($numMonitores), '00:00');
+                $precioHora = Settings::first()->precio_gasoil_km;
+                $time = explode(':',$this->tiempo);
+                $horas = ($time[0] + $time[1] / 60)+((isset($time[2]) && $time[2] != 0) ?  $time[2] / 3600 : 0);
+                $sueldo = $precioHora * $horas;
+                $arraySueldo = array_fill(0, $this->numero_monitores, $sueldo);
+                $defaultArray = array_fill(0, $this->numero_monitores, '0');                $defaultTimeArray = array_fill(0, count($numMonitores), '00:00');
                 $defaultDoubleArray = array_map(function () use ($defaultArray) {
                     return $defaultArray;
+                }, $numMonitores);
+                $SueldoDoubleArray = array_map(function () use ($arraySueldo) {
+                    return $arraySueldo;
                 }, $numMonitores);
 
                 $this->listaPacks[] = [
@@ -1859,7 +1872,7 @@ class CreateComponent extends Component
                     'tiempos_desmontaje' => !empty($this->tiemposDesmontajePack) ? $this->tiemposDesmontajePack : $defaultTimeArray,
                     'horas_montaje' => !empty($this->horasMontajePack) ? $this->horasMontajePack : $defaultTimeArray,
                     'id_monitores' => !empty($this->idMonitoresPack) ? $this->idMonitoresPack : $defaultDoubleArray,
-                    'sueldos_monitores' => !empty($this->sueldoMonitoresPack) ? $this->sueldoMonitoresPack : $defaultDoubleArray,
+                    'sueldos_monitores' => !empty($this->sueldoMonitoresPack) ? $this->sueldoMonitoresPack : $SueldoDoubleArray,
                     'gastos_gasoil' => !empty($this->gastosGasoilPack) ? $this->gastosGasoilPack : $defaultDoubleArray,
                     'checks_gasoil' => !empty($this->gastosGasoilPack) ? $this->gastosGasoilPack : $defaultDoubleArray,
                     'pagos_pendientes' => !empty($this->sueldoMonitoresPack) ? $this->sueldoMonitoresPack : $defaultDoubleArray,
@@ -1960,6 +1973,11 @@ class CreateComponent extends Component
                     for ($i = 0; $i > $this->numero_monitores; $i++) {
                         $this->sueldoMonitores[] = $this->servicios->firstWhere('id', $this->servicio_seleccionado)->get('precioMonitor');
                     }
+                    $precioHora = Settings::first()->precio_gasoil_km;
+                    $time = explode(':',$this->tiempo);
+                    $horas = ($time[0] + $time[1] / 60)+((isset($time[2]) && $time[2] != 0) ?  $time[2] / 3600 : 0);
+                    $sueldo = $precioHora * $horas;
+                    $arraySueldo = array_fill(0, $this->numero_monitores, $sueldo);
                     $defaultArray = array_fill(0, $this->numero_monitores, '0');
 
                     $this->listaServicios[] = [
@@ -1973,6 +1991,11 @@ class CreateComponent extends Component
                         'tiempo_montaje' => $this->tiempoMontaje ?? '00:00',
                         'tiempo_desmontaje' => $this->tiempoDesmontaje ?? '00:00',
                         'articulo_seleccionado' => $this->articulo_seleccionado ?? '0',
+                        'sueldo_monitores' => $arraySueldo,
+                        'id_monitores' =>  $defaultArray,
+                        'gasto_gasoil' =>  $defaultArray,
+                        'check_gasoil' =>  $defaultArray,
+                        'pago_pendiente' => $defaultArray,
                         'concepto'=> $this->concepto,
                         'visible'=> $this->visible,
                         'num_art_indef' => $this->num_arti
@@ -2058,8 +2081,12 @@ class CreateComponent extends Component
                 for ($i = 0; $i > $this->numero_monitores; $i++) {
                     $this->sueldoMonitores[] = $this->servicios->firstWhere('id', $this->servicio_seleccionado)->get('precioMonitor');
                 }
+                $precioHora = Settings::first()->precio_gasoil_km;
+                $time = explode(':',$this->tiempo);
+                $horas = ($time[0] + $time[1] / 60)+((isset($time[2]) && $time[2] != 0) ?  $time[2] / 3600 : 0);
+                $sueldo = $precioHora * $horas;
+                $arraySueldo = array_fill(0, $this->numero_monitores, $sueldo);
                 $defaultArray = array_fill(0, $this->numero_monitores, '0');
-
                 $this->listaServicios[] = [
                     'id' => $this->servicio_seleccionado,
                     'numero_monitores' => $this->numero_monitores,
@@ -2072,6 +2099,11 @@ class CreateComponent extends Component
                     'tiempo_desmontaje' => $this->tiempoDesmontaje ?? '00:00',
                     'concepto'=> $this->concepto,
                     'visible'=> $this->visible,
+                    'sueldo_monitores' =>$arraySueldo,
+                    'id_monitores' =>  $defaultArray,
+                    'gasto_gasoil' =>  $defaultArray,
+                    'check_gasoil' =>  $defaultArray,
+                    'pago_pendiente' => $defaultArray,
                     'articulo_seleccionado' => $this->articulo_seleccionado ?? '0',
                     'num_art_indef' => $this->num_arti
                 ];

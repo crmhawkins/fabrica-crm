@@ -9,6 +9,7 @@ use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
 use App\Models\Caja;
 use App\Models\Evento;
+use App\Models\Monitor;
 use Illuminate\Support\Facades\Auth;
 
 class CreateGastoComponent extends Component
@@ -25,6 +26,9 @@ class CreateGastoComponent extends Component
     public $categorias;
     public $presupuestos;
     public $eventos;
+    public $monitores;
+    public $monitor_id;
+    public $serviciosMonitores;
 
 
     public function mount()
@@ -33,6 +37,8 @@ class CreateGastoComponent extends Component
         $this->categorias = TipoEvento::all();
         $this->eventos = Evento::all();
         $this->clientes = Cliente::all();
+        $this->monitores = Monitor::all();
+
     }
     public function render()
     {
@@ -47,9 +53,9 @@ class CreateGastoComponent extends Component
                 'metodo_pago' => 'required',
                 'importe' => 'required',
                 'descripcion' => 'required',
-                'presupuesto_id' => 'required',
+                'presupuesto_id' => 'nullable',
+                'monitor_id' => 'nullable',
                 'fecha' => 'required',
-
 
             ],
             // Mensajes de error
@@ -102,4 +108,18 @@ class CreateGastoComponent extends Component
     {
         return $this->clientes->firstWhere('id', $this->presupuestos->firstWhere('id', $id)->id_cliente)->nombre . " " . $this->clientes->firstWhere('id', $this->presupuestos->firstWhere('id', $id)->id_cliente)->apellido;
     }
+
+    public function updatedMonitores($value)
+    {
+        if ($value == null || $value == "") {
+            $this->monitor_id = null;
+            $this->serviciosMonitores = null;
+            return;
+        }
+       $monitor = Monitor::find($value);
+       $this->monitor_id = $monitor->id;
+       $this->serviciosMonitores = $monitor->serviciosPresupuesto;
+
+    }
+
 }

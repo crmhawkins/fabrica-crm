@@ -7,8 +7,12 @@ use App\Models\TipoEvento;
 use Illuminate\Http\Request;
 use App\Models\Evento;
 use App\Models\Gastos;
+use App\Models\Jornada;
+use App\Models\Pause;
 use App\Models\Presupuesto;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 
@@ -32,6 +36,15 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
+        $id = Auth::user()->id;
+        $user = User::find($id);
+
+        $timeWorkedToday = $this->calculateTimeWorkedToday($user);
+        $jornadaActiva = $user->activeJornada();
+        $pausaActiva = null;
+        if ($jornadaActiva) {
+            $pausaActiva = $jornadaActiva->pausasActiva();
+        }
         $presupuestos = Presupuesto::where('estado', 'Aceptado')->orWhere('estado', 'Pendiente')->orderBy('fechaEmision', 'ASC')->get();
         $categorias = TipoEvento::all();
 
@@ -54,6 +67,132 @@ class HomeController extends Controller
         $ingresos_caja = Caja::whereBetween('fecha', [$inicioSemana, $finSemana])->where('tipo_movimiento', 'Ingreso')->sum('importe');
         $resultados_caja = $ingresos_caja - $gastos_caja;
 
-        return view('home', compact('user', 'presupuestos', 'categorias', 'porcentaje_ingresos_mensuales', 'eventos',  'ingresos_mensuales', 'ingresos_caja', 'gastos_caja', 'resultados_caja'));
+        return view('home', compact('timeWorkedToday','jornadaActiva','pausaActiva','user', 'presupuestos', 'categorias', 'porcentaje_ingresos_mensuales', 'eventos',  'ingresos_mensuales', 'ingresos_caja', 'gastos_caja', 'resultados_caja'));
     }
+
+    private function calculateTimeWorkedToday($user)
+    {
+
+
+        $todayJornadas = $user->jornadas()->whereDate('start_time', Carbon::today())->get();
+
+        $totalWorkedSeconds = 0;
+
+        foreach ($todayJornadas as $jornada) {
+            $workedSeconds = Carbon::parse($jornada->start_time)->diffInSeconds($jornada->end_time ?? Carbon::now());
+            $totalPauseSeconds = $jornada->pauses->sum(function ($pause) {
+                return Carbon::parse($pause->start_time)->diffInSeconds($pause->end_time ?? Carbon::now());
+            });
+            $totalWorkedSeconds += $workedSeconds - $totalPauseSeconds;
+        }
+
+        return $totalWorkedSeconds;
+    }
+
+    public function timeworked(){
+        $user = Auth::user();
+        $timeWorkedToday = $this->calculateTimeWorkedToday($user);
+        return response()->json(['success' => true ,'time' => $timeWorkedToday]);
+    }
+
+    public function startJornada()
+    {
+        $user = User::find(Auth::user()->id);
+
+        $activeJornada = $user->activeJornada();
+
+        if ($activeJornada) {
+            // Si ya hay una jornada activa, retornar un mensaje indicando que no se puede iniciar otra
+            return response()->json([
+                'success' => false,
+                'message' => 'Ya existe una jornada activa.'
+            ]);
+        }
+
+        $jornada =  Jornada::create([
+            'user_id' => $user->id,
+            'start_time' => Carbon::now(),
+            'is_active' => true,
+        ]);
+
+        if($jornada){
+            return response()->json(['success' => true]);
+        }else{
+            return response()->json(['success' => false,'mensaje' => 'Error al iniciar jornada']);
+        }
+    }
+
+    public function endJornada()
+    {
+        $user = Auth::user();
+        $jornada = Jornada::where('user_id', $user->id)->where('is_active', true)->first();
+        if ($jornada) {
+            $finJornada = $jornada->update([
+                'end_time' => Carbon::now(),
+                'is_active' => false,
+            ]);
+            $pause = Pause::where('jornada_id', $jornada->id)->whereNull('end_time')->first();
+            if ($pause){
+                $finPause = $pause->update([
+                    'end_time' => Carbon::now(),
+                    'is_active' => false,
+                ]);
+            }
+            if($finJornada){
+                return response()->json(['success' => true]);
+            }else{
+                return response()->json(['success' => false,'mensaje' => 'Error al iniciar jornada']);
+            }
+        }else{
+            return response()->json(['success' => false,'mensaje' => 'Error al iniciar jornada']);
+        }
+
+    }
+
+    public function startPause()
+    {
+
+        $user = Auth::user();
+        $jornada = Jornada::where('user_id', $user->id)->where('is_active', true)->first();
+        if ($jornada) {
+            $pause =  Pause::create([
+                'jornada_id' =>$jornada->id,
+                'start_time' => Carbon::now(),
+            ]);
+
+            if($pause){
+                return response()->json(['success' => true]);
+            }else{
+                return response()->json(['success' => false,'mensaje' => 'Error al iniciar jornada']);
+            }
+        }else{
+            return response()->json(['success' => false,'mensaje' => 'Error al iniciar jornada']);
+        }
+    }
+
+    public function endPause()
+    {
+        $user = Auth::user();
+        $jornada = Jornada::where('user_id', $user->id)->where('is_active', true)->first();
+        if ($jornada) {
+            $pause = Pause::where('jornada_id', $jornada->id)->whereNull('end_time')->first();
+            if ($pause){
+                $finPause = $pause->update([
+                    'end_time' => Carbon::now(),
+                    'is_active' => false,
+                ]);
+
+                if($finPause){
+                    return response()->json(['success' => true]);
+                }else{
+                    return response()->json(['success' => false,'mensaje' => 'Error al iniciar jornada']);
+                }
+            }else{
+                return response()->json(['success' => false,'mensaje' => 'Error al iniciar jornada']);
+            }
+        }else{
+            return response()->json(['success' => false,'mensaje' => 'Error al iniciar jornada']);
+        }
+    }
+
 }

@@ -82,7 +82,25 @@
 
 <body>
     <div class="container">
-        <img src="{{ public_path('assets/images/logo_factura.png') }}" alt="Firma del Cliente"
+        <table style="width: 100%;">
+            <tr>
+                <!-- Celda para el texto -->
+                <td>
+                    <div class="label"><b>EDUCACIÓN, OCIO Y TIEMPO LIBRE LA FABRICA S.L.</b></div>
+                    <div class="value">B-11949658</div>
+                    <div class="value">Avd. Alcalde Cantos Ropero, 51 Pol. Ind. "Jerez 2000" Nave 14</div>
+                    <div class="value">11408 Jerez de la Frontera ( Cádiz)</div>
+                    <div class="value">956 042 751 &nbsp; &nbsp; &nbsp; &nbsp; 673 811 838</div>
+                </td>
+
+                <!-- Celda para la imagen -->
+                <td style="text-align: right;">
+                    <img src="{{ public_path('assets/images/logo_factura.png') }}" alt="Firma del Cliente" style="height: 80px; vertical-align: middle;">
+                </td>
+            </tr>
+        </table>
+
+        {{-- <img src="{{ public_path('assets/images/logo_factura.png') }}" alt="Firma del Cliente"
             style="display: float; float: right; height:10%">
         <div class="row">
             <div class="label"><b>EDUCACIÓN, OCIO Y TIEMPO LIBRE LA FABRICA S.L.</b></b></div>
@@ -98,7 +116,7 @@
         </div>
         <div class="row">
             <div class="value">956 042 751 &nbsp; &nbsp; &nbsp; &nbsp; 673 811 838</div>
-        </div>
+        </div> --}}
         <br>
         <br>
         <br>
@@ -114,20 +132,20 @@
                 <tr width="100%">
                     <td width="50%" style="border-right-color: #fff !important;"> <b>Contrato Nº</b>
                         {{ $nContrato }} </td>
-                    <td width="50%"> <b>Fecha del evento:</b> {{ $evento->diaEvento }} </td>
-                </tr>
+                        <td width="50%"> <b>Fecha del evento:</b> {{ \Carbon\Carbon::parse($evento->fechaEvento)->translatedFormat('d \d\e F \d\e Y') }} </td>
+                    </tr>
             </tbody>
         </table>
 
         <table class="table">
             <thead>
                 <tr width="100%">
-                    <th colspan="2">DATOS DEL SOLICITANTE</th>
+                    <th colspan="3">DATOS DEL SOLICITANTE</th>
                 </tr>
             </thead>
             <tbody>
                 <tr width="100%">
-                    <td width="70%" style="border-right-color: #fff !important;"><b>Nombre:</b>
+                    <td colspan="2" width="70%" style="border-right-color: #fff !important;"><b>Nombre:</b>
                         {{ $cliente->nombre }} {{ $cliente->apellido }}</td>
                     @if($cliente->tipo_cliente)
                         <td width="30%"><b>CIF:</b> {{ $cliente->nif }}</td>
@@ -196,7 +214,7 @@
                     <td><b>Localidad:</b> {{ $evento->eventoLocalidad }}</td>
                 </tr>
                 <tr width="100%">
-                    <td colspan="3"><b>Posibilidad de montaje:</b> {{ $evento->eventoLocalidad }}</td>
+                    <td colspan="3"><b>Posibilidad de montaje:</b> {{ $evento->eventoMontaje }}</td>
                 </tr>
             </tbody>
         </table>
@@ -232,12 +250,14 @@
                                     <td style="border-right-color: #fff !important;">Tiempo:
                                         {{ $pack['tiempos'][$servicioIndex] }}h</td>
                                 @endif
-                                @if (!isset($pack['horas_inicio'][$servicioIndex]))
-                                    <td style="border-right-color: #fff !important;">Hora de inicio: n/a</td>
-                                @else
-                                    <td style="border-right-color: #fff !important;">Hora de inicio:
-                                        {{ $pack['horas_inicio'][$servicioIndex] }}</td>
-                                @endif
+                                <td style="border-right-color: #fff !important;">
+                                    Hora de inicio:
+                                    @if (!isset($pack['horas_inicio'][$servicioIndex]) || $pack['horas_inicio'][$servicioIndex] === '00:00:00')
+                                        n/a
+                                    @else
+                                        {{ \Carbon\Carbon::createFromFormat('H:i:s', $pack['horas_inicio'][$servicioIndex])->format('H:i') }}
+                                    @endif
+                                </td>
                                 @if (!isset($pack['horas_finalizacion'][$servicioIndex]))
                                     <td style="border-right-color: #fff !important;">Hora de finalización: n/a</td>
                                 @else
@@ -275,9 +295,9 @@
                                 <td style="border-right-color: #fff !important;"><b>Tiempo:</b>
                                     {{ $servicio['tiempo'] }}h</td>
                                 <td style="border-right-color: #fff !important;"><b>Hora de inicio:</b>
-                                    {{ $servicio['hora_inicio'] }}</td>
+                                    {{ $servicio['hora_inicio'] && $servicio['hora_inicio'] !== '00:00:00' ? \Carbon\Carbon::createFromFormat('H:i:s', $servicio['hora_inicio'])->format('H:i') : '' }}</td>
                                 <td style="border-right-color: #fff !important;"><b>Hora de finalización:</b>
-                                    {{ $servicio['hora_finalizacion'] }}</td>
+                                    {{ $servicio['hora_finalizacion'] && $servicio['hora_finalizacion'] !== '00:00:00' ? \Carbon\Carbon::createFromFormat('H:i:s', $servicio['hora_finalizacion'])->format('H:i') : '' }}</td>
                                 <td><b>Número de monitores:</b>
                                     {{ $servicio['numero_monitores'] }}</td>
                             </tr>

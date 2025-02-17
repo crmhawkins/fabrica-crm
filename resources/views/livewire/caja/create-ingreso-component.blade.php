@@ -48,6 +48,16 @@
                             </div>
                         </div>
                         <div class="mb-3 row d-flex align-items-center">
+                            <label for="nombre" class="col-sm-12 col-form-label">Concepto</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" wire:model="descripcion" nombre="descripcion"
+                                    id="descripcion" placeholder="Concepto...">
+                                @error('nombre')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="mb-3 row d-flex align-items-center">
                             <label for="nombre" class="col-sm-12 col-form-label">Importe</label>
                             <div class="col-sm-10">
                                 <input type="number" class="form-control" wire:model="importe" nombre="importe"
@@ -77,16 +87,6 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="mb-3 row d-flex align-items-center">
-                            <label for="nombre" class="col-sm-12 col-form-label">Descripción</label>
-                            <div class="col-sm-10">
-                                <textarea wire:model="descripcion" nombre="descripcion" id="descripcion" placeholder="Nombre de la categoría..." rows="4" cols="150"></textarea>
-                                @error('nombre')
-                                    <span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
-
 
                     </form>
                 </div>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\ResumenSemanas;
 
+use App\Models\Articulos;
 use App\Models\ServicioPack;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 
@@ -29,6 +30,7 @@ class ShowComponent extends Component
     public $monitores_datos;
     public $fechas = [];
     public $presupuestos;
+    public $articulos;
     public $contratos;
     public $eventos;
     public $categorias;
@@ -57,6 +59,7 @@ class ShowComponent extends Component
         $this->monitores_datos = Monitor::all();
         $this->categorias = TipoEvento::all();
         $this->semana = Carbon::now()->year . "-W" . Carbon::now()->weekOfYear;
+        $this->articulos = Articulos::all();
         $this->cambioSemana();
     }
 
@@ -198,7 +201,7 @@ class ShowComponent extends Component
                     }
                 } else {
                     if (isset($this->datoEdicion['id']['monitor'])) {
-                        $this->terminarEdicionServicioMonitores();
+                        $this->terminarEdicionMonitores();
                     } else {
                         $this->terminarEdicionServicio();
                     }
@@ -245,6 +248,7 @@ class ShowComponent extends Component
     }
     public function detectarEdicionMonitores($id, $id2, $id3, $column)
     {
+
         $this->datoEdicion['id'] = null;
         $this->datoEdicion['column'] = null;
         $this->datoEdicion['value'] = null;
@@ -460,7 +464,7 @@ class ShowComponent extends Component
     public function getMonitor($id)
     {
         if ($this->monitores_datos->find($id) == null) {
-            return "";
+            return "No";
         } else {
             return $this->monitores_datos->find($id)->alias;
         }

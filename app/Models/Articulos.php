@@ -21,7 +21,7 @@ class Articulos extends Model
 
     public function servicios()
     {
-        return $this->belongsToMany('app\Models\Servicio', 'servicio_articulo', 'articulo_id', 'servicio_id')->withPivot('stock_usado');
+        return $this->belongsToMany(Servicio::class, 'servicio_articulo', 'articulo_id', 'servicio_id')->withPivot('stock_usado');
     }
     public function categoriaServicio()
     {

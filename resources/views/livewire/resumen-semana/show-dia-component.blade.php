@@ -42,7 +42,7 @@
 
                                     <span class="input-group-text" id="basic-addon1">#{{ $evento['id'] }}</span>
                                     <span class="input-group-text" id="basic-addon1">Evento:
-                                        {{ $evento['eventoNombre'] }}</span>
+                                        {{ $evento['eventoNombre'] - $evento['eventoProtagonista'] }}</span>
                                     <span class="input-group-text" id="basic-addon1">Tlf:
                                         {{ $evento['eventoTelefono'] }}</span>
                                     <span class="input-group-text" id="basic-addon1">Contato:

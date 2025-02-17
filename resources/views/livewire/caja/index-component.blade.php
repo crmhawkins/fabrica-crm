@@ -2,12 +2,12 @@
     <div class="page-title-box">
         <div class="row align-items-center">
             <div class="col-sm-6">
-                <h4 class="page-title">CAJA</h4>
+                <h4 class="page-title">DIARIO DE CAJA</h4>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-right">
                     <li class="breadcrumb-item"><a href="javascript:void(0);">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="javascript:void(0);">Caja</a></li>
+                    <li class="breadcrumb-item"><a href="javascript:void(0);">Diario de Caja</a></li>
                     <li class="breadcrumb-item active">Ver movimientos</li>
                 </ol>
             </div>

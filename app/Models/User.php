@@ -60,4 +60,11 @@ class User extends Authenticatable
     protected $dates = [
         'created_at', 'updated_at', 'deleted_at',
     ];
+
+    public function jornadas() {
+        return $this->hasMany(Jornada::class, 'user_id');
+    }
+    public function activeJornada() {
+        return $this->jornadas()->where('is_active', true)->first();
+    }
 }

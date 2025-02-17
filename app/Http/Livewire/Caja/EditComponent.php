@@ -83,7 +83,7 @@ class EditComponent extends Component
             'descripcion' => $this->descripcion
 
         ]);
-        event(new \App\Events\LogEvent(Auth::user(), 53, $tipoSave->id));
+        event(new \App\Events\LogEvent(Auth::user(), 53, $caja->id));
 
         if ($tipoSave) {
             $this->alert('success', '¡Movimiento de caja actualizado correctamente!', [
@@ -139,16 +139,20 @@ class EditComponent extends Component
     public function confirmed()
     {
         // Do something
-        return redirect()->route('tipo-evento.index');
+        return redirect()->route('caja.index');
 
     }
     // Función para cuando se llama a la alerta
     public function confirmDelete()
     {
-        $tipo_evento = TipoEvento::find($this->identificador);
+        $tipo_evento = Caja::find($this->identificador);
         event(new \App\Events\LogEvent(Auth::user(), 54, $tipo_evento->id));
         $tipo_evento->delete();
-        return redirect()->route('tipo-evento.index');
+        return redirect()->route('caja.index');
 
+    }
+    public function getCliente($id)
+    {
+        return $this->clientes->firstWhere('id', $this->presupuestos->firstWhere('id', $id)->id_cliente)->nombre . " " . $this->clientes->firstWhere('id', $this->presupuestos->firstWhere('id', $id)->id_cliente)->apellido;
     }
 }

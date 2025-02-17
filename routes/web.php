@@ -47,7 +47,7 @@ use App\Http\Livewire\Facturas\EditComponent;
 use App\Http\Livewire\Facturas\IndexComponent as FacturasIndexComponent;
 use App\Http\Livewire\Productos\IndexComponent;
 use App\Http\Controllers\AgendaController;
-
+use App\Http\Controllers\HomeController;
 use App\Http\Middleware\IsAdmin;
 use FontLib\Table\Type\name;
 
@@ -323,4 +323,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/service/jwt', [MapKitController::class, 'getJwt']);
 
     });
+
+    Route::post('start-jornada', [HomeController::class, 'startJornada']);
+    Route::post('end-jornada', [HomeController::class, 'endJornada']);
+    Route::post('start-pause', [HomeController::class, 'startPause']);
+    Route::post('end-pause', [HomeController::class, 'endPause']);
+    Route::post('timeworked', [HomeController::class, 'timeworked']);
 });

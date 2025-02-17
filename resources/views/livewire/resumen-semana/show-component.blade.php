@@ -33,23 +33,23 @@
                                     $presupuesto = $presupuestos->where('id_evento', $evento->id)->first();
                                 @endphp
                                 @if($presupuesto)
-                                    <table class="table table-striped table-bordered nowrap">
-                                        <tr>
+                                <table id="table-{{$evento->id}}" class="table table-striped table-bordered nowrap">
+                                    <tr>
 
                                             <th colspan="1">
-                                                #{{ $presupuesto->id ?? 'Presupuesto Borrado' }}
+                                                #{{ optional($presupuesto->contrato)->id ?? 'Contrato no Creado' }}
                                             </th>
-                                            <th colspan="5">
+                                            <th colspan="6">
                                                 @if ($datoEdicion['id'] == $evento->id && $datoEdicion['column'] == 'eventoNombre')
                                                     <div class="col-md-8" x-data=""
                                                         x-init="$('#select2-evento').select2();
                                                             $('#select2-evento').on('change', function(e) {
                                                                 var data = $('#select2-evento').select2('val');
-                                                                @this.set('datoEdicion[column]', data);
+                                                                @this.set('datoEdicion.value', data);
                                                             });"
                                                         wire:key='rand()'>
                                                         <select class="form-control" name="eventoNombre"
-                                                            id="select2-evento" wire:model.lazy="datoEdicion.value"
+                                                            id="select2-evento" wire:model="datoEdicion.value"
                                                             wire:change.lazy='terminarEdicion'>
                                                             <option value="0">-- ELIGE UN TIPO DE EVENTO --</option>
                                                             @foreach ($categorias as $tipo)
@@ -62,7 +62,7 @@
                                                 @else
                                                     <span class="align-middle"
                                                         wire:click="detectarEdicion('{{ $evento->id }}', 'eventoNombre')">
-                                                        {{ $this->categorias->where('id', $evento->eventoNombre)->first()->nombre }}
+                                                        {{ $this->categorias->where('id', $evento->eventoNombre)->first()->nombre.' - '.$evento->eventoProtagonista }}
                                                     </span>
                                                 @endif
                                             </th>
@@ -79,16 +79,28 @@
                                             </th>
                                         </tr>
                                         <tr>
+                                            <td colspan="1">Contacto:</td>
+                                            <td colspan="1"><spam style="font-weight: 800">{{$evento->eventoContacto}}</spam></td>
+                                            <td colspan="1">Parentesco:</td>
+                                            <td colspan="1"><spam style="font-weight: 800">{{$evento->eventoParentesco}}</spam></td>
+                                            <td colspan="1">Telefono:</td>
+                                            <td colspan="1"><spam style="font-weight: 800">{{$evento->eventoTelefono}}</spam></td>
+                                            <td colspan="2"><button class="btn btn-danger btn-sm mb-2"
+                                                data-export-table="table-{{$evento->id}}"
+                                                data-filename="Evento_{{optional($presupuesto->contrato)->id ?? 'Contrato no Creado'}}">
+                                                Exportar a PDF
+                                            </button></td>
+                                        </tr>
+                                        <tr>
                                             <td>
-                                                @if ($datoEdicion['id'] == $evento->id && $datoEdicion['column'] == 'precioFinal')
+                                                {{-- @if ($datoEdicion['id'] == $evento->id && $datoEdicion['column'] == 'precioFinal')
                                                     <input type="number" wire:model.lazy="datoEdicion.value"
                                                         wire:change.lazy="terminarEdicion">
-                                                @else
-                                                    <span class="align-middle"
-                                                        wire:click="detectarEdicion('{{ $evento->id }}', 'precioFinal')">
-                                                        {{ $presupuesto->precioFinal ?? 'Sin precio' }} €
+                                                @else --}}
+                                                    <span class="align-middle">
+                                                        {{ ($presupuesto->precioFinal - $presupuesto->adelanto) ?? 'Sin precio' }} €
                                                     </span>
-                                                @endif
+                                                {{-- @endif --}}
                                             </td>
                                             <td>
                                                 @if ($datoEdicion['id'] == $evento->id && $datoEdicion['column'] == 'eventoNiños')
@@ -138,7 +150,7 @@
                                                     <tr>
                                                         @if ($monitoresIndex == 0)
                                                             <td>
-                                                                @if ($datoEdicion['id'] != null)
+                                                                {{-- @if ($datoEdicion['id'] != null)
                                                                     @if ($datoEdicion['id']['presupuesto'] == $evento->id && $datoEdicion['column'] == 'servicioNombre')
                                                                         <div class="col-md-8" x-data=""
                                                                             x-init="$('#select2-servicio').select2();
@@ -166,15 +178,17 @@
                                                                         <span class="align-middle"
                                                                             wire:click="detectarEdicionServicio('{{ $evento->id }}', '{{ $servicio->id }}', 'servicioNombre')">{{ $servicio->nombre }}</span>
                                                                     @endif
-                                                                @else
-                                                                    <span class="align-middle"
-                                                                        wire:click="detectarEdicionServicio('{{ $evento->id }}', '{{ $servicio->id }}', 'servicioNombre')">{{ $servicio->nombre }}</span>
-                                                                @endif
+                                                                @else --}}
+                                                                @php
+                                                                $articulo = $articulos->where('id', $servicio->pivot->articulo_seleccionado)->first();
+                                                                @endphp
+                                                                    <span class="align-middle">{{  $articulo->name ?? $servicio->nombre }}</span>
+                                                                {{-- @endif --}}
 
                                                             </td>
                                                             <td>
-                                                                @if ($datoEdicion['id'] != null)
-                                                                    @if ($datoEdicion['id']['presupuesto'] == $evento->id && $datoEdicion['column'] == 'servicioHoraMontaje')
+                                                                @if ($datoEdicion['id'] != null && isset($datoEdicion['id']['presupuesto']))
+                                                                    @if ($datoEdicion['id']['presupuesto'] == $evento->id && $datoEdicion['id']['servicio'] == $servicio->id && $datoEdicion['column'] == 'servicioHoraMontaje')
                                                                         <input type="time"
                                                                             wire:model.lazy="datoEdicion.value"
                                                                             wire:change.lazy="terminarEdicionServicio">
@@ -190,8 +204,8 @@
 
                                                             </td>
                                                             <td>
-                                                                @if ($datoEdicion['id'] != null)
-                                                                    @if ($datoEdicion['id']['presupuesto'] == $evento->id && $datoEdicion['column'] == 'servicioHoraInicio')
+                                                                @if ($datoEdicion['id'] != null && isset($datoEdicion['id']['presupuesto']))
+                                                                    @if ($datoEdicion['id']['presupuesto'] == $evento->id && $datoEdicion['id']['servicio'] == $servicio->id && $datoEdicion['column'] == 'servicioHoraInicio')
                                                                         <input type="time"
                                                                             wire:model.lazy="datoEdicion.value"
                                                                             wire:change.lazy="terminarEdicionServicio">
@@ -205,8 +219,8 @@
                                                                 @endif
                                                             </td>
                                                             <td>
-                                                                @if ($datoEdicion['id'] != null)
-                                                                    @if ($datoEdicion['id']['presupuesto'] == $evento->id && $datoEdicion['column'] == 'servicioHoraTiempo')
+                                                                @if ($datoEdicion['id'] != null && isset($datoEdicion['id']['presupuesto']))
+                                                                    @if ($datoEdicion['id']['presupuesto'] == $evento->id && $datoEdicion['id']['servicio'] == $servicio->id && $datoEdicion['column'] == 'servicioHoraTiempo')
                                                                         <input type="time"
                                                                             wire:model.lazy="datoEdicion.value"
                                                                             wire:change.lazy="terminarEdicionServicio">
@@ -220,8 +234,8 @@
                                                                 @endif
                                                             </td>
                                                             <td>
-                                                                @if ($datoEdicion['id'] != null)
-                                                                    @if ($datoEdicion['id']['presupuesto'] == $evento->id && $datoEdicion['column'] == 'servicioHoraTiempoMontaje')
+                                                                @if ($datoEdicion['id'] != null && isset($datoEdicion['id']['presupuesto']))
+                                                                    @if ($datoEdicion['id']['presupuesto'] == $evento->id && $datoEdicion['id']['servicio'] == $servicio->id && $datoEdicion['column'] == 'servicioHoraTiempoMontaje')
                                                                         <input type="time"
                                                                             wire:model.lazy="datoEdicion.value"
                                                                             wire:change.lazy="terminarEdicionServicio">
@@ -238,24 +252,23 @@
                                                             <td colspan="5">&nbsp;</td>
                                                         @endif
                                                         <td>
-                                                            @if ($datoEdicion['id'] != null && isset($datoEdicion['monitor']))
+                                                            @if ($datoEdicion['id'] != null && isset($datoEdicion['id']['monitor']))
                                                                 @if (
                                                                     $datoEdicion['id']['presupuesto'] == $evento->id &&
                                                                         $datoEdicion['id']['monitor'] == $monitoresIndex &&
+                                                                        $datoEdicion['id']['servicio'] == $servicio->id &&
                                                                         $datoEdicion['column'] == 'monitorNombre')
                                                                     <div class="col-md-8" x-data=""
                                                                         x-init="$('#select2-monitor').select2();
                                                                         $('#select2-monitor').on('change', function(e) {
                                                                             var data = $('#select2-monitor').select2('val');
-                                                                            @this.set('datoEdicion['
-                                                                                value ']', data);
+                                                                            @this.set('datoEdicion.value', data);
                                                                         });" wire:key='rand()'>
                                                                         <select class="form-control" name="servicioNombre"
                                                                             id="select2-monitor"
                                                                             wire:model.lazy="datoEdicion.value"
                                                                             wire:change.lazy='terminarEdicionMonitores'>
-                                                                            <option value="0">-- ELIGE UN SERVICIO
-                                                                                --
+                                                                            <option value="0">Seleccione Monitor
                                                                             </option>
                                                                             @foreach ($monitores_datos as $monitor_select)
                                                                                 <option value="{{ $monitor_select->id }}">
@@ -266,19 +279,19 @@
                                                                     </div>
                                                                 @else
                                                                     <span class="align-middle"
-                                                                        wire:click="detectarEdicionMonitores('{{ $evento->id }}', '{{ $servicio->id }}', '{{ $monitoresIndex }}', 'monitorNombre')">{{ $this->getMonitor($monitores) }}"
-                                                                    </span>
+                                                                        wire:click="detectarEdicionMonitores('{{ $evento->id }}', '{{ $servicio->id }}', '{{ $monitoresIndex }}', 'monitorNombre')">{{ $this->getMonitor($monitores)}}</span>
                                                                 @endif
                                                             @else
                                                                 <span class="align-middle"
-                                                                    wire:click="detectarEdicionMonitores('{{ $evento->id }}', '{{ $servicio->id }}', '{{ $monitoresIndex }}', 'monitorNombre')">{{ $this->getMonitor($monitores) }}</span>
+                                                                    wire:click="detectarEdicionMonitores('{{ $evento->id }}', '{{ $servicio->id }}', '{{ $monitoresIndex }}', 'monitorNombre')">{{ $this->getMonitor($monitores)}}</span>
                                                             @endif
                                                         </td>
                                                         <td>
-                                                            @if ($datoEdicion['id'] != null && isset($datoEdicion['monitor']))
+                                                            @if ($datoEdicion['id'] != null && isset($datoEdicion['id']['monitor']))
                                                                 @if (
                                                                     $datoEdicion['id']['presupuesto'] == $evento->id &&
                                                                         $datoEdicion['id']['monitor'] == $monitoresIndex &&
+                                                                        $datoEdicion['id']['servicio'] == $servicio->id &&
                                                                         $datoEdicion['column'] == 'sueldoMonitor')
                                                                     <input type="number"
                                                                         wire:model.lazy="datoEdicion.value"
@@ -295,10 +308,11 @@
                                                             @endif
                                                         </td>
                                                         <td>
-                                                            @if ($datoEdicion['id'] != null && isset($datoEdicion['monitor']))
+                                                            @if ($datoEdicion['id'] != null && isset($datoEdicion['id']['monitor']))
                                                                 @if (
                                                                     $datoEdicion['id']['presupuesto'] == $evento->id &&
                                                                         $datoEdicion['id']['monitor'] == $monitoresIndex &&
+                                                                        $datoEdicion['id']['servicio'] == $servicio->id &&
                                                                         $datoEdicion['column'] == 'gasto_gasoil')
                                                                     <input type="number"
                                                                         wire:model.lazy="datoEdicion.value"
@@ -349,7 +363,7 @@
                                                                     @endif
                                                                 </td>
                                                                 <td>
-                                                                    @if ($datoEdicion['id'] != null)
+                                                                    @if ($datoEdicion['id'] != null && isset($datoEdicion['id']['presupuesto']))
                                                                         @if (
                                                                             $datoEdicion['id']['presupuesto'] == $evento->id &&
                                                                                 $datoEdicion['id']['pack'] == $pack->id &&
@@ -376,7 +390,7 @@
                                                                     @endif
                                                                 </td>
                                                                 <td>
-                                                                    @if ($datoEdicion['id'] != null)
+                                                                    @if ($datoEdicion['id'] != null && isset($datoEdicion['id']['presupuesto']))
                                                                         @if (
                                                                             $datoEdicion['id']['presupuesto'] == $evento->id &&
                                                                                 $datoEdicion['id']['pack'] == $pack->id &&
@@ -403,7 +417,7 @@
                                                                     @endif
                                                                 </td>
                                                                 <td>
-                                                                    @if ($datoEdicion['id'] != null)
+                                                                    @if ($datoEdicion['id'] != null && isset($datoEdicion['id']['presupuesto']))
                                                                         @if (
                                                                             $datoEdicion['id']['presupuesto'] == $evento->id &&
                                                                                 $datoEdicion['id']['pack'] == $pack->id &&
@@ -430,7 +444,7 @@
                                                                     @endif
                                                                 </td>
                                                                 <td>
-                                                                    @if ($datoEdicion['id'] != null)
+                                                                    @if ($datoEdicion['id'] != null && isset($datoEdicion['id']['presupuesto']))
                                                                         @if (
                                                                             $datoEdicion['id']['presupuesto'] == $evento->id &&
                                                                                 $datoEdicion['id']['pack'] == $pack->id &&
@@ -460,7 +474,7 @@
                                                                 <td colspan="5">&nbsp;</td>
                                                         @endif
                                                         <td>
-                                                            @if ($datoEdicion['id'] != null && isset($datoEdicion['monitor']))
+                                                            @if ($datoEdicion['id'] != null && isset($datoEdicion['id']['monitor']))
                                                                 @if (
                                                                     $datoEdicion['id']['presupuesto'] == $evento->id &&
                                                                         $datoEdicion['id']['servicio'] == $servicioIndex &&
@@ -499,7 +513,7 @@
                                                             @endif
                                                         </td>
                                                         <td>
-                                                            @if ($datoEdicion['id'] != null && isset($datoEdicion['monitor']))
+                                                            @if ($datoEdicion['id'] != null && isset($datoEdicion['id']['monitor']))
                                                                 @if (
                                                                     $datoEdicion['id']['presupuesto'] == $evento->id &&
                                                                         $datoEdicion['id']['servicio'] == $servicioIndex &&
@@ -539,6 +553,16 @@
                                             </th>
                                             @endif
                                         </tr>
+                                        <tr>
+                                            <th colspan="8">Posibiliadad de Montaje</th>
+                                        </tr>
+                                        <tr>
+                                            @if ($evento)
+                                            <th colspan="8">
+                                                {{ $evento->eventoMontaje }}
+                                            </th>
+                                            @endif
+                                        </tr>
                                     </table>
                                 @endif
                                 @endforeach
@@ -565,13 +589,69 @@
         </div>
     </div>
     @section('scripts')
-        <script>
-            document.addEventListener('click', function(event) {
-                // Si el elemento clickeado no es un input ni un td
-                if (event.target.tagName !== 'INPUT' && event.target.tagName !== 'SPAN') {
-                    Livewire.emit('terminarInputs')
-                }
-            });
-        </script>
-    @endsection
+    <!-- Carga jsPDF y el plugin autoTable -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('click', function(event) {
+            if (event.target.tagName !== 'INPUT' && event.target.tagName !== 'SPAN') {
+                Livewire.emit('terminarInputs');
+            }
+        });
+    </script>
+
+
+<script>
+   document.addEventListener('livewire:load', function () {
+    attachExportButtons();
+
+    Livewire.hook('message.processed', (message, component) => {
+        attachExportButtons(); // Reasigna eventos después de cambios en Livewire
+    });
+
+    function attachExportButtons() {
+        document.querySelectorAll("[data-export-table]").forEach(button => {
+            button.removeEventListener("click", exportTableToPDF);
+            button.addEventListener("click", exportTableToPDF);
+        });
+    }
+
+    function exportTableToPDF(event) {
+        let tableId = event.target.getAttribute("data-export-table");
+        let filename = event.target.getAttribute("data-filename");
+
+        let element = document.getElementById(tableId);
+        if (!element) {
+            alert('No se encontró la tabla para exportar.');
+            return;
+        }
+
+        let opt = {
+            margin: [5, 5, 5, 5],  // Márgenes ajustados
+            filename: filename + '.pdf',
+            image: { type: 'jpeg', quality: 1 }, // Máxima calidad
+            html2canvas: {
+                scale: 3,  // Aumenta la escala para más nitidez
+                useCORS: true,  // Para asegurar que se capturen imágenes externas
+                allowTaint: true,  // Evita problemas de seguridad con imágenes
+                logging: false,  // Reduce el log en consola
+                scrollX: 0,  // Evita que recorte la tabla si hay desplazamiento horizontal
+                scrollY: 0
+            },
+            jsPDF: {
+                orientation: 'landscape', // Cambiar a landscape
+                unit: 'mm',
+                format: 'a4',
+                compressPDF: true
+            }
+        };
+
+        // Generar el PDF
+        html2pdf().set(opt).from(element).save();
+    }
+});
+</script>
+@endsection
+
 </div>

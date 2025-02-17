@@ -28,7 +28,8 @@ class IndexComponent extends Component
         ->whereRaw('? BETWEEN presupuestos.diaEvento AND presupuestos.diaFinal', [$this->dia])
         ->pluck('servicio_presupuesto.articulo_seleccionado');
 
-    $this->articulos = Articulos::whereNotIn('id', $articulosEnUso)->get();
+        $this->articulos = Articulos::whereNotIn('id', $articulosEnUso)->orWhere('stock', 1)->get();
+
     }
     public function stockTotal($id){
 
@@ -42,6 +43,7 @@ class IndexComponent extends Component
         }
         echo $sumatorio; // Mostramos el sumatorio
     }
+
     public function stock($id){
         $servicioId = $id;
 
@@ -49,13 +51,19 @@ class IndexComponent extends Component
 
         $sumaTotalStockUsado = DB::table('presupuestos')
             ->join('servicio_presupuesto', 'presupuestos.id', '=', 'servicio_presupuesto.presupuesto_id')
+            ->leftJoin('articulos', 'servicio_presupuesto.articulo_seleccionado', '=', 'articulos.id') // Left Join con artículos
             ->whereRaw('? BETWEEN presupuestos.diaEvento AND presupuestos.diaFinal', [$fechaEvento])
             ->where('servicio_presupuesto.servicio_id', $servicioId)
+            ->where(function ($query) {
+                $query->whereNull('articulos.stock') // Excluir si tiene stock ilimitado
+                    ->orWhere('articulos.stock', 0); // Contar solo si stock_ilimitado es 0
+            })
             ->selectRaw('SUM(CASE
                 WHEN servicio_presupuesto.articulo_seleccionado != 0 THEN 1
                 ELSE servicio_presupuesto.num_art_indef
                 END) AS total_stock_usado')
             ->value('total_stock_usado');
+
             // Obtener el stock total fijo del artículo
             $stockTotal = Articulos::where('id_categoria', $servicioId)->count();
             $disponible =$stockTotal- $sumaTotalStockUsado;
@@ -66,7 +74,9 @@ class IndexComponent extends Component
     {
         return view('livewire.disponible.index-component');
     }
+
     protected $listeners = ['refresh' => '$refresh'];
+
     public function updatedDia($value)
     {
         $articulosEnUso = DB::table('presupuestos')
@@ -74,6 +84,6 @@ class IndexComponent extends Component
             ->whereRaw('? BETWEEN presupuestos.diaEvento AND presupuestos.diaFinal', [$value])
             ->pluck('servicio_presupuesto.articulo_seleccionado');
 
-        $this->articulos = Articulos::whereNotIn('id', $articulosEnUso)->get();
+        $this->articulos = Articulos::whereNotIn('id', $articulosEnUso)->orWhere('stock', 1)->get();
     }
 }

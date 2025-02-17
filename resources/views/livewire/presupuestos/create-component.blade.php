@@ -61,7 +61,7 @@
                         </div>
                     </div>
                     <div class="form-row mb-4 justify-content-center">
-                        <div class="form-group col-md-4" wire:ignore>
+                        <div class="form-group col-md-3" wire:ignore>
                             <div x-data="" x-init="$('#select2-estado').select2();
                             $('#select2-estado').on('change', function(e) {
                                 var data = $('#select2-estado').select2('val');
@@ -96,6 +96,17 @@
                         <div class="form-group col-md-3">
                             <label for="nPresupuesto">Gestor</label>
                             <input type="text" class="form-control" wire:model="nombreGestor" disabled>
+                        </div>
+                        <div class="form-group col-md-2 d-flex justify-content-end flex-column">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" wire:model="cliente_vip" >
+                                <label class="form-check-label" for="cliente_vip">Cliente VIP</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" wire:model="factura_propia" >
+                                <label class="form-check-label" for="factura_propia">Factura Propia</label>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -1447,6 +1458,7 @@
                 </div>
             </div>
         </div>
+
     </div>
     <style>
         fieldset.scheduler-border {

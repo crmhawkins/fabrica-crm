@@ -17,6 +17,15 @@
             </div>
         </div>
     </div>
+    <div class="card">
+        <div class="card-body row justify-content-around">
+            <h2 id="timer" class="display-6 fw-bolder col-4">00:00:00</h2>
+            <button id="startJornadaBtn" class="btn jornada btn-primary mx-2 col-3" onclick="startJornada()">Inicio Jornada</button>
+            <button id="startPauseBtn" class="btn jornada btn-secondary mx-2 col-3" onclick="startPause()" style="display:none;">Iniciar Pausa</button>
+            <button id="endPauseBtn" class="btn jornada btn-dark mx-2 col-3" onclick="endPause()" style="display:none;">Finalizar Pausa</button>
+            <button id="endJornadaBtn" class="btn jornada btn-danger mx-2 col-3" onclick="endJornada()" style="display:none;">Fin de Jornada</button>
+        </div>
+    </div>
     <div class="row">
         <div class="col-sm-6 col-xl-4">
             <div class="card">
@@ -188,4 +197,166 @@
     </div>
     </div>
 
+@endsection
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        updateTime(); // Initialize the timer display
+
+        setInterval(function() {
+            getTime();
+        }, 120000);
+
+        // Initialize button states based on jornada and pause
+        if ('{{ $jornadaActiva }}') {
+            document.getElementById('startJornadaBtn').style.display = 'none';
+            document.getElementById('endJornadaBtn').style.display = 'block';
+            if ('{{ $pausaActiva }}') {
+                document.getElementById('startPauseBtn').style.display = 'none';
+                document.getElementById('endPauseBtn').style.display = 'block';
+            } else {
+                document.getElementById('startPauseBtn').style.display = 'block';
+                document.getElementById('endPauseBtn').style.display = 'none';
+                startTimer(); // Start timer if not in pause
+            }
+        } else {
+            document.getElementById('startJornadaBtn').style.display = 'block';
+            document.getElementById('endJornadaBtn').style.display = 'none';
+            document.getElementById('startPauseBtn').style.display = 'none';
+            document.getElementById('endPauseBtn').style.display = 'none';
+        }
+    });
+
+    let timerState = '{{ $jornadaActiva ? "running" : "stopped" }}'
+    let timerTime = {{ $timeWorkedToday }}; // In seconds, initialized with the time worked today
+
+    function updateTime() {
+        let hours = Math.floor(timerTime / 3600);
+        let minutes = Math.floor((timerTime % 3600) / 60);
+        let seconds = timerTime % 60;
+
+        hours = hours < 10 ? '0' + hours : hours;
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        seconds = seconds < 10 ? '0' + seconds : seconds;
+
+        document.getElementById('timer').textContent = `${hours}:${minutes}:${seconds}`;
+    }
+
+    function startTimer() {
+            timerState = 'running';
+            timerInterval = setInterval(() => {
+                timerTime++;
+                updateTime();
+            }, 1000);
+    }
+
+    function stopTimer() {
+            clearInterval(timerInterval);
+            timerState = 'stopped';
+    }
+
+    function startJornada() {
+        fetch('/start-jornada', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({})
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    startTimer();
+                    document.getElementById('startJornadaBtn').style.display = 'none';
+                    document.getElementById('startPauseBtn').style.display = 'block';
+                    document.getElementById('endJornadaBtn').style.display = 'block';
+                }
+            });
+    }
+
+    function endJornada() {
+        // Obtener el tiempo actualizado
+        getTime();
+
+            finalizarJornada();
+    }
+
+    function finalizarJornada() {
+        fetch('/end-jornada', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                stopTimer();
+                document.getElementById('startJornadaBtn').style.display = 'block';
+                document.getElementById('startPauseBtn').style.display = 'none';
+                document.getElementById('endJornadaBtn').style.display = 'none';
+                document.getElementById('endPauseBtn').style.display = 'none';
+            }
+        });
+    }
+
+    function startPause() {
+        fetch('/start-pause', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({})
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    stopTimer();
+                    document.getElementById('startPauseBtn').style.display = 'none';
+                    document.getElementById('endPauseBtn').style.display = 'block';
+                }
+            });
+    }
+
+    function endPause() {
+        fetch('/end-pause', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({})
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    startTimer();
+                    document.getElementById('startPauseBtn').style.display = 'block';
+                    document.getElementById('endPauseBtn').style.display = 'none';
+                }
+            });
+    }
+
+    function getTime() {
+        fetch('/timeworked', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({})
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    timerTime = data.time
+                    updateTime()
+                }
+            });
+    }
+</script>
 @endsection

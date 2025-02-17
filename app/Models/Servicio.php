@@ -36,12 +36,12 @@ class Servicio extends Model
 
     public function programas()
     {
-        return $this->hasMany('app\Models\Programa');
+        return $this->hasMany(Programa::class);
     }
 
     public function articulos()
     {
-        return $this->belongsToMany('app\Models\Articulos', 'servicio_articulo', 'servicio_id', 'articulo_id')->withPivot('stock_usado');
+        return $this->belongsToMany(Articulos::class, 'servicio_articulo', 'servicio_id', 'articulo_id')->withPivot('stock_usado');
     }
 
     public function getPacksAttribute() {

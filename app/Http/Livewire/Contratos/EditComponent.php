@@ -507,15 +507,8 @@ class EditComponent extends Component
 
         // Alertas de guardado exitoso
         if ($deleteContrato) {
-            $this->alert('success', 'Contrato eliminado correctamente!', [
-                'position' => 'center',
-                'timer' => 3000,
-                'toast' => false,
-                'showConfirmButton' => true,
-                'onConfirmed' => 'confirmed',
-                'confirmButtonText' => 'ok',
-                'timerProgressBar' => true,
-            ]);
+            return redirect()->route('contratos.index');
+
         } else {
             $this->alert('error', '¡No se ha podido actualizar la información del presupuesto!', [
                 'position' => 'center',
@@ -552,28 +545,28 @@ class EditComponent extends Component
             $datos =  [
                 'presupuesto' => $presupuesto, 'cliente' => $cliente, 'metodoPago' => $this->metodoPago, 'servicios' => Servicio::all(),
                 'evento' => $evento, 'listaServicios' => $listaServicios, 'listaPacks' => $listaPacks, 'packs' => $packs, 'observaciones' => $this->observaciones, 'gestor' => $gestor,
-                'nContrato' => $presupuesto->nPresupuesto, 'fechaContrato' => $evento->diaEvento, 'authImagen' => $this->authImagen, 'authMenores' => $this->authMenores, 'fechaMostrar' => $this->diaMostrar,
+                'nContrato' => $this->nContrato, 'fechaContrato' => $evento->diaEvento, 'authImagen' => $this->authImagen, 'authMenores' => $this->authMenores, 'fechaMostrar' => $this->diaMostrar,
                 'nombreEvento' =>$nombreEvento->nombre,
             ];
         } else if (count($presupuesto->packs) > 0 && count($presupuesto->servicios) <= 0) {
             $datos =  [
                 'presupuesto' => $presupuesto, 'cliente' => $cliente, 'metodoPago' => $this->metodoPago, 'servicios' => Servicio::all(),
                 'evento' => $evento, 'listaPacks' => $listaPacks, 'packs' => $packs, 'observaciones' => $this->observaciones, 'gestor' => $gestor,
-                'nContrato' => $presupuesto->nPresupuesto, 'fechaContrato' => $evento->diaEvento, 'authImagen' => $this->authImagen, 'authMenores' => $this->authMenores, 'fechaMostrar' => $this->diaMostrar,
+                'nContrato' => $this->nContrato, 'fechaContrato' => $evento->diaEvento, 'authImagen' => $this->authImagen, 'authMenores' => $this->authMenores, 'fechaMostrar' => $this->diaMostrar,
                 'nombreEvento' =>$nombreEvento->nombre,
             ];
         } else if (count($presupuesto->packs) <= 0 && count($presupuesto->servicios) > 0) {
             $datos =  [
                 'presupuesto' => $presupuesto, 'cliente' => $cliente, 'metodoPago' => $this->metodoPago, 'servicios' => Servicio::all(),
                 'evento' => $evento, 'listaServicios' => $listaServicios, 'packs' => $packs, 'observaciones' => $this->observaciones, 'gestor' => $gestor,
-                'nContrato' => $presupuesto->nPresupuesto, 'fechaContrato' => $evento->diaEvento, 'authImagen' => $this->authImagen, 'authMenores' => $this->authMenores, 'fechaMostrar' => $this->diaMostrar,
+                'nContrato' => $this->nContrato, 'fechaContrato' => $evento->diaEvento, 'authImagen' => $this->authImagen, 'authMenores' => $this->authMenores, 'fechaMostrar' => $this->diaMostrar,
                 'nombreEvento' =>$nombreEvento->nombre,
             ];
         } else {
             $datos =  [
                 'presupuesto' => $presupuesto, 'cliente' => $cliente, 'metodoPago' => $this->metodoPago, 'servicios' => Servicio::all(),
                 'evento' => $evento, 'packs' => $packs, 'observaciones' => $this->observaciones, 'gestor' => $gestor,
-                'nContrato' => $presupuesto->nPresupuesto, 'fechaContrato' => $evento->diaEvento, 'authImagen' => $this->authImagen, 'authMenores' => $this->authMenores, 'fechaMostrar' => $this->diaMostrar,
+                'nContrato' => $this->nContrato, 'fechaContrato' => $evento->diaEvento, 'authImagen' => $this->authImagen, 'authMenores' => $this->authMenores, 'fechaMostrar' => $this->diaMostrar,
                 'nombreEvento' =>$nombreEvento->nombre,
             ];
         }

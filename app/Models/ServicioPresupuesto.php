@@ -49,4 +49,9 @@ class ServicioPresupuesto extends Model
     protected $dates = [
         'created_at', 'updated_at', 'deleted_at',
     ];
+
+    public function monitores()
+    {
+        return Monitor::whereJsonContains('id', $this->id_monitores);
+    }
 }

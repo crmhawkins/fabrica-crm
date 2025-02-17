@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Ver Tipos de Evento')
+@section('title', 'Ver Diario de caja')
 
 @section('head')
     @vite(['resources/sass/productos.scss'])

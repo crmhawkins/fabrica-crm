@@ -42,7 +42,7 @@
                         </div>
                     </div>
                     <div class="form-row mb-4 justify-content-center">
-                        <div class="form-group col-md-4" wire:ignore>
+                        <div class="form-group col-md-3" wire:ignore>
                             <div x-data="" x-init="$('#select2-estado').select2();
                             $('#select2-estado').on('change', function(e) {
                                 var data = $('#select2-estado').select2('val');
@@ -51,11 +51,11 @@
                                 <label for="fechaVencimiento">Estado</label>
                                 <select class="form-control" name="estado" id="select2-estado"
                                     value="{{ $estado }}">
-                                    <option value="Pendiente">Pendiente</option>
-                                    <option value="Cancelado">Cancelado</option>
-                                    <option value="Aceptado">Aceptado</option>
-                                    <option value="Completado">Completado</option>
-                                    <option value="Facturado">Facturado</option>
+                                    <option {{$presupuesto->estado == 'Pendiente' ? 'selected' : ''}} value="Pendiente">Cancelado</option>
+                                    <option {{$presupuesto->estado == 'Cancelado' ? 'selected' : ''}} value="Cancelado">Cancelado</option>
+                                    <option {{$presupuesto->estado == 'Aceptado' ? 'selected' : ''}} value="Aceptado">Aceptado</option>
+                                    <option {{$presupuesto->estado == 'Completado' ? 'selected' : ''}} value="Completado">Completado</option>
+                                    <option {{$presupuesto->estado == 'Facturado' ? 'selected' : ''}} value="Facturado">Facturado</option>
                                 </select>
                             </div>
                         </div>
@@ -77,6 +77,17 @@
                         <div class="form-group col-md-3">
                             <label for="nPresupuesto">Gestor</label>
                             <input type="text" class="form-control" wire:model="nombreGestor" disabled>
+                        </div>
+                        <div class="form-group col-md-2 d-flex justify-content-end flex-column">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" wire:model="cliente_vip" >
+                                <label class="form-check-label" for="cliente_vip">Cliente VIP</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" wire:model="factura_propia" >
+                                <label class="form-check-label" for="factura_propia">Factura Propia</label>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -616,17 +627,24 @@
 
                             <div class="form-group col-md-4">
                                 <label for="servicio_seleccionado" class="col-sm-12 col-form-label">Servicios</label>
-                                <div class="col-md-12">
-                                    <Select wire:model="servicio_seleccionado" class="form-control"
-                                        wire:change='cambioPrecioServicio()' name="servicio_seleccionado"
-                                        id="servicios">
+                                <div class="col-md-12" x-data="" x-init="
+                                    $('#select2-servicios').select2();
+                                    $('#select2-servicios').on('change', function(e) {
+                                        var data = $(this).val(); // Cambio aquí para usar .val()
+                                        @this.set('servicio_seleccionado', data);
+                                        @this.call('cambioPrecioServicio');
+
+                                    });" wire:key="{{rand()}}"> <!-- Cambio aquí para una key más consistente -->
+                                    <select wire:model="servicio_seleccionado" class="form-control"
+                                            wire:change='cambioPrecioServicio()' name="servicio_seleccionado"
+                                            id="select2-servicios">
                                         <option value="0">Selecciona un servicio.</option>
-                                        @foreach ($servicios as $keys => $servicio)
+                                        @foreach ($servicios as $servicio)
                                             <option class="dropdown-item" value="{{ $servicio->id }}">
                                                 {{ $servicio->nombre }}
                                             </option>
                                         @endforeach
-                                    </Select>
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-group col-md-2">
@@ -726,10 +744,17 @@
                         @elseif($tipo_seleccionado == 'individual')
                             <div class="form-group col-md-4">
                                 <label for="servicio_seleccionado" class="col-sm-12 col-form-label">Servicios</label>
-                                <div class="col-md-12">
+                                <div class="col-md-12" x-data="" x-init="
+                                $('#select2-servicios_individual').select2();
+                                $('#select2-servicios_individual').on('change', function(e) {
+                                    var data = $(this).val(); // Cambio aquí para usar .val()
+                                    @this.set('servicio_seleccionado', data);
+                                    @this.call('cambioPrecioServicio');
+
+                                });" wire:key="{{rand()}}">
                                     <Select wire:model="servicio_seleccionado" class="form-control"
                                         wire:change='cambioPrecioServicio()' name="servicio_seleccionado"
-                                        id="servicios">
+                                        id="select2-servicios_individual">
                                         <option value="0">Selecciona un servicio.</option>
                                         @foreach ($servicios as $keys => $servicio)
                                             <option class="dropdown-item" value="{{ $servicio->id }}">
@@ -851,9 +876,15 @@
                             <div class="form-group col-md-10">
                                 <label for="pack_seleccionado" class="col-sm-12 col-form-label">Packs de
                                     servicios</label>
-                                <div class="col-md-12">
+                                <div class="col-md-12" x-data="" x-init="
+                                $('#select2-pack_seleccionado').select2();
+                                $('#select2-pack_seleccionado').on('change', function(e) {
+                                    var data = $(this).val(); // Cambio aquí para usar .val()
+                                    @this.set('pack_seleccionado', data);
+
+                                });" wire:key="{{rand()}}">
                                     <Select wire:model="pack_seleccionado" class="form-control"
-                                        name="pack_seleccionado" id="pack_seleccionado">
+                                        name="pack_seleccionado" id="select2-pack_seleccionado">
                                         <option value="0">Selecciona un paquete de servicios.</option>
                                         @foreach ($packs as $keys => $pack)
                                             <option class="dropdown-item" value="{{ $pack->id }}" selected>
@@ -930,17 +961,23 @@
                                             <label for="articulo_seleccionado"
                                                 class="col-sm-12 col-form-label">Artículo relacionado al
                                                 servicio</label>
-                                            <div class="col-md-12">
-                                                <Select wire:model="articulos_seleccionados.{{ $keyPack }}"
-                                                    class="form-control" name="articulo_seleccionado"
-                                                    id="articulo_seleccionado">
+                                                <div class="col-md-12" x-data="" x-init="
+                                                $('#select2-servicios_individual-{{ $keyPack }}').select2();
+                                                $('#select2-servicios_individual-{{ $keyPack }}').on('change', function(e) {
+                                                    var selectedValue = $(this).val();
+                                                    @this.set('articulos_seleccionados.{{ $keyPack }}', selectedValue);
+                                                });
+                                            " wire:key="{{ rand() }}">
+                                                <select wire:model="articulos_seleccionados.{{ $keyPack }}"
+                                                        class="form-control" name="articulo_seleccionado"
+                                                        id="select2-servicios_individual-{{ $keyPack }}">
                                                     <option value="0">Selecciona un artículo</option>
-                                                    @foreach ($servicio->articulos()->get() as $keys => $articulo)
+                                                    @foreach ($servicio->articulos()->get() as $articulo)
                                                         <option class="dropdown-item" value="{{ $articulo->id }}">
                                                             {{ $articulo->name }}
                                                         </option>
                                                     @endforeach
-                                                </Select>
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="form-group col-md-1">

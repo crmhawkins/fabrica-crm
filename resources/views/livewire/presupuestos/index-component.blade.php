@@ -28,6 +28,8 @@
                                 <th scope="col">Número</th>
                                 <th scope="col">Fecha emisión</th>
                                 <th scope="col">Cliente</th>
+                                <th scope="col">Categoria</th>
+                                <th scope="col">Lugar</th>
                                 <th scope="col">Evento</th>
                                 <th scope="col">Precio Base</th>
                                 <th scope="col">Descuento</th>
@@ -43,6 +45,8 @@
                                 <td>{{ $presup->id }}</td>
                                 <td>{{ $presup->fechaEmision }}</td>
                                 <td>{{ $presup->cliente ? $presup->cliente->nombre.' '.$presup->cliente->apellido : 'Presupuesto sin cliente' }}</td>
+                                <td>{{ $presup->categoria ? $presup->categoria->nombre : 'N/A' }}</td>
+                                <td>{{ $presup->evento ? $presup->evento->eventoLugar : 'N/A'}}</td>
                                 <td>{{ $presup->evento ? $presup->evento->tipoevento->nombre : 'Presupuesto sin evento'}}</td>
                                 <td>{{ $presup->precioBase }} €</td>
                                 <td>{{ $presup->descuento }} €</td>

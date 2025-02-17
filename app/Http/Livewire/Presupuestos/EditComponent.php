@@ -17,6 +17,7 @@ use App\Models\Iva;
 use App\Models\Programa;
 use App\Models\Servicio;
 use App\Models\ServicioPack;
+use App\Models\Settings;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Arr;
@@ -238,6 +239,9 @@ class EditComponent extends Component
     public $iva_id;
     public $iva_valor;
 
+    public $factura_propia;
+    public $cliente_vip;
+
     public function updatedIvaSeleccionado($value)
     {
         $iva = Iva::find($value);
@@ -269,6 +273,10 @@ class EditComponent extends Component
         $this->nombreGestor = optional($gestor)->name . " " . optional($gestor)->surname;
         $this->articulos = Articulos::all();
         $this->articulos1 = Articulos::all();
+        $this->factura_propia = $this->presupuesto->factura_propia;
+        $this->cliente_vip = $this->presupuesto->cliente_vip;
+
+
         //Cliente
         $this->id_cliente = $this->presupuesto->id_cliente;
         $this->clientes = Cliente::all(); // datos que se envian al select2
@@ -1379,8 +1387,9 @@ class EditComponent extends Component
                 'diaEvento' => 'required',
                 'diaFinal' => "required",
                 'iva_id' => 'nullable',
-                'iva_valor' => 'nullable'
-
+                'iva_valor' => 'nullable',
+                'factura_propia' => 'nullable',
+                'cliente_vip' => 'nullable',
 
             ],
             // Mensajes de error
@@ -1517,14 +1526,7 @@ class EditComponent extends Component
 
         // Alertas de guardado exitoso
         if ($presupuesosSave) {
-            $this->alert('success', '¡Presupuesto eliminado correctamente!', [
-                'position' => 'center',
-                'toast' => false,
-                'showConfirmButton' => true,
-                'onConfirmed' => 'confirmed',
-                'confirmButtonText' => 'ok',
-                'timerProgressBar' => true,
-            ]);
+            return redirect()->route('presupuestos.index');
         } else {
             $this->alert('error', '¡No se ha podido actualizar la información del presupuesto!', [
                 'position' => 'center',
@@ -1932,10 +1934,17 @@ class EditComponent extends Component
                 $numMonitores = $this->preciosMonitores;
 
                 // Preparar arrays basados en numero_monitores
-                $defaultArray = array_fill(0, count($numMonitores), '0');
-                $defaultTimeArray = array_fill(0, count($numMonitores), '00:00');
+                $precioHora = Settings::first()->precio_gasoil_km;
+                $time = explode(':',$this->tiempo);
+                $horas = ($time[0] + $time[1] / 60)+((isset($time[2]) && $time[2] != 0) ?  $time[2] / 3600 : 0);
+                $sueldo = $precioHora * $horas;
+                $arraySueldo = array_fill(0, $this->numero_monitores, $sueldo);
+                $defaultArray = array_fill(0, $this->numero_monitores, '0');                $defaultTimeArray = array_fill(0, count($numMonitores), '00:00');
                 $defaultDoubleArray = array_map(function () use ($defaultArray) {
                     return $defaultArray;
+                }, $numMonitores);
+                $sueldoDoubleArray = array_map(function () use ($arraySueldo) {
+                    return $arraySueldo;
                 }, $numMonitores);
 
                 $this->listaPacks[] = [
@@ -1949,7 +1958,7 @@ class EditComponent extends Component
                     'tiempos_desmontaje' => !empty($this->tiemposDesmontajePack) ? $this->tiemposDesmontajePack : $defaultTimeArray,
                     'horas_montaje' => !empty($this->horasMontajePack) ? $this->horasMontajePack : $defaultTimeArray,
                     'id_monitores' => !empty($this->idMonitoresPack) ? $this->idMonitoresPack : $defaultDoubleArray,
-                    'sueldos_monitores' => !empty($this->sueldoMonitoresPack) ? $this->sueldoMonitoresPack : $defaultDoubleArray,
+                    'sueldos_monitores' => !empty($this->sueldoMonitoresPack) ? $this->sueldoMonitoresPack : $sueldoDoubleArray,
                     'gastos_gasoil' => !empty($this->gastosGasoilPack) ? $this->gastosGasoilPack : $defaultDoubleArray,
                     'checks_gasoil' => !empty($this->gastosGasoilPack) ? $this->gastosGasoilPack : $defaultDoubleArray,
                     'pagos_pendientes' => !empty($this->sueldoMonitoresPack) ? $this->sueldoMonitoresPack : $defaultDoubleArray,
@@ -2063,6 +2072,11 @@ class EditComponent extends Component
                     for ($i = 0; $i > $this->numero_monitores; $i++) {
                         $this->sueldoMonitores[] = $this->servicios->firstWhere('id', $this->servicio_seleccionado)->get('precioMonitor');
                     }
+                    $precioHora = Settings::first()->precio_gasoil_km;
+                    $time = explode(':',$this->tiempo);
+                    $horas = ($time[0] + $time[1] / 60)+((isset($time[2]) && $time[2] != 0) ?  $time[2] / 3600 : 0);
+                    $sueldo = $precioHora * $horas;
+                    $arraySueldo = array_fill(0, $this->numero_monitores, $sueldo);
                     $defaultArray = array_fill(0, $this->numero_monitores, '0');
 
                     $this->listaServicios[] = [
@@ -2076,11 +2090,11 @@ class EditComponent extends Component
                         'tiempo_montaje' => $this->tiempoMontaje ?? '00:00',
                         'tiempo_desmontaje' => $this->tiempoDesmontaje ?? '00:00',
                         'articulo_seleccionado' => $this->articulo_seleccionado ?? '0',
-                        'sueldo_monitores' => $this->sueldoMonitores ?? $defaultArray,
-                        'id_monitores' => $this->idMonitores ?? $defaultArray,
-                        'gasto_gasoil' => $this->gastosGasoil ?? $defaultArray,
-                        'check_gasoil' => $this->gastosGasoil ?? $defaultArray,
-                        'pago_pendiente' => $this->sueldoMonitores ?? $defaultArray,
+                        'sueldo_monitores' => !empty($this->sueldoMonitores) ? $this->sueldoMonitores : $arraySueldo,
+                        'id_monitores' => !empty($this->idMonitores) ? $this->idMonitores : $defaultArray,
+                        'gasto_gasoil' => !empty($this->gastosGasoil) ? $this->gastosGasoil : $defaultArray,
+                        'check_gasoil' => !empty($this->gastosGasoil) ? $this->gastosGasoil : $defaultArray,
+                        'pago_pendiente' => !empty($this->sueldoMonitores) ? $this->sueldoMonitores : $defaultArray,
                         'num_art_indef' => $this->num_arti,
                         'concepto'=> $this->concepto,
                         'visible'=> $this->visible,
@@ -2120,13 +2134,14 @@ class EditComponent extends Component
             ]);
         }
     }
-    public function updatedArticuloSeleccionado($value){
+
+    public function updatedArticuloSeleccionado($value)
+    {
         $articulo=Articulos::find($value);
         if(isset( $articulo->name)){
-        $this->concepto = $articulo->name;
+            $this->concepto = $articulo->name;
+        }
     }
-    }
-
 
     public function addServicioSinArticulo()
     {
@@ -2178,7 +2193,13 @@ class EditComponent extends Component
                 for ($i = 0; $i > $this->numero_monitores; $i++) {
                     $this->sueldoMonitores[] = $this->servicios->firstWhere('id', $this->servicio_seleccionado)->get('precioMonitor');
                 }
+                $precioHora = Settings::first()->precio_gasoil_km;
+                $time = explode(':',$this->tiempo);
+                $horas = ($time[0] + $time[1] / 60)+((isset($time[2]) && $time[2] != 0) ?  $time[2] / 3600 : 0);
+                $sueldo = $precioHora * $horas;
+                $arraySueldo = array_fill(0, $this->numero_monitores, $sueldo);
                 $defaultArray = array_fill(0, $this->numero_monitores, '0');
+
 
                 $this->listaServicios[] = [
                     'id' => $this->servicio_seleccionado,
@@ -2190,11 +2211,11 @@ class EditComponent extends Component
                     'hora_montaje' => $this->horaMontaje ?? '00:00',
                     'tiempo_montaje' => $this->tiempoMontaje ?? '00:00',
                     'tiempo_desmontaje' => $this->tiempoDesmontaje ?? '00:00',
-                    'sueldo_monitores' => $this->sueldoMonitores ?? $defaultArray,
-                    'id_monitores' => $this->idMonitores ?? $defaultArray,
-                    'gasto_gasoil' => $this->gastosGasoil ?? $defaultArray,
-                    'check_gasoil' => $this->gastosGasoil ?? $defaultArray,
-                    'pago_pendiente' => $this->sueldoMonitores ?? $defaultArray,
+                    'sueldo_monitores' => !empty($this->sueldoMonitores) ? $this->sueldoMonitores : $arraySueldo,
+                    'id_monitores' => !empty($this->idMonitores) ? $this->idMonitores : $defaultArray,
+                    'gasto_gasoil' => !empty($this->gastosGasoil) ? $this->gastosGasoil : $defaultArray,
+                    'check_gasoil' => !empty($this->gastosGasoil) ? $this->gastosGasoil : $defaultArray,
+                    'pago_pendiente' => !empty($this->sueldoMonitores) ? $this->sueldoMonitores : $defaultArray,
                     'articulo_seleccionado' => $this->articulo_seleccionado ?? '0',
                     'num_art_indef' => $this->num_arti,
                     'concepto'=> $this->concepto,
@@ -2263,7 +2284,6 @@ class EditComponent extends Component
     {
         return redirect()->route('contratos.edit', $this->contrato_id);
     }
-
 
     public function alertaGuardar()
     {

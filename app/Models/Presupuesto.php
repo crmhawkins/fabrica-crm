@@ -37,7 +37,9 @@ class Presupuesto extends Model
         'updated_at',
         'deleted_at',
         'iva_valor',
-        'iva_id'
+        'iva_id',
+        'factura_propia',
+        'cliente_vip',
 
     ];
 
@@ -83,6 +85,10 @@ class Presupuesto extends Model
         return $this->belongsTo(User::class, 'gestor_id');
     }
 
+    public function categoria()
+    {
+        return $this->belongsTo(CategoriaEvento::class, 'categoria_evento_id');
+    }
 
 
 
