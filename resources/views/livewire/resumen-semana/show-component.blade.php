@@ -181,8 +181,9 @@
                                                                 @else --}}
                                                                 @php
                                                                 $articulo = $articulos->where('id', $servicio->pivot->articulo_seleccionado)->first();
+                                                                $serviciopresupuesto = $evento->presupuesto->serviciosPresupuesto()->where('servicio_id', $servicio->id)->first();
                                                                 @endphp
-                                                                    <span class="align-middle">{{  $articulo->name ?? $servicio->nombre }}</span>
+                                                                    <span class="align-middle">{{ $serviciopresupuesto->concepto ?? $articulo->name ?? $servicio->nombre }}</span>
                                                                 {{-- @endif --}}
 
                                                             </td>
