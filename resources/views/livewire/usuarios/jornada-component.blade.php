@@ -36,6 +36,7 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                {{dd($arrayUsuarios)}}
                                 @foreach($arrayUsuarios as $usuario)
                                     <tr class="usuario-row">
                                         <td>{{ $usuario['usuario'] }}</td>

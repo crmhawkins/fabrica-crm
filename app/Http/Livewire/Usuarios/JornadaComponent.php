@@ -74,8 +74,6 @@ class JornadaComponent extends Component
                         $todosLosDias[$dia->format('Y-m-d')] = $dia->copy();
                 }
             }
-            $this->arrayUsuarios[$usuario->id] = $usuario;
-
         $datosUsuario = [
             'id' => $usuario->id,
             'usuario' => $usuario->name . ' ' . $usuario->surname,
