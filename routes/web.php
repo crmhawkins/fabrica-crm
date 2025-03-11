@@ -226,6 +226,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
         Route::get('usuarios-create', [UsuarioController::class, 'create'])->name('usuarios.create');
         Route::get('usuarios-edit/{id}', [UsuarioController::class, 'edit'])->name('usuarios.edit');
+        Route::get('jornadas', [UsuarioController::class, 'jornadas'])->name('usuarios.jornadas');
 
         // Registrar usuarios
         Route::get('departamentos', [DepartamentosUserController::class, 'index'])->name('departamentos.index');

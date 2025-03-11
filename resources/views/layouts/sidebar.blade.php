@@ -152,6 +152,7 @@
                     <ul class="submenu">
                         <li><a href="/admin/usuarios">Ver Todos</a></li>
                         <li><a href="/admin/usuarios-create">Crear Usuario</a></li>
+                        <li><a href="/admin/jornadas">Jornada</a></li>
                         {{-- <li><a href="email-compose.html">Email Compose</a></li> --}}
                     </ul>
                 </li>
