@@ -24,48 +24,21 @@
                         <div class="mb-3 row d-flex align-items-center">
                             <label for="nombre" class="col-sm-12 col-form-label">Presupuesto</label>
                             <div class="col-sm-10">
-                                <div class="col-md-12" x-data="" x-init="$('#select2-presupuesto').select2();
-                                $('#select2-presupuesto').on('change', function(e) {
-                                    var data = $('#select2-presupuesto').select2('val');
-                                    @this.set('presupuesto_id', data);
-                                });" wire:key='rand()'>
-                                    <select class="form-control" name="presupuesto_id" id="select2-presupuesto"
+                                <div >
+                                    <select class="form-control select2" name="presupuesto_id" id="select2-presupuesto"
                                         wire:model.lazy="presupuesto_id">
                                         <option value="0">-- ELIGE UN PRESUPUESTO
                                             --
                                         </option>
                                         @foreach ($presupuestos as $presupuesto)
                                             <option value="{{ $presupuesto->id }}">
-                                                (#{{ $presupuesto->nPresupuesto }})
+                                                (#{{ optional($presupuesto->contrato)->id ?? 'Sin Contrato' }})
                                                 {{ $categorias->firstWhere('id', ($eventos->firstWhere('id', $presupuesto->id_evento)->eventoNombre))->nombre }} -
                                                 {{ $this->getCliente($presupuesto->id) }}
                                             </option>
                                         @endforeach
                                     </select>
                                 </div> @error('presupuesto_id')
-                                    <span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="mb-3 row d-flex align-items-center">
-                            <label for="monitor_id" class="col-sm-12 col-form-label">Monitor</label>
-                            <div class="col-sm-10">
-                                <div class="col-md-12" x-data="" x-init="$('#select2-monitor').select2();
-                                $('#select2-monitor').on('change', function(e) {
-                                    var data = $('#select2-monitor').select2('val');
-                                    @this.set('monitor_id', data);
-                                });" wire:key='rand()'>
-                                    <select class="form-control" name="monitor_id" id="select2-monitor"
-                                        wire:model.lazy="monitor_id">
-                                        <option value="0">-- ELIGE UN MONITOR --
-                                        </option>
-                                        @foreach ($monitores as $monitor)
-                                            <option value="{{ $monitor->id }}">
-                                                {{ $monitor->nombre .' '.$monitor->apellidos }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div> @error('monitor_id')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
@@ -110,7 +83,49 @@
                                 @enderror
                             </div>
                         </div>
-
+                        <div class="mb-3 row d-flex align-items-center">
+                            <label for="monitor_id" class="col-sm-12 col-form-label">Monitor</label>
+                            <div class="col-sm-10">
+                                <div>
+                                    <select class="form-control select2" name="monitor_id" id="select2-monitor" wire:model.lazy="monitor_id">
+                                        <option value="0">-- ELIGE UN MONITOR --
+                                        </option>
+                                        @foreach ($monitores as $monitor)
+                                            <option value="{{ $monitor->id }}">
+                                                {{ $monitor->nombre .' '.$monitor->apellidos }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div> @error('monitor_id')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        {{-- @if (isset($serviciosMonitores))
+                            <div class="mb-3 row d-flex align-items-center">
+                                <label for="monitor_id" class="col-sm-12 col-form-label">Servicios</label>
+                                <div class="col-sm-10">
+                                    <div class="col-md-12" x-data="" x-init="$('#select2-monitor').select2();
+                                    $('#select2-monitor').on('change', function(e) {
+                                        var data = $('#select2-monitor').select2('val');
+                                        @this.set('monitor_id', data);
+                                    });" wire:key='rand()'>
+                                        <select class="form-control" name="monitor_id" id="select2-monitor"
+                                            wire:model.lazy="monitor_id">
+                                            <option value="0">-- Elige los servicios --
+                                            </option>
+                                            @foreach ($serviciosMonitores as $servicio)
+                                                <option value="{{ $monitor->id }}">
+                                                    {{ $servicio->nombre .' '.$monitor->apellidos }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div> @error('monitor_id')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                        @endif --}}
                     </form>
                 </div>
             </div>
@@ -121,8 +136,7 @@
                     <h5>Acciones</h5>
                     <div class="row">
                         <div class="col-12">
-                            <button class="w-100 btn btn-success mb-2" id="alertaGuardar">Guardar
-                                nuevo tipo de evento </button>
+                            <button class="w-100 btn btn-success mb-2" id="alertaGuardar">Guardar Gasto </button>
                         </div>
                     </div>
                 </div>
@@ -146,5 +160,22 @@
                 }
             });
         });
+        document.addEventListener('livewire:load', function () {
+        $('#select2-presupuesto').select2();
+        $('#select2-presupuesto').on('change', function (e) {
+            var data = $('#select2-presupuesto').select2("val");
+            @this.set('presupuesto_id', data);
+        });
+        $('#select2-monitor').select2();
+        $('#select2-monitor').on('change', function (e) {
+            var data = $('#select2-monitor').select2("val");
+            @this.set('monitor_id', data);
+        });
+
+        Livewire.hook('message.processed', (message, component) => {
+            $('#select2-presupuesto').select2();
+            $('#select2-monitor').select2();
+        });
+    });
     </script>
 @endsection
