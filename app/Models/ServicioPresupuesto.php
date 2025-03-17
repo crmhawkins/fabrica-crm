@@ -26,6 +26,7 @@ class ServicioPresupuesto extends Model
         'hora_montaje',
         'id_monitores',
         'sueldo_monitores',
+        'pago_monitores',
         'gasto_gasoil',
         'pago_pendiente',
         'articulo_seleccionado',

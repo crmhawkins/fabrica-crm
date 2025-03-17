@@ -13,6 +13,7 @@ use App\Models\PackPresupuesto;
 use App\Models\Monitor;
 use App\Models\Presupuesto;
 use App\Models\Contrato;
+use App\Models\Facturas;
 use App\Models\Iva;
 use App\Models\Programa;
 use App\Models\Servicio;
@@ -2581,5 +2582,37 @@ class EditComponent extends Component
             fn () => print($pdf),
             $filename
         );
+    }
+
+    public function generarFactura()
+    {
+        $facturaexistente = Facturas::where('id_presupuesto', $this->presupuesto->id)->first();
+        if(isset($facturaexistente)){
+            return redirect()->route('facturas.edit', $facturaexistente->id);
+        }
+        $now = Carbon::now();
+        $ultimaFactura = Facturas::whereMonth('created_at', $now->month)->whereYear('created_at', $now->year)->orderBy('numero_factura', 'desc')->first();
+        //Formato de numero de factura 2025-01-000001
+        if(isset($ultimaFactura)){
+            $partes = explode('-', $ultimaFactura->numero_factura);
+            $numeroFactura =  $now->year . '-' . $now->month . '-' . sprintf('%06d', $partes[2]+ 1);
+        }else{
+            $numeroFactura =  $now->year . '-' . $now->month . '-' . sprintf('%06d', 1);
+        }
+
+        $data = [
+            'numero_factura' => $numeroFactura,
+            'id_presupuesto' => $this->presupuesto->id,
+            'fecha_emision' => Carbon::parse($this->fechaEmision)->format('d/m/Y'),
+            'fecha_vencimiento' => Carbon::parse($this->fechaVencimiento)->format('d/m/Y'),
+            'descripcion' => $this->observaciones,
+            'estado' => 'Pendiente',
+            'metodo_pago' => $this->metodoPago,
+        ];
+
+        $factura = Facturas::create($data);
+
+        return redirect()->route('facturas.index');
+
     }
 }

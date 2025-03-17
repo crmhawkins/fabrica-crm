@@ -39,6 +39,11 @@
                     </ul>
                 </li>
                 <li>
+                    <a href="/admin/facturas" class="waves-effect">
+                        <i class="fa-solid fa-file-invoice-dollar"></i><span> Facturas </span>
+                    </a>
+                </li>
+                <li>
                     <a href="javascript:void(0);" class="waves-effect"><i class="fas fa-bank"></i><span> Gastos <span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span> </span></a>
                     <ul class="submenu">
                         <li><a href="/admin/gastos">Ver Todos</a></li>

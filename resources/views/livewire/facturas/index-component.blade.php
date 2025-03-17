@@ -45,7 +45,7 @@
                                                     {{ $fact->id_presupuesto }}</a></td>
                                         @endif
                                         <td>{{ $fact->descripcion }}</td>
-                                        <td>{{ $presupuestos->where('id', $fact->id_presupuesto)->first()->precioFinal }}€
+                                        <td>{{ $fact->presupuesto->precioFinal }}€
                                         </td>
                                         <td>{{ $fact->metodo_pago }}</td>
                                         <td> <a href="facturas-edit/{{ $fact->id }}"

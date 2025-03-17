@@ -21,7 +21,7 @@
                     <form wire:submit.prevent="update">
                         <input type="hidden" name="csrf-token" value="{{ csrf_token() }}">
                         <div class="form-group row">
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <label for="numero_factura" class="col-sm-12 col-form-label">Número de Factura</label>
                                 <div class="col-sm-12">
                                     <input type="text" wire:model="numero_factura" class="form-control"
@@ -31,7 +31,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-9">
+                            <div class="col-md-4">
                                 <label for="id_presupuesto" class="col-sm-12 col-form-label">Presupuesto
                                     asociado</label>
                                 <div class="col-sm-12" wire:ignore.self>
@@ -43,6 +43,21 @@
                                         @endforeach
                                     </select>
                                     @error('id_presupuesto')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="tipo_iva" class="col-sm-12 col-form-label">Tipo de iva</label>
+                                <div class="col-sm-12" wire:ignore.self>
+                                    <select id="tipo_iva" class="form-control"
+                                        wire:model="tipo_iva">
+                                        <option value="">-- Seleccione un Tipo de iva --</option>
+                                        @foreach ($tiposIVA as $iva)
+                                            <option value="{{ $iva->iva }}">{{ $iva->name }} </option>
+                                        @endforeach
+                                    </select>
+                                    @error('tipo_iva')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
@@ -72,7 +87,7 @@
 
 
                             <div class="form-group row">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <label for="total_sin_iva" class="col-sm-12 col-form-label">Precio base</label>
                                     <div class="col-sm-12">
                                         <input type="text" disabled
@@ -83,7 +98,7 @@
                                         @enderror
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <label for="descuento" class="col-sm-12 col-form-label">Descuento</label>
                                     <div class="col-sm-12">
                                         <input disabled type="text"
@@ -94,12 +109,25 @@
                                         @enderror
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
+
+                                    <label for="iva" class="col-sm-12 col-form-label">Iva</label>
+                                    <div class="col-sm-12">
+                                        <input disabled type="text"
+                                            value="{{ ($presupuestoSeleccionado->precioFinal)* ( $tipo_iva /100) }}€" class="form-control"
+                                            name="iva">
+                                        @error('detalles_presupuesto')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
 
                                     <label for="precio" class="col-sm-12 col-form-label">Precio total</label>
                                     <div class="col-sm-12">
                                         <input disabled type="text"
-                                            value="{{ $presupuestoSeleccionado->precioFinal }}€" class="form-control"
+                                            value="{{ ($presupuestoSeleccionado->precioFinal)*(( $tipo_iva / 100) + 1) }}€" class="form-control"
                                             name="precio">
                                         @error('detalles_presupuesto')
                                             <span class="text-danger">{{ $message }}</span>
@@ -191,7 +219,7 @@
                             <button class="w-100 btn btn-dark mb-2" id="alertaCancelar">Marcar como cancelada</button>
                             @else
                             <button class="w-100 btn btn-warning mb-2" wire:click.prevent="imprimirFactura">Descargar PDF de la factura</button>
-                            <button class="w-100 btn btn-info mb-2" id="alertaPDF">Enviar factura por correo</button>
+                            <button class="w-100 btn btn-info mb-2" id="alertaenviar">Enviar factura por correo</button>
                             @endif
 
                         </div>
@@ -265,6 +293,19 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     window.livewire.emit('imprimirFactura');
+                }
+            });
+        });
+
+        $("#alertaenviar").on("click", () => {
+            Swal.fire({
+                title: '¿Estás seguro de enviar la factura por correo?',
+                icon: 'info',
+                showConfirmButton: true,
+                showCancelButton: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.livewire.emit('sendEmail');
                 }
             });
         });

@@ -1533,6 +1533,16 @@
                     </div>
                 </div>
             </div>
+            <div class="card m-b-30">
+                <div class="card-body">
+                    <h5>Facturacion</h5>
+                    <div class="row">
+                        <div class="col-12">
+                            <button class="w-100 btn btn-primary mb-2" wire:click.prevent="generarFactura">Generar Factura</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <style>
@@ -1696,7 +1706,7 @@
         $(document).ready(function() {
 
             $('.js-example-basic-single').select2();
-
+        });
 
         function togglePasswordVisibility() {
             var passwordInput = document.getElementById("password");
