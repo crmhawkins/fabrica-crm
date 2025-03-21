@@ -523,7 +523,7 @@ class EditComponent extends Component
         $this->diaMostrar = Carbon::now()->locale('es_ES')->isoFormat('D [de] MMMM [de] Y');
         $presupuesto = Presupuesto::find($this->id_presupuesto);
         $cliente = Cliente::where('id', $presupuesto->id_cliente)->first();
-        $evento = Evento::where('id', $presupuesto->id_evento)->first();
+        $evento = Evento::where('id', $presupuesto->id_evento)->with('tipoevento')->first();
         $packs = ServicioPack::all();
         $nombreEvento = TipoEvento::find($evento->eventoNombre);
         $gestor = User::where('id', $presupuesto->gestor_id)->first();
