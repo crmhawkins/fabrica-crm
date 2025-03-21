@@ -196,7 +196,7 @@
             <tbody>
                 <tr width="100%">
                     <td width="40%" style="border-right-color: #fff !important;"><b>Evento:</b>
-                        {{ $evento->eventoNombre }} </td>
+                        {{ $eventoNombre }} </td>
                     <td width="40%" style="border-right-color: #fff !important;"><b>Protagonistas:</b>
                         {{ $evento->eventoProtagonista }}</td>
                     <td width="20%"><b>Niños: {{ $evento->eventoNiños }}</td>
