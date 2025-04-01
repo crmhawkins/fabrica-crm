@@ -47,7 +47,7 @@
                                 <td>{{ $presup->cliente ? $presup->cliente->nombre.' '.$presup->cliente->apellido : 'Presupuesto sin cliente' }}</td>
                                 <td>{{ $presup->categoria ? $presup->categoria->nombre : 'N/A' }}</td>
                                 <td>{{ $presup->evento ? $presup->evento->eventoLugar : 'N/A'}}</td>
-                                <td>{{ $presup->evento ? $presup->evento->tipoevento->nombre : 'Presupuesto sin evento'}}</td>
+                                <td>{{ $presup->evento ? (optional($presup->evento)->tipoevento ? optional(optional($presup->evento)->tipoevento)->nombre :  'Tipo de evento eliminado') : 'Presupuesto sin evento'}}</td>
                                 <td>{{ $presup->precioBase }} €</td>
                                 <td>{{ $presup->descuento }} €</td>
                                 <td>{{ isset($presup->iva_valor) ? $presup->precioFinal * (1+($presup->iva_valor/100)) : $presup->precioFinal}} €</td>
