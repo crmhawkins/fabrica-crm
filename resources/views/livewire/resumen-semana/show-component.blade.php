@@ -150,41 +150,12 @@
                                                     <tr>
                                                         @if ($monitoresIndex == 0)
                                                             <td>
-                                                                {{-- @if ($datoEdicion['id'] != null)
-                                                                    @if ($datoEdicion['id']['presupuesto'] == $evento->id && $datoEdicion['column'] == 'servicioNombre')
-                                                                        <div class="col-md-8" x-data=""
-                                                                            x-init="$('#select2-servicio').select2();
-                                                                            $('#select2-servicio').on('change', function(e) {
-                                                                                var data = $('#select2-servicio').select2('val');
-                                                                                @this.set('datoEdicion['
-                                                                                    value ']', data);
-                                                                            });" wire:key='rand()'>
-                                                                            <select class="form-control"
-                                                                                name="servicioNombre" id="select2-servicio"
-                                                                                wire:model.lazy="datoEdicion.value"
-                                                                                wire:change.lazy='terminarEdicionServicio'>
-                                                                                <option value="0">-- ELIGE UN SERVICIO
-                                                                                    --
-                                                                                </option>
-                                                                                @foreach ($servicios as $servicio_select)
-                                                                                    <option
-                                                                                        value="{{ $servicio_select->id }}">
-                                                                                        {{ $servicio_select->nombre }}
-                                                                                    </option>
-                                                                                @endforeach
-                                                                            </select>
-                                                                        </div>
-                                                                    @else
-                                                                        <span class="align-middle"
-                                                                            wire:click="detectarEdicionServicio('{{ $evento->id }}', '{{ $servicio->id }}', 'servicioNombre')">{{ $servicio->nombre }}</span>
-                                                                    @endif
-                                                                @else --}}
+
                                                                 @php
                                                                 $articulo = $articulos->where('id', $servicio->pivot->articulo_seleccionado)->first();
-                                                                $serviciopresupuesto = $evento->presupuesto->serviciosPresupuesto()->where('servicio_id', $servicio->id)->first();
+                                                                $serviciopresupuesto = $evento->presupuesto->serviciosPresupuesto()->where('servicio_id', $servicio->id)->where('articulo_seleccionado', $servicio->pivot->articulo_seleccionado)->first();
                                                                 @endphp
                                                                     <span class="align-middle">{{ $serviciopresupuesto->concepto ?? $articulo->name ?? $servicio->nombre }}</span>
-                                                                {{-- @endif --}}
 
                                                             </td>
                                                             <td>
