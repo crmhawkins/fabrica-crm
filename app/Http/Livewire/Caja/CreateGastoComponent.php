@@ -10,7 +10,9 @@ use Livewire\Component;
 use App\Models\Caja;
 use App\Models\Evento;
 use App\Models\Monitor;
+use App\Models\ServicioPresupuesto;
 use Illuminate\Support\Facades\Auth;
+use Nette\Utils\Json;
 
 class CreateGastoComponent extends Component
 {
@@ -29,6 +31,7 @@ class CreateGastoComponent extends Component
     public $monitores;
     public $monitor_id;
     public $serviciosMonitores;
+    public $pagos_seleccionados = [];
 
 
     public function mount()
@@ -64,6 +67,22 @@ class CreateGastoComponent extends Component
             ]
         );
 
+
+        if (!empty($this->pagos_seleccionados)) {
+            $pagos_seleccionados = $this->pagos_seleccionados;
+            foreach ($pagos_seleccionados as $pago) {
+                $servicioPartes = explode("_", $pago);
+                $servicio = ServicioPresupuesto::find($servicioPartes[0]);
+                $pagoPendiente = json_decode($servicio->pago_pendiente, true);
+
+                // Asigna 0 al valor correspondiente
+                $pagoPendiente[$servicioPartes[1]] = 0;
+
+                // Guarda el array modificado como JSON en el modelo
+                $servicio->pago_pendiente = json_encode($pagoPendiente);
+                $servicio->save();
+            }
+        }
         // Guardar datos validados
         $usuariosSave = Caja::create($validatedData);
         event(new \App\Events\LogEvent(Auth::user(), 52, $usuariosSave->id));
@@ -109,7 +128,7 @@ class CreateGastoComponent extends Component
         return $this->clientes->firstWhere('id', $this->presupuestos->firstWhere('id', $id)->id_cliente)->nombre . " " . $this->clientes->firstWhere('id', $this->presupuestos->firstWhere('id', $id)->id_cliente)->apellido;
     }
 
-    public function updatedMonitores($value)
+    public function updatedMonitorId($value)
     {
         if ($value == null || $value == "") {
             $this->monitor_id = null;
@@ -117,8 +136,12 @@ class CreateGastoComponent extends Component
             return;
         }
        $monitor = Monitor::find($value);
-       $this->monitor_id = $monitor->id;
-       $this->serviciosMonitores = $monitor->serviciosPresupuesto;
+       $monitorId = $monitor->id; // Supongamos que es un número
+       $query = ServicioPresupuesto::where(function ($q) use ($monitorId) {
+           $q->whereJsonContains('id_monitores', $monitorId) // Busca como número
+             ->orWhereJsonContains('id_monitores', (string) $monitorId); // Busca como cadena
+       });
+       $this->serviciosMonitores = $query->get();
 
     }
 

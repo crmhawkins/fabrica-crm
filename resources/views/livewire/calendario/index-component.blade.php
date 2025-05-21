@@ -120,7 +120,7 @@
                 eventClick: function(info) {
                     if (info.event.extendedProps.presupuestoId != undefined) {
                         console.log('hola');
-                        window.open('https://crm.fabricandoeventosjerez.com/admin/presupuestos-edit/' +
+                        window.open('../admin/presupuestos-edit/' +
                             info.event.extendedProps.presupuestoId);
                     }
                 },

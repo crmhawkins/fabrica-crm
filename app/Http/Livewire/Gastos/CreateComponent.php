@@ -35,6 +35,7 @@ class CreateComponent extends Component
     }
 
 
+
     // Al hacer submit en el formulario
     public function submit()
     {
@@ -54,6 +55,8 @@ class CreateComponent extends Component
                 'cuantia.required' => 'Indique la cuantía del gasto',
             ]
         );
+
+
 
         // Guardar datos validados
         $GastosSave = Gastos::create($validatedData);
